@@ -43,6 +43,12 @@ fav = "data:image/svg+xml," + "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
 html = f"""<!doctype html>
 <html lang="ca">
 <head>
+<!--
+  LECAA Tecla · programari lliure, GPL-3.0 o posterior (https://github.com/utacub/lecaa_tecla).
+  Inclou: tipografies Andika (SIL Global) i Nunito (The Nunito Project Authors), SIL Open Font License 1.1;
+  ONNX Runtime Web (Microsoft), piper-wasm (Diffusion Studio) i piper-phonemize (Michael Hansen), MIT;
+  el fonemitzador fa servir espeak-ng (GPL-3.0). Textos complets a la carpeta LICENSES del repositori.
+-->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LECAA Tecla</title>

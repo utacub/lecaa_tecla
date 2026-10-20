@@ -1,5 +1,5 @@
 // Service worker de LECAA Tecla: tot el joc queda desat per funcionar sense connexió.
-const CACHE = "lecaa-tecla-b6a9994549";
+const CACHE = "lecaa-tecla-f215ff7b2a";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "icones/icona-maskable-512.png", "icones/icona-180.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

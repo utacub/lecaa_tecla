@@ -84,7 +84,7 @@ function drawCredits(ctx, scene) {
     text(ctx, h, x, y, { size: 19, weight: 900, font: FONT_T, color: BRAND.petroli, align: "left" });
     y = wrapText(ctx, b, x, y + 29, colW, 24, { size: 17, weight: 700, color: BRAND.tinta }) + 42;
   });
-  text(ctx, "© 2026 LECAA", x, py + ph - 36, { size: 16, weight: 800, font: FONT_T, color: "#4B6366", align: "left" });
+  text(ctx, "© 2026 LECAA · Programari lliure, llicència GPL-3.0 o posterior", x, py + ph - 36, { size: 16, weight: 800, font: FONT_T, color: "#4B6366", align: "left" });
   const gx = px + 700; ctx.fillStyle = "#DDE7E4"; ctx.fillRect(gx - 20, py + 130, 2, ph - 170);
   const L = creditLogos(), cellW = (px + pw - 40 - gx) / 3;
   L.forEach((im, i) => {
