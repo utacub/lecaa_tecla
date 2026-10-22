@@ -38,7 +38,7 @@ pwa_head = """
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="LECAA Tecla">
 <link rel="apple-touch-icon" href="icones/icona-180.png">""" if pwa else ""
-if pwa: js += "\nif ('serviceWorker' in navigator && location.protocol !== 'file:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));\n"
+if pwa: js += "\nif ('serviceWorker' in navigator && location.protocol !== 'file:') addEventListener('load', () => navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {}));\n"
 fav = "data:image/svg+xml," + "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='6' width='56' height='52' rx='14' fill='%2317676B'/%3E%3Crect x='4' y='4' width='56' height='50' rx='14' fill='%23fff' stroke='%2317676B' stroke-width='5'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='900' font-size='32' text-anchor='middle' fill='%23203E42'%3ET%3C/text%3E%3C/svg%3E"
 html = f"""<!doctype html>
 <html lang="ca">
