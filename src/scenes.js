@@ -678,7 +678,7 @@ class MuseumScene {
 
 /* ---------- Docent ---------- */
 class CodeScene {
-  constructor() { this.code = ""; this.t = 0; this.err = 0; }
+  constructor(back) { this.back = back || (() => new TitleScene()); this.code = ""; this.t = 0; this.err = 0; } // back: on es torna en sortir
   update(dt) { this.t += dt; this.err = Math.max(0, this.err - dt); }
   draw(ctx) {
     ctx.fillStyle = BRAND.menta; ctx.fillRect(0, 0, W, H);
@@ -696,13 +696,13 @@ class CodeScene {
     drawButton(ctx, W - 40, 50, "Sortir", { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
   }
   onKey(k) {
-    if (k === "Escape") { App.go(new TitleScene()); return; }
+    if (k === "Escape") { App.go(this.back()); return; }
     if (k === "Backspace") { this.code = this.code.slice(0, -1); return; }
-    if (/^[0-9]$/.test(k)) { this.code += k; Sfx.play("key"); if (this.code.length === 4) { if (this.code === (Settings.code || "1234")) App.go(new TeacherScene()); else { this.err = 0.5; this.code = ""; Sfx.play("miss"); } } }
+    if (/^[0-9]$/.test(k)) { this.code += k; Sfx.play("key"); if (this.code.length === 4) { if (this.code === (Settings.code || "1234")) App.go(new TeacherScene(this.back)); else { this.err = 0.5; this.code = ""; Sfx.play("miss"); } } }
   }
 }
 class TeacherScene {
-  constructor() { this.tab = 1; this.sel = 0; this.t = 0; this.stu = 0; } // les opcions són a la rodeta; aquí només alumnes i resultats
+  constructor(back) { this.back = back || (() => new TitleScene()); this.tab = 1; this.sel = 0; this.t = 0; this.stu = 0; } // les opcions són a la rodeta; aquí només alumnes i resultats
   update(dt) { this.t += dt; }
   items() {
     if (this.tab === 0) return [
@@ -793,7 +793,7 @@ class TeacherScene {
   }
   onKey(k) {
     const it = this.items();
-    if (k === "Escape") { saveSettings(); Music.refresh(); App.go(new TitleScene()); return; }
+    if (k === "Escape") { saveSettings(); Music.refresh(); App.go(this.back()); return; }
     if (k === "ArrowDown") this.sel = Math.min(it.length - 1, this.sel + 1);
     if (k === "ArrowUp") this.sel = Math.max(0, this.sel - 1);
     if (k === "Enter" && this.tab === 0 && it[this.sel]) { it[this.sel][2](); saveSettings(); }
@@ -878,7 +878,9 @@ function drawIslandOptions(ctx, scene) {
   drawButton(ctx, px + 40, by, "Crèdits", { align: "left", fs: 22, h: 50, click: () => { close(); scene.credits = true; Sfx.play("whoosh"); } });
   if (scene instanceof IslandScene) {
     drawButton(ctx, px + 195, by, "Museu", { align: "left", fs: 22, h: 50, click: () => { close(); App.go(new MuseumScene(scene.p)); } });
-    drawButton(ctx, px + pw - 40, by, "Canviar de jugador", { align: "right", fs: 22, h: 50, style: "primary", click: () => { close(); App.go(new ProfileScene()); } });
+    const cw = drawButton(ctx, px + pw - 40, by, "Canviar de jugador", { align: "right", fs: 22, h: 50, style: "primary", click: () => { close(); App.go(new ProfileScene()); } });
+    // accés docent (alumnes i resultats); en sortir es torna a l'illa
+    drawButton(ctx, px + pw - 40 - cw - 16, by, "Accés docent", { align: "right", fs: 22, h: 50, click: () => { close(); const p = scene.p; App.go(new CodeScene(() => p && Profiles.list.includes(p) ? new IslandScene(p) : new ProfileScene())); } });
   } else drawButton(ctx, px + pw - 40, by, "Accés docent", { align: "right", fs: 22, h: 50, click: () => { close(); App.go(new CodeScene()); } });
   // creu per tancar
   const bx = px + pw - 6, cy = py + 6, ov = Mouse.add(bx - 30, cy - 30, 60, 60, { click: () => { close(); Sfx.play("whoosh"); } });
