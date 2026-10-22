@@ -677,28 +677,73 @@ class MuseumScene {
 }
 
 /* ---------- Docent ---------- */
+/* Accés docent amb codi de 4 xifres.
+   - El primer cop (encara no hi ha codi) es demana crear-lo i repetir-lo.
+   - "No recordo el codi": si es resol bé una multiplicació de dos nombres de dues xifres, es pot crear un codi nou.
+   - Des de la pantalla d'alumnes es pot canviar (mode "set" amb tornada al docent).
+   El codi es desa resumit (bsnHash), no en clar. */
+const teacherCodeSet = () => !!Settings.codeH;
 class CodeScene {
-  constructor(back) { this.back = back || (() => new TitleScene()); this.code = ""; this.t = 0; this.err = 0; } // back: on es torna en sortir
+  constructor(back, o = {}) {
+    this.back = back || (() => new TitleScene()); this.o = o; // o.change: canvi des de dins; o.after: on anar en acabar
+    this.mode = o.change || !teacherCodeSet() ? "set" : "enter";
+    this.code = ""; this.first = null; this.t = 0; this.err = 0; this.msg = "";
+  }
   update(dt) { this.t += dt; this.err = Math.max(0, this.err - dt); }
+  newSum() { this.a = randi(12, 99); this.b = randi(12, 99); this.code = ""; }
   draw(ctx) {
     ctx.fillStyle = BRAND.menta; ctx.fillRect(0, 0, W, H);
-    drawPanel(ctx, W / 2 - 360, 200, 720, 440, { r: 30 });
-    drawLogo(ctx, W / 2, 280, 60);
-    text(ctx, "Accés docent", W / 2, 370, { size: 40, weight: 900, font: FONT_T, color: BRAND.tinta });
-    for (let i = 0; i < 4; i++) { const x = W / 2 - 150 + i * 80 + (this.err ? Math.sin(this.t * 60) * 6 : 0); drawKeycap(ctx, x, 420, 64, 64, this.code[i] ? "•" : "", { theme: this.code[i] ? "petroli" : "white" }); }
-    text(ctx, "Escriu el codi de 4 xifres", W / 2, 560, { size: 22, weight: 700, color: "#4B6366" });
+    drawPanel(ctx, W / 2 - 400, 170, 800, 480, { r: 30 });
+    drawLogo(ctx, W / 2, 240, 56);
+    const M = this.mode, maths = M === "forgot";
+    const title = M === "enter" ? "Accés docent" : maths ? "No recordo el codi" : this.first == null ? (this.o.change ? "Codi nou" : "Crea el codi docent") : "Repeteix el codi";
+    text(ctx, title, W / 2, 322, { size: 40, weight: 900, font: FONT_T, color: BRAND.tinta });
+    if (maths) {
+      text(ctx, `${this.a} × ${this.b} =`, W / 2 - 20, 410, { size: 52, weight: 900, font: FONT_T, color: BRAND.tinta, align: "right" });
+      rr(ctx, W / 2, 372, 200, 76, 16); ctx.fillStyle = BRAND.crema; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = BRAND.petroli; ctx.stroke();
+      text(ctx, this.code + (Math.floor(this.t * 2) % 2 ? "|" : " "), W / 2 + 20, 412, { size: 46, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
+      drawButton(ctx, W / 2, 500, "Comprova", { fs: 24, h: 52, w: 220, style: "primary", click: () => this.onKey("Enter") });
+    } else {
+      for (let i = 0; i < 4; i++) { const x = W / 2 - 150 + i * 80 + (this.err ? Math.sin(this.t * 60) * 6 : 0); drawKeycap(ctx, x, 370, 64, 64, this.code[i] ? "•" : "", { theme: this.code[i] ? "petroli" : "white" }); }
+    }
+    const sub = this.msg || (M === "enter" ? "Escriu el codi de 4 xifres" : maths ? "Resol la multiplicació per poder crear un codi nou" : this.first == null ? "Tria un codi de 4 xifres. El demanarà cada vegada." : "Escriu-lo una altra vegada per confirmar-lo");
+    text(ctx, sub, W / 2, maths ? 580 : 490, { size: 22, weight: 700, color: this.msg ? UI.coralDark : "#4B6366" });
+    if (M === "enter") drawButton(ctx, W / 2, 580, "No recordo el codi", { fs: 20, h: 44, style: "light", click: () => { this.mode = "forgot"; this.msg = ""; this.newSum(); Sfx.play("tick"); } });
     // teclat numèric per al ratolí
     "1234567890".split("").forEach((d, i) => {
-      const x = W / 2 - 5 * 66 + i * 66 + 3, y = 680, ov = Mouse.add(x, y, 60, 60, { click: () => this.onKey(d) });
+      const x = W / 2 - 5 * 66 + i * 66 + 3, y = 690, ov = Mouse.add(x, y, 60, 60, { click: () => this.onKey(d) });
       drawKeycap(ctx, x, y, 60, 60, d, { theme: ov ? "menta" : "white", size: 30 });
     });
-    const ov = Mouse.add(W / 2 + 5 * 66 + 16, 680, 60, 60, { click: () => this.onKey("Backspace") }); drawKeycap(ctx, W / 2 + 5 * 66 + 16, 680, 60, 60, "⌫", { theme: ov ? "menta" : "white", size: 28 });
-    drawButton(ctx, W - 40, 50, "Sortir", { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
+    const ov = Mouse.add(W / 2 + 5 * 66 + 16, 690, 60, 60, { click: () => this.onKey("Backspace") }); drawKeycap(ctx, W / 2 + 5 * 66 + 16, 690, 60, 60, "⌫", { theme: ov ? "menta" : "white", size: 28 });
+    drawButton(ctx, W - 40, 50, maths || (this.o.change) ? "Tornar" : "Sortir", { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
   }
+  fail(msg) { this.err = 0.5; this.code = ""; this.msg = msg || ""; Sfx.play("miss"); }
+  done() { App.go(this.o.after ? this.o.after() : new TeacherScene(this.back)); }
   onKey(k) {
-    if (k === "Escape") { App.go(this.back()); return; }
+    if (k === "Escape") {
+      if (this.mode === "forgot") { this.mode = "enter"; this.code = ""; this.msg = ""; return; }
+      App.go(this.o.after && this.o.change ? this.o.after() : this.back()); return;
+    }
     if (k === "Backspace") { this.code = this.code.slice(0, -1); return; }
-    if (/^[0-9]$/.test(k)) { this.code += k; Sfx.play("key"); if (this.code.length === 4) { if (this.code === (Settings.code || "1234")) App.go(new TeacherScene(this.back)); else { this.err = 0.5; this.code = ""; Sfx.play("miss"); } } }
+    if (this.mode === "forgot") {
+      if (/^[0-9]$/.test(k) && this.code.length < 4) { this.code += k; Sfx.play("key"); this.msg = ""; }
+      if (k === "Enter" && this.code) {
+        if (Number(this.code) === this.a * this.b) { Sfx.play("ding"); this.mode = "set"; this.first = null; this.code = ""; this.msg = ""; }
+        else { this.newSum(); this.fail("No és correcte. Prova amb aquesta altra."); }
+      }
+      return;
+    }
+    if (!/^[0-9]$/.test(k)) return;
+    this.code += k; this.msg = ""; Sfx.play("key");
+    if (this.code.length < 4) return;
+    if (this.mode === "enter") {
+      if (bsnHash(this.code) === Settings.codeH) this.done(); else this.fail("No és correcte");
+      return;
+    }
+    // mode "set": dues vegades el mateix codi
+    if (this.first == null) { this.first = this.code; this.code = ""; return; }
+    if (this.code !== this.first) { this.first = null; this.fail("No coincideixen. Torna a triar el codi."); return; }
+    Settings.codeH = bsnHash(this.code); delete Settings.code; saveSettings(); Sfx.play("ding"); this.done();
   }
 }
 class TeacherScene {
@@ -723,6 +768,7 @@ class TeacherScene {
     drawLogo(ctx, 190, 50, 46);
     text(ctx, "Alumnes i resultats", 460, 51, { size: 32, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
     drawButton(ctx, W - 40, 51, "Sortir", { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
+    drawButton(ctx, W - 160, 51, "Canviar el codi", { align: "right", fs: 22, h: 46, click: () => { const back = this.back; App.go(new CodeScene(back, { change: true, after: () => new TeacherScene(back) })); } });
     const it = this.items();
     if (this.tab === 0) {
       it.forEach(([l, get], i) => {
@@ -737,7 +783,6 @@ class TeacherScene {
           drawButton(ctx, 700, y + 31, "−", { align: "left", fs: 22, w: 42, h: 40, click: ch(-1) }); text(ctx, String(on), 770, y + 32, { size: 24, weight: 900, font: FONT_T, color: BRAND.tinta }); drawButton(ctx, 812, y + 31, "+", { align: "left", fs: 22, w: 42, h: 40, click: ch(1) });
         } else { rr(ctx, 790, y + 14, 66, 34, 17); ctx.fillStyle = on ? BRAND.petroli : "#C4D2CF"; ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(on ? 839 : 807, y + 31, 13, 0, 6.28); ctx.fill(); }
       });
-      wrapText(ctx, "Codi d'accés: " + (Settings.code || "1234") + ". S'entra des de la rodeta d'opcions de la portada (botó «Accés docent»). Les dades es desen només en aquest navegador.", 960, 170, 520, 34, { size: 22, color: "#4B6366" });
     } else {
       if (!it.length) { text(ctx, "Encara no hi ha cap alumne.", W / 2, 300, { size: 30, weight: 700, color: "#4B6366" }); return; }
       this.sel = clamp(this.sel, 0, it.length - 1);

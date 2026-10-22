@@ -7,7 +7,7 @@ Joc lliure per descobrir on viu cada lletra al teclat, a través de 25 minijocs,
 - **Fitxer únic:** obre `dist/LECAA-Tecla.html` amb el navegador. Funciona sense connexió.
 - **Versió instal·lable (PWA):** la carpeta `dist/pwa/` s'ha de servir per HTTPS; aleshores el navegador permet instal·lar-la.
 
-Els menús i l'illa es fan servir amb el ratolí; dins dels jocs només es juga amb el teclat. L'accés docent (alumnes i resultats) és a la rodeta d'opcions de la portada.
+Els menús i l'illa es fan servir amb el ratolí; dins dels jocs només es juga amb el teclat. L'accés docent (alumnes i resultats) és a la rodeta d'opcions de la portada i de l'illa. El primer cop es demana crear un codi de 4 xifres, que es pot canviar des de dins; si s'oblida, «No recordo el codi» permet crear-ne un de nou resolent una multiplicació de dos nombres de dues xifres.
 
 ## Estructura
 
