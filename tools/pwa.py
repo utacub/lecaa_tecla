@@ -9,7 +9,10 @@ subprocess.run(["node", os.path.join(ROOT, "tools", "icons.js"), os.path.join(OU
 manifest = {
     "name": "LECAA Tecla", "short_name": "Tecla", "lang": "ca", "dir": "ltr",
     "description": "Juga i descobreix on viu cada lletra del teclat.",
-    "start_url": "./", "scope": "./", "id": "./",
+    # id, start_url i scope amb el camí propi de l'app: un id relatiu ("./") es resol contra l'ORIGEN
+    # de start_url (https://utacub.github.io/), i totes les apps del mateix domini quedarien amb el
+    # mateix id; el navegador les tractaria com una sola app i les actualitzacions es trepitjarien.
+    "id": "/lecaa_tecla/", "start_url": "/lecaa_tecla/", "scope": "/lecaa_tecla/",
     "display": "fullscreen", "display_override": ["fullscreen", "standalone"],
     "orientation": "landscape", "background_color": "#203E42", "theme_color": "#17676B",
     "categories": ["education", "games", "kids"],
@@ -23,15 +26,18 @@ json.dump(manifest, open(os.path.join(OUT, "manifest.webmanifest"), "w", encodin
 files = ["./", "index.html", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "icones/icona-maskable-512.png", "icones/icona-180.png"]
 ver = hashlib.sha256(open(os.path.join(OUT, "index.html"), "rb").read()).hexdigest()[:10]
 sw = f"""// Service worker de LECAA Tecla: tot el joc queda desat per funcionar sense connexió.
-const CACHE = "lecaa-tecla-{ver}";
+// La memòria cau (CacheStorage) és compartida per tot l'origen utacub.github.io: aquest service worker
+// només crea, llegeix i esborra memòries que comencen per PREFIX i no toca les de les altres apps.
+const PREFIX = "lecaa-tecla-";
+const CACHE = PREFIX + "{ver}";
 const FILES = {json.dumps(files)};
 self.addEventListener("install", e => {{ e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); }});
-self.addEventListener("activate", e => {{ e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); }});
+self.addEventListener("activate", e => {{ e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith(PREFIX) && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); }});
 // primer la còpia desada (funciona sense xarxa); una versió nova s'instal·la en segon pla i entra la propera vegada
 self.addEventListener("fetch", e => {{
   if (e.request.method !== "GET") return;
   if (new URL(e.request.url).origin !== location.origin) return; // les veus Piper es baixen directament (i es desen a IndexedDB)
-  e.respondWith(caches.match(e.request, {{ ignoreSearch: true }}).then(r => r || fetch(e.request)));
+  e.respondWith(caches.match(e.request, {{ cacheName: CACHE, ignoreSearch: true }}).then(r => r || fetch(e.request)));
 }});
 """
 open(os.path.join(OUT, "sw.js"), "w", encoding="utf-8").write(sw)

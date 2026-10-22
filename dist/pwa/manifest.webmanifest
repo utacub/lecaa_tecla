@@ -4,9 +4,9 @@
   "lang": "ca",
   "dir": "ltr",
   "description": "Juga i descobreix on viu cada lletra del teclat.",
-  "start_url": "./",
-  "scope": "./",
-  "id": "./",
+  "id": "/lecaa_tecla/",
+  "start_url": "/lecaa_tecla/",
+  "scope": "/lecaa_tecla/",
   "display": "fullscreen",
   "display_override": [
     "fullscreen",
