@@ -36,6 +36,8 @@
   // locomotora (mira a l'esquerra). Sprite 250×250, carril a y=238
   function locoSprite() {
     return Sprites.get("g12loco", 250, 250, (x) => {
+      const im=Art.cell("train-vehicles",0,3,2,246,232);
+      if(im){const a=Art.get("train-vehicles"),[bx,by,bw,bh]=Art.rects["train-vehicles"][0],k=Math.min(246/bw,232/bh);x.drawImage(a,bx,by,bw,bh,(250-bw*k)/2,238-bh*k,bw*k,bh*k);return;}
       const R = 238;
       x.fillStyle = "rgba(40,25,10,0.28)"; x.beginPath(); x.ellipse(128, R + 2, 118, 8, 0, 0, 6.28); x.fill();
       // xassís de fusta natural
@@ -71,6 +73,8 @@
   // vagó: sprite (w+24)×170, carril a y=160
   function wagonSprite(w, col, cargo, special) {
     return Sprites.get(`g12w${w}${col}${cargo}${special || ""}`, w + 24, 170, (x) => {
+      const idx=[2,3,4,1,5,1][Math.max(0,WCOLS.indexOf(col))],im=Art.cell("train-vehicles",idx,3,2,w+24,154);
+      if(im){const a=Art.get("train-vehicles"),[bx,by,bw,bh]=Art.rects["train-vehicles"][idx],k=Math.min((w+24)/bw,154/bh);x.drawImage(a,bx,by,bw,bh,(w+24-bw*k)/2,160-bh*k,bw*k,bh*k);return;}
       const R = 160, ox = 12, H = 100, top = R - 30 - H;
       x.fillStyle = "rgba(40,25,10,0.28)"; x.beginPath(); x.ellipse(ox + w / 2, R + 2, w / 2 + 4, 7, 0, 0, 6.28); x.fill();
       // càrrega
@@ -129,6 +133,10 @@
   }
   function buildBg(st) {
     const c = makeCanvas(W, H), x = c.getContext("2d");
+    if(Art.get("train-bg")){
+      x.drawImage(Art.get("train-bg"),0,0,W,H);trackLoop(x);trackStraight(x,0,LOOP_X,MAIN_Y);trackStraight(x,40,LOOP_X,SIDE_Y);
+      drawPlate(x,st.name,1110,242,{size:25});return c;
+    }
     // fons llunyà (desenfocat com en una maqueta)
     const far = makeCanvas(W, 440), f = far.getContext("2d");
     const sky = f.createLinearGradient(0, 0, 0, 380); sky.addColorStop(0, "#8EC9E6"); sky.addColorStop(1, "#E9F4EC"); f.fillStyle = sky; f.fillRect(0, 0, W, 440);
@@ -362,14 +370,17 @@
           const T = travelT, speed = 720, sc = T * speed;
           ctx.drawImage(travelLayers().c, 0, 0, W, H);
           const tile = (spr, f, y, hgt) => { const o = ((sc * f) % 1600 + 1600) % 1600; ctx.drawImage(spr.c, o - 1600, y, 1600, hgt); ctx.drawImage(spr.c, o, y, 1600, hgt); };
+          const travelArt=Art.get("train-travel");
+          if(travelArt){ctx.drawImage(travelArt,-80+Math.sin(T*.35)*70,-30,W+160,H+60);}else{
           ctx.fillStyle = "#FFFFFF"; for (let i = 0; i < 6; i++) { const px = ((i * 330 + sc * 0.05 + T * 12) % 1980) - 190, py = 120 + (i % 3) * 50, r = 60 + (i % 2) * 24; ctx.beginPath(); ctx.arc(px, py, r * 0.5, 0, 6.28); ctx.arc(px + r * 0.55, py + 8, r * 0.4, 0, 6.28); ctx.arc(px - r * 0.55, py + 10, r * 0.36, 0, 6.28); ctx.fill(); }
           tile(stripFar(), 0.12, 180, 360); tile(stripMid(), 0.4, 300, 300);
           // terra
           ctx.fillStyle = "#7DB46A"; ctx.fillRect(0, 560, W, 340);
           ctx.fillStyle = "#6CA85A"; for (let i = -1; i < 18; i++) { const px = ((i * 120 + sc) % 2160 + 2160) % 2160 - 280; ctx.beginPath(); ctx.ellipse(px, 700 + (i % 3) * 50, 60, 12, 0, 0, 6.28); ctx.fill(); }
+          }
           // riu i pont
           const bx = -900 + sc;
-          if (bx > -700 && bx < 2300) {
+          if (!travelArt && bx > -700 && bx < 2300) {
             ctx.fillStyle = "#4F9CC8"; ctx.beginPath(); ctx.moveTo(bx - 260, 900); ctx.quadraticCurveTo(bx - 120, 700, bx - 180, 600); ctx.lineTo(bx + 180, 600); ctx.quadraticCurveTo(bx + 120, 700, bx + 260, 900); ctx.fill();
             ctx.fillStyle = "rgba(255,255,255,0.35)"; for (let i = 0; i < 5; i++) ctx.fillRect(bx - 90 + i * 40 + Math.sin(T * 3 + i) * 8, 640 + i * 46, 46, 4);
             ctx.fillStyle = "#C9A16A"; ctx.fillRect(bx - 230, 540, 460, 26);
@@ -386,13 +397,13 @@
           if (Math.random() < 0.3) api.particles.emit(tx + 45, 566 - 196 * s, { count: 1, color: ["rgba(255,255,255,0.85)"], speed: 30, gravity: -40, size: 26, life: 1.2, angle: 0, spread: 0.4, drag: 0.96 });
           // túnel: la muntanya tapa el tren
           const mx = -2300 + sc;
-          if (mx > -900 && mx < 2600) {
+          if (!travelArt && mx > -900 && mx < 2600) {
             ctx.fillStyle = "#8AA27A"; ctx.beginPath(); ctx.moveTo(mx - 420, 610); ctx.quadraticCurveTo(mx - 260, 180, mx, 170); ctx.quadraticCurveTo(mx + 260, 180, mx + 420, 610); ctx.fill();
             ctx.fillStyle = "#7A9270"; ctx.beginPath(); ctx.moveTo(mx - 300, 610); ctx.quadraticCurveTo(mx - 150, 330, mx + 40, 320); ctx.quadraticCurveTo(mx + 200, 360, mx + 300, 610); ctx.fill();
             ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.moveTo(mx - 70, 210); ctx.quadraticCurveTo(mx, 160, mx + 70, 210); ctx.quadraticCurveTo(mx, 196, mx - 70, 210); ctx.fill();
             for (const px of [mx - 300, mx + 300]) { ctx.fillStyle = "#B9AFA0"; ctx.beginPath(); ctx.moveTo(px - 70, 610); ctx.lineTo(px - 70, 440); ctx.quadraticCurveTo(px, 400, px + 70, 440); ctx.lineTo(px + 70, 610); ctx.fill(); ctx.fillStyle = "#2A2420"; ctx.beginPath(); ctx.moveTo(px - 46, 590); ctx.lineTo(px - 46, 470); ctx.quadraticCurveTo(px, 440, px + 46, 470); ctx.lineTo(px + 46, 590); ctx.fill(); }
           }
-          tile(stripFg(), 1.5, 760, 160);
+          if(!travelArt)tile(stripFg(), 1.5, 760, 160);
           // cartell de l'estació següent
           const dur = api.demo ? 3.2 : 4.4, nxt = STATIONS[stOrder[(stIdx + 1) % STATIONS.length]];
           const k = clamp((T - (dur - 1.6)) / 0.5, 0, 1);

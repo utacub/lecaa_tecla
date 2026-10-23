@@ -111,8 +111,13 @@
       x.strokeStyle = "rgba(255,255,255,0.7)"; x.lineWidth = 4; x.lineCap = "round"; for (const d of [-1, 1]) { x.beginPath(); x.arc(d * 64, 0, 30, 3.7, 4.4); x.stroke(); }
     },
   };
-  const partSprite = (p, v, skin) => Sprites.get(`g06_${p}_${v}_${p === "orelles" ? skin : ""}`, P[p].wh[0], P[p].wh[1], (x, w, h) => { x.translate(w / 2, h / 2); DRAW[p](x, v, skin); });
+  const partSprite = (p, v, skin) => Sprites.get(`g06_${p}_${v}_${p === "orelles" ? skin : ""}`, P[p].wh[0], P[p].wh[1], (x, w, h) => { x.translate(w / 2, h / 2);
+    const groups={ulls:["face-parts",v,4,4,210,100],nas:["face-parts",4+v,4,4,v===2?105:68,v===2?65:68],boca:["face-parts",8+v,4,4,v===2?48:145,v===2?48:90],cabells:["face-parts",12+v,4,4,385,215],mostatxo:["face-accessories",v,4,3,190,68],barret:v<2?["face-accessories",4+v,4,3,300,180]:null,ulleres:["face-accessories",8+v,4,3,255,110]};
+    const a=groups[p]; if(a){const im=Art.cell(...a);if(im){x.drawImage(im,-a[4]/2,-a[5]/2,a[4],a[5]);return;}}
+    if(p==="orelles")x.scale(.82,1);DRAW[p](x, v, skin); });
   const headSprite = skin => Sprites.get("g06head" + skin, 460, 640, (x) => {
+    const head=Art.cell("face-heads",Math.max(0,SKINS.indexOf(skin)),5,1,460,640);
+    if(head){x.drawImage(head,0,0,460,640);return;}
     x.translate(230, 250);
     // coll i espatlles de feltre
     felt(x, p => { p.beginPath(); p.moveTo(-210, 390); p.quadraticCurveTo(-200, 250, -60, 230); p.lineTo(60, 230); p.quadraticCurveTo(200, 250, 210, 390); p.closePath(); }, "#2E9C8F", { c: [0, 300, 150] });
@@ -145,6 +150,7 @@
 
   /* ---------- fons: taula, tauler de costura, marc i costurer ---------- */
   const bgSprite = () => Sprites.get("g06bg", W, H, (x) => {
+    if(Art.get("face-bg")){x.drawImage(Art.get("face-bg"),0,0,W,H);return;}
     x.fillStyle = x.createPattern(Tex.wood(800, 900, "#C99A66", { seed: 6 }), "repeat"); x.fillRect(0, 0, W, H);
     // tauler de costura (feltre verd amb quadrícula cosida)
     const bd = p => rr(p, 520, 84, 1064, 800, 30);

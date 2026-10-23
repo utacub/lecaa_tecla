@@ -11,6 +11,8 @@
 
   /* ---------- globus (làtex brillant, prerenderitzat per color) ---------- */
   const balloonSpr = col => Sprites.get("g11b" + col, BR * 2 + 24, BRY * 2 + 40, (c, w, h) => {
+    const im=Art.cell("party-balloons",Math.max(0,COLS.indexOf(col)),4,2,w,h);
+    if(im){c.drawImage(im,0,0,w,h);return;}
     c.translate(w / 2, BRY + 10);
     const body = () => { c.beginPath(); c.moveTo(0, BRY); c.bezierCurveTo(-BR * 0.5, BRY * 0.92, -BR * 1.02, BRY * 0.45, -BR, -BRY * 0.12); c.bezierCurveTo(-BR * 0.98, -BRY * 0.78, -BR * 0.55, -BRY, 0, -BRY); c.bezierCurveTo(BR * 0.55, -BRY, BR * 0.98, -BRY * 0.78, BR, -BRY * 0.12); c.bezierCurveTo(BR * 1.02, BRY * 0.45, BR * 0.5, BRY * 0.92, 0, BRY); c.closePath(); };
     body(); const g = c.createRadialGradient(-BR * 0.35, -BRY * 0.4, 4, 0, 0, BRY * 1.15); g.addColorStop(0, shade(col, 0.45)); g.addColorStop(0.45, col); g.addColorStop(1, shade(col, -0.45)); c.fillStyle = g; c.fill();
@@ -26,6 +28,11 @@
   });
   /* ---------- convidats ---------- */
   function drawGuest(ctx, g, t) {
+    const im=Art.isolatedCell("party-guests",GUESTS.indexOf(g.id),240,280);
+    if(im){const bob=g.clap>0?-Math.abs(Math.sin((t+g.ph)*7))*12:Math.sin(t*1.5+g.ph)*2;
+      ctx.save();ctx.translate(g.x,g.y+bob);ctx.rotate(g.sad>0?-0.06:Math.sin(t*1.4+g.ph)*0.012);ctx.scale(g.flip?-1:1,1);
+      ctx.drawImage(im,-g.size*.65,-g.size*1.02,g.size*1.3,g.size*1.52);ctx.restore();return;}
+
     if (typeof Critters !== "undefined") { Critters.draw(ctx, g.id, g.x, g.y, g.size, { t: t + g.ph, pose: g.clap > 0 ? "happy" : g.sad > 0 ? "sad" : "idle", flip: g.flip }); }
     else { ctx.fillStyle = "#B07A4A"; ctx.beginPath(); ctx.arc(g.x, g.y - g.size * 0.15, g.size * 0.3, 0, 6.28); ctx.fill(); }
     // barret de festa de paper
@@ -54,6 +61,7 @@
   }
   function pin(c, x, y, col) { c.fillStyle = "rgba(0,0,0,0.25)"; c.beginPath(); c.ellipse(x + 2, y + 4, 9, 5, 0, 0, 6.28); c.fill(); const g = c.createRadialGradient(x - 3, y - 3, 1, x, y, 9); g.addColorStop(0, shade(col, 0.6)); g.addColorStop(1, col); c.fillStyle = g; c.beginPath(); c.arc(x, y, 8, 0, 6.28); c.fill(); }
   const roomSpr = () => Sprites.get("g11room", W, H, (c) => {
+    if(Art.get("party-bg")){c.drawImage(Art.get("party-bg"),0,0,W,H);return;}
     // paper pintat de ratlles
     const st = 64; for (let x = 0; x < W; x += st) { c.fillStyle = (x / st) % 2 ? "#FBE6DA" : "#FFF3EA"; c.fillRect(x, 0, st, H); }
     c.fillStyle = "rgba(240,150,140,0.18)"; for (let x = st / 2; x < W; x += st * 2) for (let y = 140; y < H; y += 56) { starPath(c, x + st, y + (x % 3) * 8, 7, 3, 5); c.fill(); }
@@ -86,6 +94,10 @@
   });
   const tableSpr = () => Sprites.get("g11table", W, H - TABLE_Y + 220, (c) => {
     const y0 = 220; // marge per al pastís
+    if(Art.get("party-bg")&&Art.get("party-cake")){
+      const im=Art.get("party-bg"); c.drawImage(im,0,770,1600,130,0,770-TABLE_Y+220,W,130);
+      Art.fit(c,"party-cake",650,18,300,310);return;
+    }
     // estovalles amb pics i punts
     c.save(); c.shadowColor = "rgba(80,40,20,0.35)"; c.shadowBlur = 20; c.shadowOffsetY = -4; c.fillStyle = "#FFFFFF"; c.fillRect(0, y0, W, 30); c.restore();
     const tg = c.createLinearGradient(0, y0, 0, y0 + 40); tg.addColorStop(0, "#FFFFFF"); tg.addColorStop(1, "#ECE4F2"); c.fillStyle = tg; c.fillRect(0, y0, W, 40);
@@ -234,7 +246,7 @@
           // convidats darrere la taula
           for (const g of guests) drawGuest(ctx, g, t);
           const tb = tableSpr(); ctx.drawImage(tb.c, 0, TABLE_Y - 220, W, H - TABLE_Y + 220);
-          for (const x of [-40, 0, 40]) flame(ctx, 800 + x, TABLE_Y + 6 - 170, t + x, 1);
+          for (const x of [-36, 0, 36]) flame(ctx, 800 + x, Art.get("party-cake") ? TABLE_Y-200 : TABLE_Y+6-170, t+x, 1);
           const lock = typer.current();
           // globus (els escapats queden enganxats al sostre)
           const drawBunch = b => {

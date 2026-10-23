@@ -5,7 +5,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "dist", "index.html")
 only = os.environ.get("ONLY")  # p. ex. ONLY=1,19 per muntar només uns jocs
 def b64(p): return base64.b64encode(open(os.path.join(ROOT, "assets", p), "rb").read()).decode()
-order = ["core", "textures", "art", "piper-worker", "audio", "tts", "content", "ui", "play", "avatars", "scenes", "voyage", "bsn", "credits"]
+order = ["core", "textures", "art", "art-tanda3", "art-fruit", "piper-worker", "audio", "tts", "content", "ui", "play", "avatars", "scenes", "voyage", "bsn", "credits"]
 if os.path.exists(os.path.join(ROOT, "src", "critters.js")): order.insert(2, "critters")
 parts = [open(os.path.join(ROOT, "src", f + ".js"), encoding="utf-8").read() for f in order]
 games = sorted(glob.glob(os.path.join(ROOT, "src", "games", "g*.js")))

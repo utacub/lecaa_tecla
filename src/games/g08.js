@@ -57,6 +57,8 @@
   }
   /* fruita sencera, centrada a (0,0), radi r */
   function paintWhole(c, name, r) {
+    const im=Art.fruitCell("fruit-whole-clean",Object.keys(FR).indexOf(name),240,260);
+    if(im){c.drawImage(im,-r*1.18,-r*1.35,r*2.36,r*2.6);return;}
     const d = FR[name], sh = d.shape, seed = name.length * 13 + name.charCodeAt(0);
     c.save(); shapePath(c, sh, r); c.fillStyle = d.skin; c.fill(); c.clip();
     // volum: llum de dalt a l'esquerra, ombra a baix a la dreta
@@ -128,6 +130,8 @@
   }
   /* meitat: 0 = la de dalt (cara plana a baix), 1 = la de baix */
   function paintHalf(c, name, r, which) {
+    const im=Art.fruitCell("fruit-cut",Object.keys(FR).indexOf(name),240,240);
+    if(im){c.save();c.beginPath();c.rect(-r*1.25,which===0?-r*1.25:0,r*2.5,r*1.25);c.clip();c.drawImage(im,-r*1.2,-r*1.2,r*2.4,r*2.4);c.restore();return;}
     const d = FR[name], sh = d.shape;
     c.save(); c.beginPath(); if (which === 0) c.rect(-r * 2, -r * 2, r * 4, r * 2); else c.rect(-r * 2, 0, r * 4, r * 2); c.clip();
     c.save(); shapePath(c, sh, r); c.fillStyle = shade(d.skin, -0.1); c.fill(); c.clip();
@@ -162,6 +166,7 @@
   });
   /* fons: paret de taulons foscos, llum càlida i la taula de fusta */
   const bgSpr = () => Sprites.get("g8bg", W, H, (c) => {
+    if(Art.get("fruit-bg")){c.drawImage(Art.get("fruit-bg"),0,0,W,H);return;}
     c.fillStyle = c.createPattern(Tex.wood(1600, 760, "#4A2D1B", { seed: 21, vertical: true }), "repeat"); c.fillRect(0, 0, W, TABLE_Y);
     c.fillStyle = "rgba(0,0,0,0.35)"; for (let x = 0; x < W; x += 200) c.fillRect(x, 0, 4, TABLE_Y);
     c.fillStyle = "rgba(255,210,150,0.07)"; for (let x = 4; x < W; x += 200) c.fillRect(x, 0, 2, TABLE_Y);

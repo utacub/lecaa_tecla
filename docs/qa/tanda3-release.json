@@ -1,0 +1,9 @@
+{
+  "pwa_sha256": "8ee0d8ed46ce2b013db21a84c6c23f00b192101551d23ee5ea1b060d2eb5f3d1",
+  "cache_version": "8ee0d8ed46",
+  "simulated_sessions": 30,
+  "fruit_fix_levels": 6,
+  "guest_fix_levels": 6,
+  "browser_testing": "not performed in this environment",
+  "review_selector_in_production": false
+}

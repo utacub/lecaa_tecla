@@ -139,6 +139,13 @@
   function plantSprites(p) {
     const [w, h] = PLANT_DIM[p.kind], key = `g9_${p.kind}_${p.spec.type || p.spec.kind}_${p.spec.col}_${p.spec.seed}`;
     const fn = p.kind === "flower" ? flowerArt : p.kind === "bush" ? bushArt : treeArt;
+    const map={poppy:0,tulip:1,daisy:2,spike:3,sun:4,iris:5,blossom:11,fruit:10,green:9};
+    let atlas="garden-plants", idx=p.kind==="bush"?(p.spec.season==="tardor"?8:6+p.spec.seed%2):map[p.spec.type];
+    if(p.spec.season==="hivern"){atlas="garden-extra";idx=p.kind==="bush"?(p.spec.seed%2?1:3):2;}
+    if(p.kind==="tree"&&p.spec.season==="tardor"){atlas="garden-extra";idx=4;}
+    if(idx!=null&&Art.get(atlas)){
+      return {col:Sprites.get(key+atlas,w,h,x=>{const im=Art.get(atlas),[bx,by,bw,bh]=Art.rects[atlas][idx],k=Math.min((w-8)/bw,(h-8)/bh);x.drawImage(im,bx,by,bw,bh,(w-bw*k)/2,h-5-bh*k,bw*k,bh*k);}),ink:Sprites.get(key+"empty",w,h,()=>{})};
+    }
     return { col: Sprites.get(key + "c", w, h, x => fn(x, p.spec, false)), ink: Sprites.get(key + "i", w, h, x => fn(x, p.spec, true)) };
   }
   function bloomSprite(col) {
@@ -152,6 +159,7 @@
   }
   function canSprite() {
     return Sprites.get("g9can", 220, 150, x => {
+      const art=Art.cell("garden-extra",0,3,2,220,150);if(art){x.drawImage(art,0,0,220,150);return;}
       const body = c => { c.beginPath(); c.moveTo(40, 50); c.lineTo(130, 50); c.lineTo(138, 136); c.quadraticCurveTo(85, 146, 32, 136); c.closePath(); };
       const spout = c => { c.beginPath(); c.moveTo(130, 110); c.lineTo(196, 46); c.lineTo(204, 54); c.lineTo(136, 126); c.closePath(); };
       const rose = c => { c.beginPath(); c.ellipse(204, 46, 10, 16, -0.8, 0, 6.28); };
@@ -172,6 +180,8 @@
   function landscape(season) {
     const S = SEASONS[season];
     return bake("g9land_" + season, W, H, (x) => {
+      const art=Art.get(season==="hivern"?"garden-winter":season==="tardor"?"garden-autumn":"garden-bg");
+      if(art){x.drawImage(art,0,0,W,H);return;}
       const R = mulberry32(season.length * 13 + 3);
       // turons llunyans
       S.hills.forEach((col, i) => {
@@ -316,9 +326,9 @@
   function makeSpec(kind, season, i, seed) {
     const S = SEASONS[season];
     if (kind === "flower") { const [type, col, c2] = S.flowers[i % S.flowers.length]; return { type, col, c2: c2 || "#F2C230", h: (type === "sun" ? 220 : 150) + ((seed * 37) % 50), bend: ((seed * 13) % 30) - 15, seed, season }; }
-    if (kind === "bush") return { kind: "bush", col: S.bush[0], c2: S.bush[1], dot: S.dot, snow: S.snow, seed: seed % 4, type: "bush" };
+    if (kind === "bush") return { kind: "bush", col: S.bush[0], c2: S.bush[1], dot: S.dot, snow: S.snow, seed: seed % 4, season, type: "bush" };
     const tk = i % 2 ? (S.tree === "pine" ? "pine" : "green") : S.tree;
-    return { kind: tk, col: S.trees[0], seed: (seed + i) % 4, type: tk };
+    return { kind: tk, col: S.trees[0], seed: (seed + i) % 4, season, type: tk };
   }
 
   Games.register({
@@ -517,7 +527,7 @@
           ctx.fillStyle = "rgba(120,180,220,0.75)"; drops.forEach(d => { ctx.beginPath(); ctx.ellipse(d.x, d.y, 2.6, 5, 0, 0, 6.28); ctx.fill(); });
           if (can) { const tilt = can.phase === "pour" ? Ease.outCubic(clamp(can.t / 0.25, 0, 1)) * 0.55 * (can.t > 0.7 ? clamp((0.9 - can.t) / 0.2, 0, 1) : 1) : 0; ctx.save(); ctx.translate(can.x, can.y); ctx.scale(can.flip, 1); ctx.rotate(tilt); Sprites.draw(ctx, cs, 0, 0); ctx.restore(); }
           ambient.forEach(q => { ctx.fillStyle = rgba(q.c, 0.85); ctx.beginPath(); ctx.ellipse(q.x, q.y, q.r, q.r * (S.snow ? 1 : 0.55), q.ph, 0, 6.28); ctx.fill(); });
-          ctx.drawImage(grass, 0, GROUND - 40);
+          if(!Art.get("garden-bg")) ctx.drawImage(grass, 0, GROUND - 40);
           // paper de gra gruixut (abans de les plaques: la textura mai toca la lletra)
           ctx.save(); ctx.globalCompositeOperation = "multiply"; ctx.globalAlpha = 0.28; ctx.fillStyle = ctx.createPattern(paperTile(), "repeat"); ctx.fillRect(0, 0, W, H); ctx.restore();
           drawVignette(ctx, 0.22, "70,50,30");

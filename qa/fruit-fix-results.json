@@ -1,0 +1,68 @@
+[
+  {
+    "id": 8,
+    "level": 1,
+    "finished": true,
+    "keys": 24,
+    "hits": 24,
+    "progress": [
+      24,
+      24
+    ]
+  },
+  {
+    "id": 8,
+    "level": 2,
+    "finished": true,
+    "keys": 26,
+    "hits": 26,
+    "progress": [
+      26,
+      26
+    ]
+  },
+  {
+    "id": 8,
+    "level": 3,
+    "finished": true,
+    "keys": 30,
+    "hits": 30,
+    "progress": [
+      30,
+      30
+    ]
+  },
+  {
+    "id": 8,
+    "level": 4,
+    "finished": true,
+    "keys": 40,
+    "hits": 40,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 8,
+    "level": 5,
+    "finished": true,
+    "keys": 55,
+    "hits": 55,
+    "progress": [
+      12,
+      12
+    ]
+  },
+  {
+    "id": 8,
+    "level": 6,
+    "finished": true,
+    "keys": 56,
+    "hits": 56,
+    "progress": [
+      8,
+      8
+    ]
+  }
+]
