@@ -2,7 +2,7 @@
 /* 7. El monstre golafre — monstre de plastilina, aliments amb paracaigudes, stop motion a 12 fps */
 (() => {
   const GROUND = 772, GOAL = 15, MAXDROP = 5;
-  const MONSTER = "#3E7FD9";
+  const MONSTER = "#438DC3";
   const CHUTES = [["#F36F5B", "#FFE6A8"], ["#F7B84B", "#FFF3D6"], ["#7BC8A4", "#F4FFF8"], ["#B48BE0", "#F6EEFF"], ["#5BB8F3", "#FFFFFF"], ["#F28DB2", "#FFF0F6"]];
   const q12 = t => Math.floor(t * 12) / 12; // temps dels personatges: 12 fotogrames per segon
 
@@ -225,6 +225,15 @@
   });
 
   /* ---------- el monstre ---------- */
+  const limbSprite = foot => Sprites.get("g07limb" + foot, 96, 72, x => {
+    clay(x, ell(48, 36, foot ? 36 : 35, foot ? 20 : 23, foot ? 0 : 0.2), MONSTER,
+      { r: 40, cx: 44, cy: 34, tex: 0.38, lw: 1 });
+    const skin = Art.get("g07_body");
+    if (skin) { x.save(); ell(48, 36, foot ? 36 : 35, foot ? 20 : 23, foot ? 0 : 0.2)(x); x.clip();
+      x.globalAlpha = 0.6; x.drawImage(skin, skin.width * 0.28, skin.height * 0.4, skin.width * 0.25, skin.height * 0.2, 10, 12, 76, 48); x.restore(); }
+    x.strokeStyle = "rgba(20,65,100,0.3)"; x.lineWidth = 1.6; x.lineCap = "round";
+    for (const d of [-1, 1]) { x.beginPath(); x.moveTo(foot ? 58 + d * 8 : 68, foot ? 43 : 34 + d * 7); x.lineTo(foot ? 68 + d * 8 : 77, foot ? 46 : 36 + d * 7); x.stroke(); }
+  });
   const bodySprite = () => Sprites.get("g07body", 300, 300, (x) => {
     for (const d of [-1, 1]) { x.save(); x.translate(150 + d * 52, 66); x.rotate(d * 0.35); clay(x, p => { p.beginPath(); p.moveTo(-16, 12); p.quadraticCurveTo(-6, -30, 0, -36); p.quadraticCurveTo(6, -30, 16, 12); p.closePath(); }, "#F7C944", { r: 30, cy: -8 }); x.restore(); }
     clay(x, p => blobPath(p, 150, 162, 112, 5, 0.05, 11), MONSTER, { r: 112, cx: 150, cy: 162, lw: 3 });
@@ -234,40 +243,46 @@
     x.restore();
   });
   function drawMonster(ctx, mx, gy, o = {}) {
-    const t = o.t || 0, s = o.s || 1, sq = o.sq || 0, look = o.look || [0, 0], open = o.open || 0;
+    const t = Settings.reduceMotion ? 0 : o.t || 0, s = o.s || 1, sq = Settings.reduceMotion ? 0 : o.sq || 0, look = o.look || [0, 0], open = o.open || 0;
     const step = o.walk ? Math.sin(t * 14) : 0;
     // ombra de contacte
-    ctx.save(); ctx.fillStyle = "rgba(25,50,20,0.28)"; ctx.beginPath(); ctx.ellipse(mx, gy + 4, 112 * s, 18 * s, 0, 0, 6.28); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.translate(mx, gy + 4); ctx.scale(s, s * 0.18);
+    const sh = ctx.createRadialGradient(0, 0, 8, 0, 0, 124); sh.addColorStop(0, "rgba(24,46,28,0.4)"); sh.addColorStop(1, "rgba(24,46,28,0)"); ctx.fillStyle = sh; ctx.fillRect(-124, -124, 248, 248); ctx.restore();
     ctx.save(); ctx.translate(mx, gy); ctx.scale(s, s);
-    // peus
-    for (const d of [-1, 1]) { const lift = o.walk ? Math.max(0, step * d) * 16 : 0; ctx.fillStyle = "#2B5FAF"; ctx.beginPath(); ctx.ellipse(d * 48, -10 - lift, 34, 16, 0, 0, 6.28); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.beginPath(); ctx.ellipse(d * 44, -16 - lift, 18, 6, 0, 0, 6.28); ctx.fill(); }
-    const hop = o.hop || 0;
+    const hop = Settings.reduceMotion ? 0 : o.hop || 0;
     ctx.translate(0, -hop);
+    // peus
+    for (const d of [-1, 1]) { const lift = o.walk ? Math.max(0, step * d) * 16 : 0; ctx.save(); ctx.translate(d * 48, -15 - lift); ctx.scale(d, 1); ctx.drawImage(limbSprite(true).c, -48, -36, 96, 72); ctx.restore(); }
     const sy = 1 - sq * 0.12, sx = 1 + sq * 0.1;
     ctx.translate(0, -2); ctx.scale(sx, sy); ctx.translate(0, -138);
     if (o.rot) ctx.rotate(o.rot);
     // braços
     for (const d of [-1, 1]) {
       const wave = o.arms ? Math.sin(t * 9 + d) * 0.6 : (o.walk ? step * 0.25 * d : 0.15);
-      ctx.save(); ctx.translate(d * 102, 34); ctx.rotate(d * (0.5 + wave)); ctx.fillStyle = MONSTER; ctx.beginPath(); ctx.ellipse(d * 18, 0, 30, 15, 0, 0, 6.28); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,0.16)"; ctx.beginPath(); ctx.ellipse(d * 16, -5, 18, 5, 0, 0, 6.28); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.translate(d * 92, 34); ctx.rotate(d * (0.5 + wave)); ctx.scale(d, 1); ctx.drawImage(limbSprite(false).c, -26, -36, 96, 72); ctx.restore();
     }
-    const B = bodySprite(); ctx.drawImage(B.c, -150, -162, 300, 300);
+    const body = Art.get("g07_body") || bodySprite().c; ctx.drawImage(body, -150, -162, 300, 300);
     if (o.tint) { ctx.save(); ctx.globalAlpha = o.tint; ctx.fillStyle = "#79C267"; blobPath(ctx, 0, 0, 112, 5, 0.05, 11); ctx.globalCompositeOperation = "source-atop"; ctx.fill(); ctx.restore(); }
     // ulls
     const blink = o.blink || 0;
     for (const d of [-1, 1]) {
       const ex = d * 40, ey = -40;
-      ctx.fillStyle = "#FBFAF4"; ctx.beginPath(); ctx.ellipse(ex, ey, 27, 30, 0, 0, 6.28); ctx.fill();
+      const white = ctx.createRadialGradient(ex - 9, ey - 11, 2, ex + 3, ey + 7, 35);
+      white.addColorStop(0, "#FFFFFF"); white.addColorStop(0.58, "#FFFDF3"); white.addColorStop(1, "#B4C6CD");
+      ctx.save(); ctx.shadowColor = "rgba(16,50,77,0.42)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3;
+      ctx.fillStyle = white; ctx.beginPath(); ctx.ellipse(ex, ey, 27, 30, 0, 0, 6.28); ctx.fill(); ctx.restore();
       ctx.fillStyle = "rgba(0,30,80,0.12)"; ctx.beginPath(); ctx.ellipse(ex + 3, ey + 6, 24, 24, 0, 0, Math.PI); ctx.fill();
       if (o.yuck) { ctx.strokeStyle = "#1A1820"; ctx.lineWidth = 6; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(ex - 12, ey - 8); ctx.lineTo(ex + 12 * d * 0 + 10, ey); ctx.lineTo(ex - 12, ey + 8); ctx.stroke(); }
       else {
         const px = ex + clamp(look[0], -1, 1) * 10, py = ey + clamp(look[1], -1, 1) * 11;
-        ctx.fillStyle = "#1A1820"; ctx.beginPath(); ctx.arc(px, py, 13, 0, 6.28); ctx.fill();
+        const iris = ctx.createRadialGradient(px, py, 5, px, py, 15); iris.addColorStop(0, "#172B36"); iris.addColorStop(0.65, "#3F7181"); iris.addColorStop(1, "#152E40");
+        ctx.fillStyle = iris; ctx.beginPath(); ctx.arc(px, py, 15, 0, 6.28); ctx.fill();
+        ctx.fillStyle = "#121E27"; ctx.beginPath(); ctx.arc(px, py, 9, 0, 6.28); ctx.fill();
         ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(px - 4, py - 5, 4.5, 0, 6.28); ctx.fill();
       }
       if (blink > 0) { ctx.save(); ctx.beginPath(); ctx.ellipse(ex, ey, 28, 31, 0, 0, 6.28); ctx.clip(); ctx.fillStyle = "#3572C8"; ctx.fillRect(ex - 30, ey - 32, 60, 64 * blink); ctx.restore(); }
       // cella
-      ctx.strokeStyle = "#1F4FA3"; ctx.lineWidth = 7; ctx.lineCap = "round"; ctx.beginPath();
+      ctx.strokeStyle = "#245A80"; ctx.lineWidth = 7; ctx.lineCap = "round"; ctx.beginPath();
       const br = o.worry ? d * 0.35 : o.yuck ? -d * 0.3 : 0; ctx.save(); ctx.translate(ex, ey - 42); ctx.rotate(br); ctx.moveTo(-16, 0); ctx.quadraticCurveTo(0, -8, 16, 0); ctx.stroke(); ctx.restore();
     }
     // boca
@@ -328,8 +343,8 @@
     goal: l => (l <= 3 ? "Escriu la lletra de cada aliment que cau i el monstre se'l menjarà." : l === 4 ? "Escriu la síl·laba de cada aliment que cau i el monstre se'l menjarà." : "Escriu el nom de cada aliment que cau i el monstre se'l menjarà.") + " Compte: el mitjó, la sabata i la pedra no es mengen!",
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-      const bg = bgSprite(), s = Math.max(w / 760, h / 520);
-      ctx.drawImage(bg.c, 420 * 2, 300 * 2, 760 * 2, 520 * 2, x + w / 2 - 380 * s, y + h - 520 * s, 760 * s, 520 * s);
+      const bg = Art.get("g07_meadow") || bgSprite().c, s = Math.max(w / 760, h / 520), bx = bg.width / W, by = bg.height / H;
+      ctx.drawImage(bg, 420 * bx, 300 * by, 760 * bx, 520 * by, x + w / 2 - 380 * s, y + h - 520 * s, 760 * s, 520 * s);
       const k = Math.min(w / 420, h / 300);
       ctx.translate(x + w / 2, y + h); ctx.scale(k, k);
       drawMonster(ctx, -40, -24, { s: 0.78, t, open: 0.55 + Math.sin(t * 3) * 0.25, look: [0.6, -0.9], blink: 0 });
@@ -467,9 +482,10 @@
         },
         draw(ctx) {
           const t = api.t, tq = q12(t);
-          ctx.drawImage(bgSprite().c, 0, 0, W, H);
+          const meadow = Art.get("g07_meadow");
+          ctx.drawImage(meadow || bgSprite().c, 0, 0, W, H);
           // núvols en parallax
-          for (let i = 0; i < 3; i++) { const C = cloudSprite(i % 2), cx = ((i * 620 + t * (8 + i * 4)) % 2000) - 250; ctx.drawImage(C.c, cx, 120 + i * 70 + (i === 1 ? 40 : 0), 260 * (1 - i * 0.12), 120 * (1 - i * 0.12)); }
+          if (!meadow) for (let i = 0; i < 3; i++) { const C = cloudSprite(i % 2), cx = ((i * 620 + (Settings.reduceMotion ? 0 : t) * (8 + i * 4)) % 2000) - 250; ctx.drawImage(C.c, cx, 120 + i * 70 + (i === 1 ? 40 : 0), 260 * (1 - i * 0.12), 120 * (1 - i * 0.12)); }
           for (const s of splats) {
             const a = clamp(6 - s.t, 0, 1), k = Ease.outBack(clamp(s.t / 0.25, 0, 1));
             ctx.save(); ctx.globalAlpha = a; ctx.translate(s.x, s.y); ctx.scale(k * 1.4, k * 0.45);

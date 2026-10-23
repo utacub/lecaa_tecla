@@ -25,7 +25,7 @@ const PIPER_WASM = "https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0
 const ORT_WASM = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/";
 const SIMD = (() => { try { return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11])); } catch (e) { return false; } })();
 const ORT_FILE = SIMD ? "ort-wasm-simd.wasm" : "ort-wasm.wasm";
-const rtUrls = (f, base) => [...(location.protocol === "file:" ? [] : [new URL("piper/" + f, document.baseURI).href]), base + f];
+const rtUrls = (f, base) => [...(/^https?:$/.test(location.protocol) ? [new URL("piper/" + f, document.baseURI).href] : []), base + f];
 const RUNTIME = [
   { key: "runtime:piper_phonemize.wasm", urls: rtUrls("piper_phonemize.wasm", PIPER_WASM), bytes: 635212 },
   { key: "runtime:piper_phonemize.data", urls: rtUrls("piper_phonemize.data", PIPER_WASM), bytes: 18077249 },
@@ -197,9 +197,13 @@ const TTS = {
   say(txt) {
     const c = voiceCfg(), v = this.current(), o = { rate: c.rate, pitch: c.pitch, volume: c.volume };
     this.stop();
-    return this.engineFor(v).speak(v ? v.id : "", txt, o);
+    const token = this.token;
+    Audio2.duck("voice", true);
+    return Promise.resolve().then(() => token === this.token ? this.engineFor(v).speak(v ? v.id : "", txt, o) : undefined)
+      .catch(() => {})
+      .finally(() => { if (token === this.token) Audio2.duck("voice", false); });
   },
-  stop() { for (const e of this.engines) if (e.available()) e.stop(); },
+  stop() { this.token = (this.token || 0) + 1; Audio2.duck("voice", false); for (const e of this.engines) if (e.available()) e.stop(); },
 };
 
 /* ---------- so de les lletres: locucions enregistrades (veu de l'Anna, LECAA Docs) ---------- */
@@ -212,10 +216,14 @@ const Phon = {
   has(letter) { return !!this.url(letter); },
   play(letter) {
     const u = this.url(letter); if (!u) return false;
-    this.stop(); try { const a = new Audio(u); a.volume = voiceCfg().volume; this.audio = a; a.play().catch(() => { }); } catch (e) { return false; }
+    this.stop(); try { const a = new Audio(u); a.volume = voiceCfg().volume; this.audio = a;
+      Audio2.duck("phoneme", true);
+      const finish = () => { if (this.audio === a) { this.audio = null; Audio2.duck("phoneme", false); } };
+      a.onended = finish; a.onerror = finish; a.play().catch(finish);
+    } catch (e) { Audio2.duck("phoneme", false); return false; }
     return true;
   },
-  stop() { if (this.audio) { try { this.audio.pause(); } catch (e) { } this.audio = null; } },
+  stop() { if (this.audio) { try { this.audio.pause(); } catch (e) { } this.audio = null; } Audio2.duck("phoneme", false); },
 };
 
 /* ---------- finestra d'ajustos de la veu (HTML per sobre del llenç) ---------- */

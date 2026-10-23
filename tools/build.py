@@ -5,7 +5,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "dist", "index.html")
 only = os.environ.get("ONLY")  # p. ex. ONLY=1,19 per muntar només uns jocs
 def b64(p): return base64.b64encode(open(os.path.join(ROOT, "assets", p), "rb").read()).decode()
-order = ["core", "textures", "piper-worker", "audio", "tts", "content", "ui", "play", "avatars", "scenes", "voyage", "bsn", "credits"]
+order = ["core", "textures", "art", "piper-worker", "audio", "tts", "content", "ui", "play", "avatars", "scenes", "voyage", "bsn", "credits"]
 if os.path.exists(os.path.join(ROOT, "src", "critters.js")): order.insert(2, "critters")
 parts = [open(os.path.join(ROOT, "src", f + ".js"), encoding="utf-8").read() for f in order]
 games = sorted(glob.glob(os.path.join(ROOT, "src", "games", "g*.js")))
@@ -28,6 +28,14 @@ for f in sorted(glob.glob(os.path.join(ROOT, "assets", "credits", "*"))):
 # locucions dels fonemes (veu femenina de LECAA Docs): assets/sons/anna/*.mp3
 phon = {os.path.splitext(os.path.basename(f))[0]: "data:audio/mpeg;base64," + base64.b64encode(open(f, "rb").read()).decode() for f in sorted(glob.glob(os.path.join(ROOT, "assets", "sons", "anna", "*.mp3")))}
 js = f"const PHON_ANNA = {json.dumps(phon)};\n" + f"const CREDIT_LOGOS = {json.dumps(credit_logos)};\n" + f"const LOGO_UTAC = {json.dumps(utac)};\nconst LOGO_SVG_P = {json.dumps(logoP)};\nconst LOGO_SVG_W = {json.dumps(logoW)};\n" + "\n".join(parts)
+# Només recursos optimitzats: les imatges font de references/ no entren a l'app.
+# Un recurs buit no ha de produir una compilació aparentment correcta.
+for asset_path in sorted(glob.glob(os.path.join(ROOT, "assets", "art", "*.webp"))):
+    if os.path.getsize(asset_path) == 0:
+        raise ValueError(f"Recurs artístic buit: {asset_path}")
+art = {os.path.splitext(os.path.basename(f))[0]: "data:image/webp;base64," + base64.b64encode(open(f, "rb").read()).decode()
+       for f in sorted(glob.glob(os.path.join(ROOT, "assets", "art", "*.webp")))}
+js = f"const ART_DATA = {json.dumps(art)};\n" + js
 js = js.replace("</script", "<\\/script")
 # versió PWA (PWA=1): manifest, icones i service worker al costat de l'HTML
 pwa = os.environ.get("PWA") == "1"

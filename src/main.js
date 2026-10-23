@@ -6,6 +6,7 @@ function hashParams() { const o = {}; (location.hash || "").replace(/^#/, "").sp
 async function boot() {
   Img.svg("logoP", LOGO_SVG_P); Img.svg("logoW", LOGO_SVG_W);
   Voice.init();
+  await Art.init(); // Embedded assets resolve on load or error before any cached scene is built.
   try { await Promise.race([Promise.all(["700 64px Andika", "400 24px Andika", "900 40px Nunito", "800 40px Nunito"].map(f => document.fonts.load(f))), wait(2)]); } catch (e) { }
   await Promise.race([new Promise(r => { const im = Img.get("logoP"); if (im.complete) r(); else im.onload = r; }), wait(1)]);
   App.init();

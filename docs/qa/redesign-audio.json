@@ -1,0 +1,50 @@
+{
+  "lifecycle": {
+    "stopped": true,
+    "restarted": true,
+    "overlap": true,
+    "restored": true,
+    "cancelledBeforeStart": true,
+    "voicesReleased": true,
+    "captionCleared": true
+  },
+  "styles": [
+    {
+      "name": "album",
+      "peak": 0.04418550431728363,
+      "rms": 0.0036429719700613182,
+      "invalid": 0,
+      "rate": 44100
+    },
+    {
+      "name": "arcade",
+      "peak": 0.047982197254896164,
+      "rms": 0.0032009946947930044,
+      "invalid": 0,
+      "rate": 44100
+    },
+    {
+      "name": "orbital",
+      "peak": 0.02557806670665741,
+      "rms": 0.0027990795020406845,
+      "invalid": 0,
+      "rate": 44100
+    },
+    {
+      "name": "rally",
+      "peak": 0.038642141968011856,
+      "rms": 0.0037002557019213665,
+      "invalid": 0,
+      "rate": 44100
+    },
+    {
+      "name": "atelier",
+      "peak": 0.03948270156979561,
+      "rms": 0.0029620212170568196,
+      "invalid": 0,
+      "rate": 44100
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

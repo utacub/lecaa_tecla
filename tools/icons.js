@@ -1,5 +1,5 @@
 // Ús: node tools/icons.js <carpeta sortida>  — dibuixa les icones de l'app (patró d'icona d'app de LECAA Docs: logo blanc + pastilla amb el nom)
-const { chromium } = require("/opt/node22/lib/node_modules/playwright");
+const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path");
 const ROOT = path.resolve(__dirname, ".."), out = process.argv[2];
 const b64 = f => fs.readFileSync(path.join(ROOT, "assets", f)).toString("base64");
@@ -15,7 +15,7 @@ html,body{margin:0;width:${size}px;height:${size}px;background:transparent}
 </style></head><body><div class="ic"><div class="lg">${logoW}</div><div class="k"><span>T</span><span>E</span><span class="p">C</span><span>L</span><span>A</span></div></div></body></html>`;
 (async () => {
   fs.mkdirSync(out, { recursive: true });
-  const b = await chromium.launch();
+  const b = await chromium.launch({ executablePath: process.env.LECAA_CHROMIUM || undefined });
   for (const [name, size, mask] of [["icona-192.png", 192, false], ["icona-512.png", 512, false], ["icona-maskable-512.png", 512, true], ["icona-180.png", 180, true]]) {
     const p = await b.newPage({ viewport: { width: size, height: size } });
     await p.setContent(page(size, mask)); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(200);

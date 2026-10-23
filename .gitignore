@@ -1,5 +1,10 @@
 node_modules/
 *.zip
 dist/*.html
-!dist/LECAA-Tecla.html
 .DS_Store
+
+# Temporary release validation profiles and snapshots
+release-qa/
+
+dist/pwa/index.html
+dist/pwa/sw.js

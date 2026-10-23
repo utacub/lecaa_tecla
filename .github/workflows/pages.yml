@@ -23,6 +23,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Compila des del codi font
+        run: |
+          python3 tools/build.py dist/LECAA-Tecla.html
+          python3 tools/pwa.py --keep-icons
       - name: Prepara el lloc
         run: |
           mkdir -p _site

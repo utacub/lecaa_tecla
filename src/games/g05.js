@@ -68,8 +68,8 @@
     },
   };
   const CFG = { 1: [4, 4], 2: [6, 6], 3: [6, 6], 4: [6, 6], 5: [8, 8], 6: [11, 6] };
-  const RX0 = 96, RX1 = 1144, RY0 = 184, RY1 = 708;         // zona de la graella
-  const PX0 = 1192, PX1 = 1540, PY0 = 184, PY1 = 708, PCX = (PX0 + PX1) / 2; // plafó lateral
+  const RX0 = 100, RX1 = 1080, RY0 = 168, RY1 = 776;         // zona de la graella
+  const PX0 = 1150, PX1 = 1540, PY0 = 184, PY1 = 770, PCX = (PX0 + PX1) / 2; // plafó lateral
   const DECO = ["#3A78C9", "#5FA3D9", "#E8A23A", "#F2D35C", "#3FA34D", "#8CC66B", "#E8603A", "#F4EEDF", "#E7E1D0", "#9D6BB8", "#2F9C9A"];
 
   /* ---------- geometria del trencadís ---------- */
@@ -105,15 +105,25 @@
     const path = () => { x.beginPath(); P.forEach((p, i) => i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.closePath(); };
     const g = x.createLinearGradient(sh.cx - r, sh.cy - r, sh.cx + r, sh.cy + r);
     g.addColorStop(0, shade(col, clamp(0.3 + v, -1, 1))); g.addColorStop(0.5, v >= 0 ? shade(col, v) : shade(col, v)); g.addColorStop(1, shade(col, clamp(-0.24 + v, -1, 1)));
+    // Gruix de bescuit sota l'esmalt i oclusió a la junta.
+    x.save(); x.translate(0, Math.min(3.2, r * 0.1)); path(); x.fillStyle = '#796856'; x.fill(); x.restore();
     path(); x.fillStyle = g; x.fill();
     x.save(); path(); x.clip();
+    // Microcraquelat determinista: queda gravat al sprite, mai sobre les lletres.
+    const R = mulberry32(Math.round(sh.cx * 103 + sh.cy * 379 + r * 71));
+    x.strokeStyle = rgba(shade(col, -0.45), 0.17); x.lineWidth = 0.5;
+    for (let k = 0; k < 6; k++) { const xx = sh.cx + (R() - 0.5) * r * 1.8, yy = sh.cy + (R() - 0.5) * r * 1.8; x.beginPath(); x.moveTo(xx, yy); x.lineTo(xx + r * 0.16, yy - r * 0.14); x.lineTo(xx + r * 0.4, yy - r * 0.09); x.stroke(); }
+    const coat = x.createLinearGradient(sh.cx-r, sh.cy-r, sh.cx+r, sh.cy+r); coat.addColorStop(0, 'rgba(255,255,255,0)'); coat.addColorStop(0.28, 'rgba(255,255,255,0.06)'); coat.addColorStop(0.38, 'rgba(255,255,255,0.38)'); coat.addColorStop(0.44, 'rgba(255,255,255,0.08)'); coat.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = coat; path(); x.fill();
     x.fillStyle = "rgba(255,255,255,0.3)"; x.beginPath(); x.ellipse(sh.cx - r * 0.3, sh.cy - r * 0.42, r * 0.6, r * 0.2, -0.55, 0, 6.28); x.fill();
     x.strokeStyle = "rgba(0,0,0,0.22)"; x.lineWidth = 2.2; x.translate(1.2, 1.4); path(); x.stroke();
     x.restore();
-    x.lineJoin = "round"; x.lineWidth = 1; x.strokeStyle = "rgba(255,255,255,0.55)"; path(); x.stroke();
+    x.lineJoin = "round";
+    // Cada bisell rep llum segons l'orientació de la seva aresta.
+    P.forEach((p, i) => { const q=P[(i+1)%P.length], dx=q[0]-p[0], dy=q[1]-p[1]; x.beginPath(); x.moveTo(p[0],p[1]); x.lineTo(q[0],q[1]); x.lineWidth=1.6; x.strokeStyle=(dx-dy)>0?'rgba(255,255,255,0.72)':'rgba(40,34,26,0.34)'; x.stroke(); });
   }
   /* mostrejador de la imatge per a una graella cols × rows */
   function sampler(pic, cols, rows) {
+    pic.cols=cols;pic.rows=rows;
     const S = 24, c = makeCanvas(cols * S, rows * S), x = c.getContext("2d");
     x.fillStyle = pic.bg[0]; x.fillRect(0, 0, c.width, c.height);
     const side = Math.min(c.width, c.height) * 0.98, ox = (c.width - side) / 2, oy = (c.height - side) / 2;
@@ -128,6 +138,10 @@
   /* sprite esmaltat d'una rajola (trossos de colors segons la imatge) */
   function glazedTile(s, col, row, samp, pic, R) {
     const c = makeCanvas(s * 2, s * 2), x = c.getContext("2d"); x.scale(2, 2);
+    const master=Art.cell('mosaic-masters',Object.values(PICS).indexOf(pic),3,2,768,768);
+    if(master){x.save();rr(x,2,2,s-4,s-4,s*.055);x.clip();x.drawImage(master,col*768/pic.cols,row*768/pic.rows,768/pic.cols,768/pic.rows,2,2,s-4,s-4);x.restore();
+      x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=1;rr(x,2.5,2.5,s-5,s-5,s*.055);x.stroke();
+      return {c,avg:samp(col+.5,row+.5)||pic.bg[0]};}
     const sh = makeShards(s, s >= 120 ? 4 : 3, R);
     let avg = [0, 0, 0];
     sh.forEach(q => {
@@ -218,6 +232,16 @@
     g = x.createLinearGradient(0, 728, 0, 764); g.addColorStop(0, "#F3EEE2"); g.addColorStop(1, "#D9D1BF"); x.fillStyle = g; rr(x, 10, 728, W - 20, 34, 14); x.fill();
     x.fillStyle = "rgba(255,255,255,0.6)"; x.fillRect(24, 731, W - 48, 3);
     g = x.createLinearGradient(0, 808, 0, 840); g.addColorStop(0, "rgba(60,40,20,0.35)"); g.addColorStop(1, "rgba(60,40,20,0)"); x.fillStyle = g; x.fillRect(20, 808, W - 40, 32);
+    const scene=Art.get('atelier-bg');if(scene)x.drawImage(scene,0,0,W,H);
+    // The easel and its rails follow each level's actual grid dimensions.
+    const wood=Tex.wood(256,256,'#14585D',{seed:27,vertical:true});
+    x.save();x.shadowColor='rgba(20,38,30,.45)';x.shadowBlur=18;x.shadowOffsetY=12;
+    const rail=(xx,yy,ww,hh)=>{x.fillStyle='#103D43';rr(x,xx,yy,ww,hh,5);x.fill();x.save();rr(x,xx+3,yy+3,ww-6,hh-6,3);x.clip();x.drawImage(wood,xx,yy,ww,hh);x.restore();x.strokeStyle='#7BABA1';x.lineWidth=2;x.strokeRect(xx+4,yy+4,ww-8,hh-8);};
+    rail(lay.gx+lay.gw*.15,lay.gy+lay.gh-5,34,150);rail(lay.gx+lay.gw*.8,lay.gy+lay.gh-5,34,150);
+    rail(lay.gx+lay.gw/2-18,105,36,lay.gh+105);
+    rail(lay.gx-43,lay.gy-43,lay.gw+86,42);rail(lay.gx-43,lay.gy+lay.gh+1,lay.gw+86,42);
+    rail(lay.gx-43,lay.gy-43,42,lay.gh+86);rail(lay.gx+lay.gw+1,lay.gy-43,42,lay.gh+86);
+    x.restore();
     // encaix de la graella: motllura blanca i junta de ciment amb gra
     const recess = (rx, ry, rw, rh, fill) => {
       x.save(); x.shadowColor = "rgba(30,25,15,0.45)"; x.shadowBlur = 16; x.shadowOffsetY = 6; rr(x, rx - 18, ry - 18, rw + 36, rh + 36, 22); x.fillStyle = "#F1EADA"; x.fill(); x.restore();
@@ -229,6 +253,11 @@
       x.strokeStyle = "rgba(40,30,15,0.45)"; x.lineWidth = 6; rr(x, rx - 4, ry - 4, rw + 8, rh + 8, 10); x.stroke(); x.restore();
     };
     recess(lay.gx, lay.gy, lay.gw, lay.gh, "#B9AF9C");
+    const frame=Art.get('atelier-frame');
+    if(frame){
+      const xs=[32,226,1040,1234],ys=[48,226,1018,1187],dx=[lay.gx-56,lay.gx-3,lay.gx+lay.gw+3,lay.gx+lay.gw+56],dy=[lay.gy-56,lay.gy-3,lay.gy+lay.gh+3,lay.gy+lay.gh+56];
+      for(let j=0;j<3;j++)for(let i=0;i<3;i++){if(i===1&&j===1)continue;x.drawImage(frame,xs[i],ys[j],xs[i+1]-xs[i],ys[j+1]-ys[j],dx[i],dy[j],dx[i+1]-dx[i],dy[j+1]-dy[j]);}
+    }
     // plafó lateral: placa de ceràmica crema
     x.save(); x.shadowColor = "rgba(30,25,15,0.45)"; x.shadowBlur = 16; x.shadowOffsetY = 6; rr(x, PX0, PY0, PX1 - PX0, PY1 - PY0, 26); x.fillStyle = "#F4EEDF"; x.fill(); x.restore();
     g = x.createLinearGradient(PX0, PY0, PX1, PY1); g.addColorStop(0, "#FFFDF6"); g.addColorStop(1, "#EAE1CC"); rr(x, PX0, PY0, PX1 - PX0, PY1 - PY0, 26); x.fillStyle = g; x.fill();
@@ -236,6 +265,7 @@
     x.strokeStyle = "rgba(47,111,176,0.45)"; x.lineWidth = 2; rr(x, PX0 + 22, PY0 + 22, PX1 - PX0 - 44, PY1 - PY0 - 44, 12); x.stroke();
     // flors modernistes als cantons del plafó
     for (const [cx, cy] of [[PX0 + 12, PY0 + 12], [PX1 - 12, PY0 + 12], [PX0 + 12, PY1 - 12], [PX1 - 12, PY1 - 12]]) {
+      const ornament=Art.cell('mosaic-masters',5,3,2,80,80);if(ornament){x.drawImage(ornament,cx-14,cy-14,28,28);continue;}
       for (let k = 0; k < 4; k++) { const a = k * 1.571 + 0.785; x.fillStyle = "#3A78C9"; x.beginPath(); x.ellipse(cx + Math.cos(a) * 9, cy + Math.sin(a) * 9, 8, 4.5, a, 0, 6.28); x.fill(); }
       x.fillStyle = "#F2B630"; x.beginPath(); x.arc(cx, cy, 5, 0, 6.28); x.fill();
     }
@@ -258,7 +288,7 @@
   }
 
   Games.register({
-    id: 5, key: "m", name: "Mosaic màgic", zone: "muntanya", music: "guitar", demoTime: 10, missAt: [W - 312, 320],
+    id: 5, key: "m", name: "Mosaic màgic", zone: "muntanya", music: "atelier", demoTime: 10, missAt: [W - 312, 320],
     collect: { one: "mosaic", many: "mosaics" },
     goal: l => l <= 3 ? "Escriu la lletra de la rajola que brilla. Amb les fletxes tries la rajola." : l === 4 ? "Escriu la síl·laba que brilla i esmalta el mosaic." : "Cada fila és una paraula: escriu-la i esmalta el mosaic.",
     thumb(ctx, x, y, w, h, t) {
@@ -316,7 +346,7 @@
         if (best != null) { select(best); Sfx.play("tick"); } else Sfx.play("click0");
       }
       function glaze(i, delay) { const t = tiles[i]; if (t.gd) return; t.gd = 1; t.delay = delay || 0; }
-      function dring(k) { Sfx.play("chime", { note: 84 + [0, 2, 4, 7, 9, 12][k % 6] }); noise({ f: 6200, q: 3, d: 0.05, v: 0.12 }); }
+      function dring(k) { Sfx.play("tile", { note: 72 + [0, 2, 4, 7, 9, 12][k % 6] }); }
       let notes = 0;
       return {
         expected() { if (st.phase !== "play" || sel == null) return null; const g = groups[sel]; return g.text[g.typed]; },
@@ -341,7 +371,7 @@
         },
         update(dt) {
           st.t += dt;
-          const t = api.t; light = [800 + Math.cos(t * 0.31) * 520, 380 + Math.sin(t * 0.23) * 260];
+          const t = Settings.reduceMotion ? 0 : api.t; light = [800 + Math.cos(t * 0.31) * 520, 380 + Math.sin(t * 0.23) * 260];
           if (st.announce > 0) { st.announce -= dt; if (st.announce <= 0 && st.phase === "play") announce(); }
           let glazed = 0;
           tiles.forEach(tl => {
@@ -399,7 +429,7 @@
           ctx.restore();
           // la rajola que toca brilla
           if (lit.size) {
-            const pulse = 0.65 + 0.35 * Math.sin(t * 4), lg = litGlow(s);
+            const pulse = Settings.reduceMotion ? 0.8 : 0.75 + 0.2 * Math.sin(t * 3), lg = litGlow(s);
             lit.forEach(i => { const tl = tiles[i], up = 4 + tl.pop * 6; ctx.save(); ctx.globalAlpha = i === curT ? pulse : 0.45; ctx.drawImage(lg.c, tl.x - s / 2 - 30, tl.y - s / 2 - 30 - up, s + 60, s + 60); ctx.restore(); });
             if (curT >= 0) { const tl = tiles[curT], up = 4 + tl.pop * 6; ctx.lineWidth = 5; ctx.strokeStyle = BRAND.petroli; rr(ctx, tl.x - s / 2 + 2.5, tl.y - s / 2 - up + 2.5, s - 5, s - 5, s * 0.1); ctx.stroke(); }
           }

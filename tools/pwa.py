@@ -3,9 +3,13 @@
 import hashlib, json, os, shutil, subprocess, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "dist", "pwa")
-shutil.rmtree(OUT, ignore_errors=True); os.makedirs(OUT)
+reuse_icons = "--keep-icons" in sys.argv
+if not reuse_icons:
+    shutil.rmtree(OUT, ignore_errors=True)
+os.makedirs(OUT, exist_ok=True)
 subprocess.run([sys.executable, os.path.join(ROOT, "tools", "build.py"), os.path.join(OUT, "index.html")], check=True, env=dict(os.environ, PWA="1"))
-subprocess.run(["node", os.path.join(ROOT, "tools", "icons.js"), os.path.join(OUT, "icones")], check=True)
+if not reuse_icons:
+    subprocess.run(["node", os.path.join(ROOT, "tools", "icons.js"), os.path.join(OUT, "icones")], check=True)
 manifest = {
     "name": "LECAA Tecla", "short_name": "Tecla", "lang": "ca", "dir": "ltr",
     "description": "Juga i descobreix on viu cada lletra del teclat.",

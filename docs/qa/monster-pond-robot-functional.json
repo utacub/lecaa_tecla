@@ -1,0 +1,283 @@
+{
+  "errors": [],
+  "functional": [
+    {
+      "id": 7,
+      "level": 1,
+      "state": "end",
+      "success": true,
+      "hits": 15,
+      "misses": 0,
+      "simulatedSeconds": 35.766666666666666
+    },
+    {
+      "id": 7,
+      "level": 3,
+      "state": "end",
+      "success": true,
+      "hits": 15,
+      "misses": 0,
+      "simulatedSeconds": 27.966666666666665
+    },
+    {
+      "id": 7,
+      "level": 4,
+      "state": "end",
+      "success": true,
+      "hits": 32,
+      "misses": 0,
+      "simulatedSeconds": 22.366666666666667
+    },
+    {
+      "id": 7,
+      "level": 5,
+      "state": "end",
+      "success": true,
+      "hits": 54,
+      "misses": 0,
+      "simulatedSeconds": 39.96666666666667
+    },
+    {
+      "id": 7,
+      "level": 6,
+      "state": "end",
+      "success": true,
+      "hits": 108,
+      "misses": 0,
+      "simulatedSeconds": 34.56666666666667
+    },
+    {
+      "id": 10,
+      "level": 1,
+      "state": "end",
+      "success": true,
+      "hits": 20,
+      "misses": 0,
+      "simulatedSeconds": 22.766666666666666
+    },
+    {
+      "id": 10,
+      "level": 3,
+      "state": "end",
+      "success": true,
+      "hits": 18,
+      "misses": 0,
+      "simulatedSeconds": 22.733333333333334
+    },
+    {
+      "id": 10,
+      "level": 4,
+      "state": "end",
+      "success": true,
+      "hits": 39,
+      "misses": 0,
+      "simulatedSeconds": 22.8
+    },
+    {
+      "id": 10,
+      "level": 5,
+      "state": "end",
+      "success": true,
+      "hits": 82,
+      "misses": 0,
+      "simulatedSeconds": 22.766666666666666
+    },
+    {
+      "id": 10,
+      "level": 6,
+      "state": "end",
+      "success": true,
+      "hits": 130,
+      "misses": 0,
+      "simulatedSeconds": 32.733333333333334
+    },
+    {
+      "id": 23,
+      "level": 1,
+      "state": "end",
+      "success": true,
+      "hits": 22,
+      "misses": 0,
+      "simulatedSeconds": 58.166666666666664
+    },
+    {
+      "id": 23,
+      "level": 3,
+      "state": "end",
+      "success": true,
+      "hits": 22,
+      "misses": 0,
+      "simulatedSeconds": 58.166666666666664
+    },
+    {
+      "id": 23,
+      "level": 4,
+      "state": "end",
+      "success": true,
+      "hits": 40,
+      "misses": 0,
+      "simulatedSeconds": 48.333333333333336
+    },
+    {
+      "id": 23,
+      "level": 5,
+      "state": "end",
+      "success": true,
+      "hits": 74,
+      "misses": 0,
+      "simulatedSeconds": 47.666666666666664
+    },
+    {
+      "id": 23,
+      "level": 6,
+      "state": "end",
+      "success": true,
+      "hits": 141,
+      "misses": 0,
+      "simulatedSeconds": 52.36666666666667
+    }
+  ],
+  "viewport": [
+    {
+      "width": 1366,
+      "height": 768,
+      "reduce": false,
+      "canvas": [
+        1366,
+        768
+      ],
+      "scale": 0.8533333333333334,
+      "art": 5
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "reduce": true,
+      "canvas": [
+        1024,
+        768
+      ],
+      "scale": 0.64,
+      "art": 5
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "reduce": false,
+      "canvas": [
+        768,
+        1024
+      ],
+      "scale": 0.48,
+      "art": 5
+    }
+  ],
+  "errorRecovery": {
+    "halted": true,
+    "resumedAfterError": true,
+    "paused": true,
+    "resumedAfterPause": true
+  },
+  "smoke": [
+    {
+      "id": 1,
+      "ok": true
+    },
+    {
+      "id": 2,
+      "ok": true
+    },
+    {
+      "id": 3,
+      "ok": true
+    },
+    {
+      "id": 4,
+      "ok": true
+    },
+    {
+      "id": 5,
+      "ok": true
+    },
+    {
+      "id": 6,
+      "ok": true
+    },
+    {
+      "id": 7,
+      "ok": true
+    },
+    {
+      "id": 8,
+      "ok": true
+    },
+    {
+      "id": 9,
+      "ok": true
+    },
+    {
+      "id": 10,
+      "ok": true
+    },
+    {
+      "id": 11,
+      "ok": true
+    },
+    {
+      "id": 12,
+      "ok": true
+    },
+    {
+      "id": 13,
+      "ok": true
+    },
+    {
+      "id": 14,
+      "ok": true
+    },
+    {
+      "id": 15,
+      "ok": true
+    },
+    {
+      "id": 16,
+      "ok": true
+    },
+    {
+      "id": 17,
+      "ok": true
+    },
+    {
+      "id": 18,
+      "ok": true
+    },
+    {
+      "id": 19,
+      "ok": true
+    },
+    {
+      "id": 20,
+      "ok": true
+    },
+    {
+      "id": 21,
+      "ok": true
+    },
+    {
+      "id": 22,
+      "ok": true
+    },
+    {
+      "id": 23,
+      "ok": true
+    },
+    {
+      "id": 24,
+      "ok": true
+    },
+    {
+      "id": 25,
+      "ok": true
+    }
+  ]
+}

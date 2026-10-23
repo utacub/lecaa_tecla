@@ -249,6 +249,16 @@
   function bottomLayer(pk) {
     const P = PONDS[pk];
     return bake("g10bot_" + pk, W, H, x => {
+      const painted = Art.get("g10_water");
+      if (painted) {
+        x.drawImage(painted, 0, 0, W, H);
+        // Una mateixa aquarel·la amb veladures pròpies per hàbitat.
+        x.fillStyle = rgba(P.water, pk === "fons" ? 0.42 : 0.16); x.fillRect(0, 0, W, H);
+        const depth = x.createRadialGradient(W * 0.48, H * 0.44, 60, W * 0.5, H * 0.5, 900);
+        depth.addColorStop(0, rgba(P.deep, pk === "fons" ? 0.42 : 0.12)); depth.addColorStop(1, "rgba(20,58,66,0.08)");
+        x.fillStyle = depth; x.fillRect(0, 0, W, H);
+        return;
+      }
       const R = mulberry32(pk.length * 19 + 1);
       x.fillStyle = P.bottom; x.fillRect(0, 0, W, H);
       x.globalCompositeOperation = "multiply"; x.globalAlpha = 0.7; x.fillStyle = x.createPattern(Tex.paper(256, 256, "#d8d0c0", { seed: 61, fiber: 2 }), "repeat"); x.globalAlpha = 0.3; x.fillStyle = x.createPattern(paperTile(), "repeat"); x.fillRect(0, 0, W, H);
@@ -347,8 +357,10 @@
     collect: { one: "peix", many: "peixos" },
     goal: l => l <= 3 ? "Escriu la lletra d'un peix per llançar-li l'ham. Omple l'aquari amb 12 espècies." : l === 4 ? "Escriu la síl·laba d'un peix per pescar-lo. Omple l'aquari amb 12 espècies." : l === 5 ? "Escriu la paraula del peix gros per pescar-lo. Omple l'aquari amb 12 espècies." : "Escriu el nom de cada espècie per pescar-la. Omple l'aquari amb 12 espècies.",
     thumb(ctx, x, y, w, h, t) {
+      if (Settings.reduceMotion) t = 0;
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.translate(x, y);
       const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, "#5EA8A0"); g.addColorStop(1, "#2F6A70"); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      if (Art.get("g10_water")) ctx.drawImage(Art.get("g10_water"), 0, 0, w, h);
       const s = Math.max(w / 320, h / 220); ctx.translate(w / 2, h / 2); ctx.scale(s, s);
       ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = 0.25; ctx.fillStyle = ctx.createPattern(causticTile(), "repeat"); ctx.translate(t * 8, t * 5); ctx.fillRect(-400 - t * 8, -300 - t * 5, 800, 600); ctx.restore();
       ctx.fillStyle = "#4E8E3E"; ctx.beginPath(); ctx.moveTo(-120, -60); ctx.arc(-120, -60, 30, 0.4, 6); ctx.closePath(); ctx.fill();
@@ -482,12 +494,12 @@
           fishes.forEach(f => { const wag = Math.sin(f.t * (f.hooked ? 14 : 5) + f.ph) * (f.hooked ? 0.35 : 0.22) + f.tug * Math.sin(f.t * 30) * 0.3; if (f.sp.shape !== "horse") drawTop(ctx, f.sp, f.x + 16, f.y + 22, f.s, Math.sign(f.face) || 1, wag, { shadow: true, alpha: 0.5 }); });
           // càustiques i flux del riu
           ctx.save(); ctx.globalCompositeOperation = "lighter";
-          const flow = P.flow ? t * 30 : 0, ct = causticTile();
+          const waterTime = Settings.reduceMotion ? 0 : t, flow = P.flow ? waterTime * 30 : 0, ct = causticTile();
           const c1 = ctx.createPattern(ct, "repeat"), c2 = ctx.createPattern(ct, "repeat");
-          c1.setTransform(new DOMMatrix().translate(t * 9 + flow, t * 5));
-          c2.setTransform(new DOMMatrix().translate(-t * 7 + flow * 0.8 + 140, t * 8 + 60).scale(1.4));
-          ctx.globalAlpha = 0.12; ctx.fillStyle = c1; ctx.fillRect(0, 0, W, H);
-          ctx.globalAlpha = 0.08; ctx.fillStyle = c2; ctx.fillRect(0, 0, W, H);
+          c1.setTransform(new DOMMatrix().translate(waterTime * 9 + flow, waterTime * 5));
+          c2.setTransform(new DOMMatrix().translate(-waterTime * 7 + flow * 0.8 + 140, waterTime * 8 + 60).scale(1.4));
+          ctx.globalAlpha = 0.07; ctx.fillStyle = c1; ctx.fillRect(0, 0, W, H);
+          ctx.globalAlpha = 0.04; ctx.fillStyle = c2; ctx.fillRect(0, 0, W, H);
           ctx.restore();
           fishes.forEach(f => {
             const wag = Math.sin(f.t * (f.hooked ? 14 : 5) + f.ph) * (f.hooked ? 0.35 : 0.22) + f.tug * Math.sin(f.t * 30) * 0.3;

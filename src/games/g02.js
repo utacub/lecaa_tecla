@@ -44,11 +44,19 @@
       const ch = at(i, j);
       if (ch === ".") { if (at(i - 1, j) !== "." || at(i + 1, j) !== "." || at(i, j - 1) !== "." || at(i, j + 1) !== ".") { x.fillStyle = OUT; x.fillRect((i + 1) * px, (j + 1) * px, px, px); } continue; }
       x.fillStyle = cmap[ch] || "#f0f"; x.fillRect((i + 1) * px, (j + 1) * px, px, px);
+      // Cantells de píxels sencers; sense suavitzar la silueta.
+      if (ch === 'a' || ch === 'b' || ch === 'd') {
+        if (at(i, j - 1) === '.') { x.fillStyle = cmap.c || P[7]; x.fillRect((i + 1) * px, (j + 1) * px, px, Math.max(1, Math.floor(px / 3))); }
+        if (at(i, j + 1) === '.') { x.fillStyle = OUT; x.fillRect((i + 1) * px, (j + 2) * px - 2, px, 2); }
+      }
     }
     return cache[key] = c;
   }
   const cmapOf = sp => ({ a: sp.a, b: sp.b, c: sp.c, e: P[7], k: P[1], p: P[14], d: P[12], g: P[7], l: P[10] });
   function shipSprite(kind, spi, frame) {
+    const idx=kind==='ship'?[0,2,1,3,0,2][spi%6]:4;
+    const w=kind==='giant'?410:kind==='mother'?250:190,h=kind==='giant'?250:kind==='mother'?160:150;
+    const art=Art.cell('orbital-sprites',idx,3,2,w,h);if(art)return art;
     const sp = SPECIES[spi % SPECIES.length];
     if (kind === "mother" || kind === "giant") {
       const giant = kind === "giant", w = giant ? 33 : 23;
@@ -59,9 +67,13 @@
     return pixelCanvas(`s${spi}_${frame}`, sh.body.concat(sh.legs[frame]), cmapOf(sp), PX);
   }
   const CANNON = ["......ccc......", "......cac......", ".....aaaaa.....", "..aaaaaaaaaaa..", ".aacaaaaaaacaa.", "aaaaaaaaaaaaaaa", "abbbbbbbbbbbbba", ".b.b.b...b.b.b."];
-  const cannonSprite = () => pixelCanvas("cannon", CANNON, { a: P[12], b: P[1], c: P[7] }, 8);
+  const cannonSprite = () => Art.cell("orbital-sprites",5,3,2,200,166) || pixelCanvas("cannon", CANNON, { a: P[12], b: P[1], c: P[7] }, 8);
   const BOLT = [["..a..", ".aba.", "abcba", ".aba.", "..a.."], [".a.a.", "aabaa", ".bcb.", "aabaa", ".a.a."]];
-  const boltSprite = f => pixelCanvas("bolt" + f, BOLT[f], { a: P[9], b: P[10], c: P[7] }, 7);
+  const boltSprite = f => {
+    const key='plasma'+f;if(cache[key])return cache[key];const c=makeCanvas(54,54),x=c.getContext('2d');
+    const g=x.createRadialGradient(23,20,2,27,27,25);g.addColorStop(0,'#fffbe5');g.addColorStop(.2,'#ffe48b');g.addColorStop(.55,'#ff9439');g.addColorStop(1,'rgba(255,89,40,0)');x.fillStyle=g;x.fillRect(0,0,54,54);
+    x.strokeStyle='#ffecc5';x.lineWidth=2;x.beginPath();x.ellipse(27,27,16,9,f*.8-.4,0,7);x.stroke();return cache[key]=c;
+  };
   const BUNKER = ["...aaaaaaaa...", "..aaaaaaaaaa..", ".aaaaaaaaaaaa.", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aaaa......aaaa", "aaa........aaa"];
 
   /* ---------- fons: nebulosa amb tramat ordenat + planeta + capes d'estrelles ---------- */
@@ -112,7 +124,7 @@
   function crtOverlay() {
     if (cache.crt) return cache.crt;
     const c = makeCanvas(W, H), x = c.getContext("2d");
-    x.fillStyle = "rgba(0,0,0,0.22)"; for (let y = 0; y < H; y += 4) x.fillRect(0, y + 2, W, 2);
+    x.fillStyle = "rgba(0,0,0,0.10)"; for (let y = 0; y < H; y += 4) x.fillRect(0, y + 2, W, 2);
     // curvatura: cantonades fosques i un reflex de vidre molt suau
     const g = x.createRadialGradient(W / 2, H / 2, H * 0.42, W / 2, H / 2, W * 0.66); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.75, "rgba(0,0,0,0.25)"); g.addColorStop(1, "rgba(0,0,0,0.75)");
     x.fillStyle = g; x.fillRect(0, 0, W, H);
@@ -120,13 +132,23 @@
     return cache.crt = c;
   }
   function drawSpace(ctx, t, scroll) {
-    ctx.save(); ctx.imageSmoothingEnabled = false;
+    const im=Art.get('orbital-bg');if(im){ctx.drawImage(im,0,0,W,H);
+      // Tiny beacons breathe while the station and landing deck remain stable.
+      ctx.save();ctx.globalAlpha=Settings.reduceMotion?.4:.25+.15*Math.sin(t*1.5);ctx.fillStyle='#8deaff';
+      for(let i=0;i<12;i++){ctx.beginPath();ctx.arc(120+i*123,790+(i%2)*8,2,0,7);ctx.fill();}ctx.restore();return;}
+    ctx.save(); ctx.imageSmoothingEnabled = true;
     ctx.drawImage(nebulaCanvas(), 0, 0, W, H);
+    ctx.fillStyle = 'rgba(4,8,25,0.42)'; ctx.fillRect(0, 0, W, H);
+    if (Settings.reduceMotion) scroll = 0;
     const layers = [[starLayer(11, 200, [P[5], P[13], P[1]]), 5], [starLayer(23, 90, [P[6], P[13], P[12]]), 13], [starLayer(37, 34, [P[7], P[15], P[10]], true), 30]];
     layers.forEach(([c, sp], li) => {
-      const off = Math.floor(((scroll * sp) % H) / LS) * LS; ctx.drawImage(c, 0, off, W, H); ctx.drawImage(c, 0, off - H, W, H);
-      if (li === 0) { const py = Math.floor((520 + scroll * 2) % (H + 400) / LS) * LS - 200; ctx.drawImage(planetCanvas(), 1180, py, 90 * LS, 60 * LS); }
+      const off = Math.floor(((scroll * sp) % H) / LS) * LS; ctx.globalAlpha = [0.35, 0.55, 0.75][li]; ctx.drawImage(c, 0, off, W, H); ctx.drawImage(c, 0, off - H, W, H);
+      if (li === 0) { const py = Math.floor((520 + scroll * 2) % (H + 400) / LS) * LS - 200; ctx.globalAlpha = 0.38; ctx.drawImage(planetCanvas(), 1260, py, 72 * LS, 48 * LS); }
     });
+    ctx.globalAlpha = 1;
+    // Plataforma lunar al marge inferior, fora de les plaques de lectura.
+    for (let k = 0; k < 80; k++) { const yy = 870 + Math.round((Math.sin(k * 0.43) + Math.cos(k * 0.19)) * 4) * 3;
+      ctx.fillStyle = P[1]; ctx.fillRect(k * 20, yy, 20, H - yy); ctx.fillStyle = P[13]; ctx.fillRect(k * 20, yy, 20, 3); }
     ctx.restore();
   }
   const blit = (ctx, c, x, y, s = 1) => ctx.drawImage(c, Math.round(x - c.width * s / 2), Math.round(y - c.height * s / 2), c.width * s, c.height * s);
@@ -145,23 +167,24 @@
   const GIANT6 = ["la lluna surt", "som astronautes", "adéu estrelles", "bon viatge", "la nau gegant"];
 
   Games.register({
-    id: 2, key: "i", name: "Invasors de l'alfabet", zone: "espai", music: "chip",
+    id: 2, key: "i", name: "Invasors de l'alfabet", zone: "espai", music: "arcade",
     collect: { one: "insígnia de pilot", many: "insígnies de pilot" },
     goal: l => l <= 3 ? "Prem la lletra de cada nau per disparar-hi. Neteja 5 onades sense perdre les 3 vides." : l === 4 ? "Escriu la síl·laba de cada nau nodrissa. Neteja 5 onades sense perdre les 3 vides." : "Escriu la paraula de cada nau. A l'última onada arriba una nau gegant!",
     missAt: [800, 560], captionY: 470,
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.translate(x, y);
       const s = Math.max(w / 460, h / 250); ctx.translate(w / 2, h / 2); ctx.scale(s, s); ctx.translate(-230, -125);
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(nebulaCanvas(), 0, 0, LW, LH, -20, -10, 500, 280);
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(Art.get("orbital-bg") || nebulaCanvas(), -20, -10, 500, 280);
+      ctx.fillStyle = 'rgba(4,8,25,0.42)'; ctx.fillRect(-20,-10,500,280);
       ctx.drawImage(starLayer(37, 34, [P[7], P[15], P[10]], true), 0, 0, LW / 2, LH / 2, -20, -10, 500, 280);
-      const f = Math.floor(t * 3) % 2;
+      if (Settings.reduceMotion) t = 0; const f = Math.floor(t * 2) % 2;
       ctx.save(); ctx.globalCompositeOperation = "lighter"; const lg = ctx.createLinearGradient(0, 0, 0, 220); lg.addColorStop(0, "rgba(41,173,255,0.1)"); lg.addColorStop(1, "rgba(41,173,255,0.75)"); ctx.fillStyle = lg; ctx.fillRect(225, 92, 10, 120); ctx.fillStyle = "rgba(255,241,232,0.9)"; ctx.fillRect(228, 92, 4, 120); ctx.restore();
       blit(ctx, shipSprite("ship", 1, f), 108, 70 + Math.sin(t * 2) * 3, 0.85);
       blit(ctx, shipSprite("ship", 0, 1 - f), 230, 52 + Math.sin(t * 2 + 1) * 3, 1.05);
       blit(ctx, shipSprite("ship", 2, f), 352, 70 + Math.sin(t * 2 + 2) * 3, 0.85);
       blit(ctx, cannonSprite(), 230, 222, 1);
-      ctx.drawImage(crtOverlay(), 0, 0, W, H, 0, 0, 460, 260);
+      
       drawPlate(ctx, "i", 230, 128, { size: 64, border: P[14], borderW: 4, shadowBlur: 6 });
       ctx.restore();
     },
@@ -209,7 +232,7 @@
         rows.forEach((cnt, ri) => {
           for (let i = 0; i < cnt; i++) {
             const text = items[k++], ox = (i - (cnt - 1) / 2) * spacing + (ri ? spacing / 2 * (rows[0] === cnt ? 1 : 0) : 0);
-            ships.push({ text, kind, spi: spis[k % 6], ox, oy: ri * 170, x: W / 2 + ox, y: -120, enterT: -(k * 0.12), ph: rand(0, 6.28), size: giant ? (L === 5 ? 56 : 52) : cfg.size });
+            ships.push({ text, kind, spi: spis[k % 6], ox, oy: ri * 230, x: W / 2 + ox, y: -120, enterT: -(k * 0.12), ph: rand(0, 6.28), size: giant ? (L === 5 ? 56 : 52) : cfg.size });
           }
         });
         st.fx = 0; st.fy = giant ? 170 : 160; st.dir = Math.random() < 0.5 ? -1 : 1; st.fireT = cfg.fire * 0.6;
@@ -223,10 +246,10 @@
         if (st.lives <= 0 && !st.over) { st.over = true; st.phase = "over"; st.t = 0; banner = { text: "Fi de la partida", sub: "Les naus han arribat a baix", t: 0 }; }
       }
       function setMusic() {
-        if (Music.styleName !== "chip" || !Music.STYLES.chip) return;
+        if (Music.styleName !== "arcade" || !Music.STYLES.arcade) return;
         let low = 0; for (const s of ships) if (!s.dead) low = Math.max(low, clamp((plateY(s) - 250) / (LIMIT_Y - 250), 0, 1));
         const bpm = Math.round(132 + low * 42);
-        if (!Music.style || Music.style.bpm !== bpm) Music.style = Object.assign({}, Music.STYLES.chip, { bpm });
+        if (!Music.style || Music.style.bpm !== bpm) Music.style = Object.assign({}, Music.STYLES.arcade, { bpm });
       }
       api.hud.lives = [3, 3]; api.hud.progress = [0, WAVES]; api.hud.label = "Onada 1";
       return {
@@ -301,13 +324,20 @@
           setMusic();
         },
         draw(ctx) {
-          const t = api.t, f = Math.floor((st.scroll) * 3.2) % 2;
+          const t = api.t, f = Settings.reduceMotion ? 0 : Math.floor((st.scroll) * 2) % 2;
           drawSpace(ctx, t, st.scroll);
-          ctx.save(); ctx.imageSmoothingEnabled = false;
+          ctx.save(); ctx.imageSmoothingEnabled = true;
           // escuts
           shields.forEach(sh => {
-            if (sh.dirty) { const rows = sh.cells.map((r, j) => r.map(v => v ? (j === 0 ? "c" : j >= 6 ? "b" : "a") : ".").join("")); delete cache["sh" + sh.x]; sh.c = pixelCanvas("sh" + sh.x, rows.some(r => /[abc]/.test(r)) ? rows : ["."], { a: P[11], b: P[3], c: "#B8FFC6" }, SPX); sh.dirty = false; }
-            ctx.drawImage(sh.c, Math.round(sh.x - 49 - SPX), SHIELD_Y - SPX);
+            const alive=sh.cells.flat().reduce((a,b)=>a+b,0)/BUNKER.join('').split('').filter(c=>c==='a').length;
+            ctx.save();ctx.translate(sh.x,SHIELD_Y+28);
+            const base=ctx.createLinearGradient(0,12,0,50);base.addColorStop(0,'#8babb9');base.addColorStop(.3,'#324956');base.addColorStop(1,'#122530');
+            ctx.fillStyle=base;rr(ctx,-78,13,156,35,10);ctx.fill();ctx.fillStyle='#ffba65';rr(ctx,-23,31,46,5,2);ctx.fill();
+            if(alive>0){ctx.globalAlpha=.3+.65*alive;ctx.shadowColor='#59edff';ctx.shadowBlur=15;ctx.strokeStyle='#a4f7ff';ctx.lineWidth=3;
+              ctx.beginPath();ctx.moveTo(-52,18);ctx.lineTo(-52,-8);ctx.bezierCurveTo(-52,-58,52,-58,52,-8);ctx.lineTo(52,18);ctx.closePath();
+              ctx.fillStyle='rgba(40,210,240,.22)';ctx.fill();ctx.stroke();ctx.clip();ctx.shadowBlur=0;ctx.lineWidth=.9;
+              for(let yy=-50;yy<20;yy+=15)for(let xx=-60;xx<65;xx+=18){ctx.beginPath();for(let k=0;k<6;k++){const an=k*Math.PI/3;ctx.lineTo(xx+(yy%30?9:0)+Math.cos(an)*10,yy+Math.sin(an)*10);}ctx.closePath();ctx.stroke();}
+            }ctx.restore();
           });
           // naus
           ships.forEach(s => { if (s.dead && s.landed) return; const c = shipSprite(s.kind, s.spi, (f + (s.spi & 1)) % 2); blit(ctx, c, s.x, s.y); });
@@ -334,7 +364,7 @@
           rings.forEach(r => { const k = r.t / 0.45, rad = r.r * Ease.outCubic(k); ctx.fillStyle = rgba(r.col.startsWith("#") ? r.col : "#FFFFFF", 0.8 * (1 - k)); for (let a = 0; a < 16; a++) { const an = a / 16 * 6.283; ctx.fillRect(Math.round(r.x + Math.cos(an) * rad - 5), Math.round(r.y + Math.sin(an) * rad - 5), 10, 10); } });
           ctx.restore();
           // efecte de pantalla antiga només sobre el fons i les naus
-          ctx.drawImage(crtOverlay(), 0, 0);
+          
           // línia de perill
           ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = P[8]; for (let x = 20; x < W - 20; x += 28) ctx.fillRect(x, LIMIT_Y + 2, 14, 4); ctx.restore();
           // plaques (planes i nítides, per sobre de tot)

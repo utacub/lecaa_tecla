@@ -1,0 +1,309 @@
+{
+  "upgrade": {
+    "sentinel": "preserved",
+    "scope": "http://127.0.0.1:61752/lecaa_tecla/sw.js"
+  },
+  "offline": {
+    "resources": 34,
+    "missing": [],
+    "caches": [
+      "lecaa-docs-release-sentinel",
+      "lecaa-tecla-7da6d5444c"
+    ],
+    "games": [
+      {
+        "id": 1,
+        "ok": true
+      },
+      {
+        "id": 2,
+        "ok": true
+      },
+      {
+        "id": 3,
+        "ok": true
+      },
+      {
+        "id": 4,
+        "ok": true
+      },
+      {
+        "id": 5,
+        "ok": true
+      },
+      {
+        "id": 6,
+        "ok": true
+      },
+      {
+        "id": 7,
+        "ok": true
+      },
+      {
+        "id": 8,
+        "ok": true
+      },
+      {
+        "id": 9,
+        "ok": true
+      },
+      {
+        "id": 10,
+        "ok": true
+      },
+      {
+        "id": 11,
+        "ok": true
+      },
+      {
+        "id": 12,
+        "ok": true
+      },
+      {
+        "id": 13,
+        "ok": true
+      },
+      {
+        "id": 14,
+        "ok": true
+      },
+      {
+        "id": 15,
+        "ok": true
+      },
+      {
+        "id": 16,
+        "ok": true
+      },
+      {
+        "id": 17,
+        "ok": true
+      },
+      {
+        "id": 18,
+        "ok": true
+      },
+      {
+        "id": 19,
+        "ok": true
+      },
+      {
+        "id": 20,
+        "ok": true
+      },
+      {
+        "id": 21,
+        "ok": true
+      },
+      {
+        "id": 22,
+        "ok": true
+      },
+      {
+        "id": 23,
+        "ok": true
+      },
+      {
+        "id": 24,
+        "ok": true
+      },
+      {
+        "id": 25,
+        "ok": true
+      }
+    ],
+    "cars": true
+  },
+  "views": [
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 1,
+      "ok": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 2,
+      "ok": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 3,
+      "ok": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 4,
+      "ok": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 5,
+      "ok": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 7,
+      "ok": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 10,
+      "ok": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "id": 23,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 1,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 2,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 3,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 4,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 5,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 7,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 10,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "id": 23,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 1,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 2,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 3,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 4,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 5,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 7,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 10,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "id": 23,
+      "ok": true
+    }
+  ],
+  "manifest": {
+    "name": "LECAA Tecla",
+    "short_name": "Tecla",
+    "lang": "ca",
+    "dir": "ltr",
+    "description": "Juga i descobreix on viu cada lletra del teclat.",
+    "id": "/lecaa_tecla/",
+    "start_url": "/lecaa_tecla/",
+    "scope": "/lecaa_tecla/",
+    "display": "fullscreen",
+    "display_override": [
+      "fullscreen",
+      "standalone"
+    ],
+    "orientation": "landscape",
+    "background_color": "#203E42",
+    "theme_color": "#17676B",
+    "categories": [
+      "education",
+      "games",
+      "kids"
+    ],
+    "icons": [
+      {
+        "src": "icones/icona-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "icones/icona-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "icones/icona-maskable-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+      }
+    ]
+  },
+  "browser": "155.0.8059.85",
+  "errors": [],
+  "passed": true
+}

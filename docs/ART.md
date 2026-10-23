@@ -60,3 +60,8 @@ Per game (material family → look):
   flat plate in the centre; perle cotton threads with volume and sheen.
 - 25 Carter (paper pop-up): pop-up book; the street of small colourful houses rises from the page; postman 2.5D on a
   bike; envelopes fly with a paper curve, the mailbox closes with a clack, the neighbour appears at the window.
+
+
+## Implemented redesign, 23 October 2026
+
+The current artwork for games 1–5 supersedes the earlier pixel/neon production descriptions above: pop-up paper album, enamel orbital base, crystal exploration, tabletop toy race, and Mediterranean ceramic studio. Games 7, 10 and 23 add clay, watercolour and tin-robot assets. Letters remain separate Canvas text; reduced-motion settings and game mechanics remain in place. Race cars use 16 headings at 22.5-degree intervals. Optimized WebP resources live in assets/art and are embedded by tools/build.py.

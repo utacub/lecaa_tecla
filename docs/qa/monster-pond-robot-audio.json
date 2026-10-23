@@ -1,0 +1,36 @@
+{
+  "lifecycle": {
+    "stopped": true,
+    "restarted": true,
+    "overlap": true,
+    "restored": true,
+    "cancelledBeforeStart": true,
+    "voicesReleased": true,
+    "captionCleared": true
+  },
+  "styles": [
+    {
+      "name": "marimba",
+      "peak": 0.055541135370731354,
+      "rms": 0.0052233417502335795,
+      "invalid": 0,
+      "rate": 44100
+    },
+    {
+      "name": "guitar",
+      "peak": 0.04144631326198578,
+      "rms": 0.003607772967321552,
+      "invalid": 0,
+      "rate": 44100
+    },
+    {
+      "name": "funk",
+      "peak": 0.04837128147482872,
+      "rms": 0.004132674291983448,
+      "invalid": 0,
+      "rate": 44100
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

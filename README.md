@@ -4,6 +4,9 @@ Joc lliure per descobrir on viu cada lletra al teclat, a través de 25 minijocs,
 
 ## Com fer-lo servir
 
+La versió actual es publica a https://utacub.github.io/lecaa_tecla/. El fitxer autònom es pot descarregar a https://utacub.github.io/lecaa_tecla/LECAA-Tecla.html. GitHub Pages genera l’HTML i la PWA des del codi font en cada publicació; aquests HTML i el service worker no es versionen. Els camins `dist/` de sota es creen en executar el muntatge local.
+
+
 - **Fitxer únic:** obre `dist/LECAA-Tecla.html` amb el navegador. Funciona sense connexió.
 - **Versió instal·lable (PWA):** la carpeta `dist/pwa/` s'ha de servir per HTTPS; aleshores el navegador permet instal·lar-la.
 
@@ -51,3 +54,10 @@ Les veus del navegador (síntesi de parla del sistema) no formen part de l'app: 
 ### Referència
 
 Taulé, M., Martí, M. A., i Recasens, M. (2008). AnCora: Multilevel annotated corpora for Catalan and Spanish. A *Proceedings of the Sixth International Conference on Language Resources and Evaluation (LREC'08)* (pp. 96–101). European Language Resources Association.
+
+
+## Actualització artística del 23 d’octubre de 2026
+
+Integrats els redissenys d’Àlbum de cromos, Invasors, Asteroides, Curses i Mosaic, i les millores de Monstre golafre, Pesca a l’estany i Robot ballarí. Inclou decorats i objectes independents, animacions, miniatures, timbres musicals i mescla amb atenuació de música durant les locucions. Els cotxes disposen de 16 orientacions cada 22,5 graus. Els recursos de joc s’incrusten a l’HTML i també formen part de la PWA.
+
+Per generar les icones, `tools/icons.js` requereix Playwright i un navegador Chromium. Es pot indicar-ne l’executable amb `LECAA_CHROMIUM`. Les proves tècniques són als scripts `tools/qa-*.cjs`; els límits de validació consten a `docs/RELEASE-2026-10-23.md`.
