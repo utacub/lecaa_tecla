@@ -1,0 +1,220 @@
+[
+  {
+    "level": 1,
+    "reduced": false,
+    "finished": true,
+    "keys": 20,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": [
+      "out-start",
+      "out-mid",
+      "out-end",
+      "between",
+      "in-mid",
+      "in-end"
+    ]
+  },
+  {
+    "level": 2,
+    "reduced": false,
+    "finished": true,
+    "keys": 20,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 3,
+    "reduced": false,
+    "finished": true,
+    "keys": 20,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 4,
+    "reduced": false,
+    "finished": true,
+    "keys": 40,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 5,
+    "reduced": false,
+    "finished": true,
+    "keys": 52,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 6,
+    "reduced": false,
+    "finished": true,
+    "keys": 122,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 1,
+    "reduced": true,
+    "finished": true,
+    "keys": 20,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": [
+      "out-start",
+      "out-mid",
+      "out-end",
+      "between",
+      "in-mid",
+      "in-end"
+    ]
+  },
+  {
+    "level": 2,
+    "reduced": true,
+    "finished": true,
+    "keys": 20,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 3,
+    "reduced": true,
+    "finished": true,
+    "keys": 20,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 4,
+    "reduced": true,
+    "finished": true,
+    "keys": 40,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 5,
+    "reduced": true,
+    "finished": true,
+    "keys": 52,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  },
+  {
+    "level": 6,
+    "reduced": true,
+    "finished": true,
+    "keys": 122,
+    "turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "progress": [
+      5,
+      5
+    ],
+    "shots": []
+  }
+]

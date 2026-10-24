@@ -13,6 +13,7 @@
   const ROOF_COLS = ["#C8553D", "#8A5A3B", "#3E7CC0", "#5E8F3A", "#B8442A"];
   const BOX_COLS = ["#D9443A", "#3E7CC0", "#E8963A", "#3FA34D"];
   const NEIGH = ["gat", "gos", "conill", "guineu", "mussol", "os", "esquirol", "granota", "ovella", "porc", "mico", "lleo", "erico", "anec", "cabra", "marieta", "pollet", "vaca"];
+  const WINDOWS = [[374,202,89,106],[893,202,86,109],[371,800,94,104],[895,784,91,111]];
   const BASE = 652, ENV = [930, 718];
 
   /* ---------- fons: taula, llibre obert ---------- */
@@ -20,6 +21,7 @@
   function buildBg() {
     if (BG) return BG;
     const c = makeCanvas(W, H), x = c.getContext("2d");
+    if(Art.get('g25-book')){x.drawImage(Art.get('g25-book'),0,0,W,H);BG=c;return c;}
     x.drawImage(Tex.wood(W, H, "#B9895A", { seed: 25 }), 0, 0);
     // tapes del llibre
     const cover = [[70, 586], [1530, 586], [1590, 900], [10, 900]];
@@ -63,6 +65,8 @@
   /* casa de paper desplegable */
   function houseSprite(kind, col, roof, w, h) {
     return Sprites.get(`c25h${kind}${col}${roof}${w}x${h}`, w + 40, h + 130, (x) => {
+      const art=Art.get('g25-houses'),box=Art.rects['g25-houses'][kind];
+      if(art){x.drawImage(art,...box,0,0,w+40,h+130);return;}
       const ox = 20, top = 130, by = top + h;
       const body = c => { c.beginPath(); c.rect(ox, top, w, h); };
       Mat.paperCut(x, body, col, { depth: 7, seed: w });
@@ -95,6 +99,9 @@
   function mailbox(col) {
     return Sprites.get("c25mb" + col, 92, 84, (x) => {
       Mat.paperCut(x, c => { c.beginPath(); c.moveTo(10, 78); c.lineTo(10, 30); c.arc(46, 30, 36, Math.PI, 0); c.lineTo(82, 78); c.closePath(); }, col, { depth: 4, seed: 4 });
+      const enamel=x.createLinearGradient(10,0,82,0);enamel.addColorStop(0,'rgba(0,0,0,.28)');enamel.addColorStop(.33,'rgba(255,255,255,.3)');enamel.addColorStop(1,'rgba(0,0,0,.12)');
+      x.fillStyle=enamel;x.beginPath();x.moveTo(10,78);x.lineTo(10,30);x.arc(46,30,36,Math.PI,0);x.lineTo(82,78);x.closePath();x.fill();
+      x.strokeStyle='#dcb974';x.lineWidth=2.5;x.stroke();
       x.fillStyle = "rgba(0,0,0,0.55)"; rr(x, 24, 34, 44, 8, 4); x.fill();
       x.fillStyle = "rgba(255,255,255,0.85)"; x.font = `900 15px ${FONT_T}`; x.textAlign = "center"; x.fillText("CORREU", 46, 66);
     });
@@ -102,6 +109,8 @@
   /* carter amb bicicleta (de cara a la dreta) */
   function postman() {
     return Sprites.get("c25post", 300, 260, (x) => {
+      const art=Art.get('g25-postman');
+      if(art){x.drawImage(art,263,12,1025,984,15,0,270,260);return;}
       const pc = (pf, col, d = 4) => Mat.paperCut(x, pf, col, { depth: d, seed: 12 });
       for (const wx of [70, 232]) { x.lineWidth = 9; x.strokeStyle = "#2A2A30"; x.beginPath(); x.arc(wx, 208, 44, 0, 6.28); x.stroke(); x.lineWidth = 2; x.strokeStyle = "#9AA0A8"; for (let k = 0; k < 8; k++) { const a = k / 8 * 6.283; x.beginPath(); x.moveTo(wx, 208); x.lineTo(wx + Math.cos(a) * 40, 208 + Math.sin(a) * 40); x.stroke(); } x.fillStyle = "#555"; x.beginPath(); x.arc(wx, 208, 6, 0, 6.28); x.fill(); }
       x.strokeStyle = "#D9443A"; x.lineWidth = 8; x.lineCap = "round"; x.lineJoin = "round";
@@ -139,15 +148,36 @@
     ctx.fillStyle = "#E8603A"; rr(ctx, w / 2 - 34, -h / 2 + 8, 24, 28, 3); ctx.fill(); ctx.strokeStyle = "#FFFFFF"; ctx.setLineDash([3, 3]); ctx.strokeRect(w / 2 - 32, -h / 2 + 10, 20, 24); ctx.setLineDash([]);
     ctx.restore();
   }
-  function drawShutters(ctx, x, y, open, col) {
-    const sw = 40, sh = 76;
-    for (const s of [-1, 1]) {
-      const hx = x + (s < 0 ? 0 : 80), k = Math.cos(open * 1.4);
-      ctx.save(); ctx.translate(hx, y); ctx.scale(k * (s < 0 ? 1 : -1), 1);
-      ctx.fillStyle = col; ctx.fillRect(0, 0, sw, sh); ctx.fillStyle = "rgba(0,0,0,0.18)"; for (let q = 8; q < sh; q += 10) ctx.fillRect(3, q, sw - 6, 3);
-      ctx.strokeStyle = "rgba(0,0,0,0.25)"; ctx.lineWidth = 2; ctx.strokeRect(0, 0, sw, sh); if (open > 0) { ctx.fillStyle = `rgba(0,0,0,${open * 0.2})`; ctx.fillRect(0, 0, sw, sh); }
-      ctx.restore();
+  // Each shutter leaf comes from the facade's own painted wood and ironwork.
+  function drawShutters(ctx, x, y, open, col, kind = 0) {
+    const art = Art.get('g25-houses'), box = WINDOWS[kind];
+    for (const side of [-1, 1]) {
+      const k = Math.cos(open * 2.65), hx = x + (side < 0 ? 0 : 80);
+      ctx.save(); ctx.translate(hx, y); ctx.scale(k * (side < 0 ? 1 : -1), 1);
+      ctx.shadowColor='rgba(25,18,12,.35)';ctx.shadowBlur=4;ctx.shadowOffsetX=3;ctx.shadowOffsetY=2;
+      if (art) {
+        const half=box[2]/2;
+        if(side<0)ctx.drawImage(art,box[0],box[1],half,box[3],0,0,40,76);
+        else {ctx.save();ctx.translate(40,0);ctx.scale(-1,1);ctx.drawImage(art,box[0]+half,box[1],half,box[3],0,0,40,76);ctx.restore();}
+      } else {ctx.fillStyle=col;ctx.fillRect(0,0,40,76);}
+      ctx.shadowColor='transparent';ctx.fillStyle=`rgba(25,20,12,${Math.sin(open*Math.PI)*.18})`;ctx.fillRect(0,0,40,76);
+      ctx.strokeStyle='rgba(60,38,19,.5)';ctx.lineWidth=.8;ctx.strokeRect(0,0,40,76);ctx.restore();
     }
+  }
+  function drawNeighbour(ctx, id, x, y, wave, t) {
+    const index=NEIGH.indexOf(id), bounds=Art.rects['g25-neighbours']?.[index], aspect=bounds?bounds[2]/bounds[3]:1;
+    const portrait=index<0?null:Art.cell('g25-neighbours',index,6,3,160,Math.round(160/aspect));
+    ctx.save();ctx.beginPath();ctx.rect(x,y,80,76);ctx.clip();
+    const room=ctx.createLinearGradient(x,y,x+80,y+76);room.addColorStop(0,'#232f31');room.addColorStop(1,'#80624a');ctx.fillStyle=room;ctx.fillRect(x,y,80,76);
+    if(portrait){
+      const bob=Settings.reduceMotion?0:Math.sin(t*5.5)*1.2;
+      const m=ctx.getTransform(),ratio=Math.hypot(m.c,m.d)/Math.hypot(m.a,m.b);
+      const pw=Math.min(76,72*aspect*ratio),ph=pw/aspect/ratio;
+      ctx.translate(x+40,y+76-ph/2+(1-wave)*76+bob);
+      if(!Settings.reduceMotion)ctx.rotate(Math.sin(t*3.5)*.035*wave);
+      ctx.drawImage(portrait,-pw/2,-ph/2,pw,ph);
+    } else if(HAS())Critters.draw(ctx,id,x+40,y+92-wave*34,96,{t,pose:'happy'});
+    ctx.restore();
   }
 
   Games.register({
@@ -156,14 +186,18 @@
     goal: l => (l <= 3 ? "Escriu la lletra del sobre per dur-lo a la seva bústia." : l === 4 ? "Escriu la síl·laba del sobre per dur-lo a la seva bústia." : l === 5 ? "Escriu el nom del veí que hi ha al sobre." : "Escriu l'adreça del sobre per dur-hi la carta.") + " Hi ha 5 carrers.",
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-      const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, "#8FD0F0"); g.addColorStop(1, "#E3F4FB"); ctx.fillStyle = g; ctx.fillRect(x, y, w, h);
+      const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, "#8FD0F0"); g.addColorStop(1, "#E3F4FB"); ctx.fillStyle = g; ctx.fillRect(x, y, w, h);if(Art.get('g25-book'))ctx.drawImage(Art.get('g25-book'),x,y,w,h);
       const s = Math.min(w / 260, h / 200), cx = x + w / 2, by = y + h / 2 + 70 * s;
       ctx.fillStyle = "#9ACB6E"; ctx.fillRect(x, by - 10 * s, w, h);
       ctx.fillStyle = "#F7EFDD"; ctx.fillRect(x, by + 8 * s, w, h);
       const hs = houseSprite(0, "#F28C6B", "#C8553D", 150, 150), k = 0.62 * s;
       ctx.drawImage(hs.c, cx - 110 * s - 20 * k, by - (150 + 130) * k, hs.w * k, hs.h * k);
       const wave = (Math.sin(t * 1.4) + 1) / 2;
-      if (HAS()) { ctx.save(); ctx.beginPath(); ctx.rect(cx - 110 * s + 35 * k, by - 116 * k, 80 * k, 76 * k); ctx.clip(); Critters.draw(ctx, "gat", cx - 110 * s + 75 * k, by - 66 * k - wave * 14 * k, 90 * k, { t, pose: "happy" }); ctx.restore(); }
+      {const box=Art.rects['g25-houses'][0],win=WINDOWS[0];
+       const left=cx-110*s-20*k,top=by-(150+130)*k;
+       ctx.save();ctx.translate(left+(win[0]-box[0])*hs.w*k/box[2],top+(win[1]-box[1])*hs.h*k/box[3]);
+       ctx.scale(win[2]*hs.w*k/box[2]/80,win[3]*hs.h*k/box[3]/76);
+       drawNeighbour(ctx,'gat',0,0,wave,t);drawShutters(ctx,0,0,Ease.outCubic(wave),'#4a7452',0);ctx.restore();}
       const mb = mailbox("#D9443A"); ctx.drawImage(mb.c, cx + 10 * s, by - 70 * s, 70 * s, 64 * s);
       const fy = by - 120 * s - Math.sin(t * 2) * 6 * s;
       drawEnvelope(ctx, cx + 64 * s, fy, 100 * s, 68 * s, -0.08);
@@ -173,6 +207,7 @@
     create(api) {
       const L = api.level, NH = L === 6 ? 3 : 4, PER = L <= 4 ? 4 : L === 5 ? 3 : 2, NST = 5;
       buildBg();
+      const streetLayer=makeCanvas(W,H),streetCtx=streetLayer.getContext("2d");
       const pool = api.pool(L >= 5 ? { theme: "noms" } : undefined);
       const neigh = shuffle(NEIGH.filter(id => !HAS() || Critters.name(id)));
       const st = { street: 0, phase: "rise", t: 0, turn: 0, delivered: 0 };
@@ -227,8 +262,11 @@
             }
             if (flyer.t > 1.5) { flyer = null; nextEnvelope(); }
           }
-          if (st.phase === "fold" && st.t > 2.2) { st.phase = "turn"; st.t = 0; Sfx.play("page"); }
-          if (st.phase === "turn" && st.t > 0.9) {
+          if (st.phase === "fold" && st.t > 2.2) {
+            if(st.street === NST-1){st.phase='done';api.hud.progress=[NST,NST];api.finish(true,{collectName:'5 postals dels veïns'});return;}
+            st.phase = "turn"; st.t = 0; Sfx.play("page");
+          }
+          if (st.phase === "turn" && st.t > 0.15) {
             st.street++;
             if (st.street >= NST) { st.phase = "done"; api.finish(true, { collectName: "5 postals dels veïns" }); return; }
             buildStreet(st.street); st.phase = "rise"; st.t = 0;
@@ -239,42 +277,52 @@
         draw(ctx) {
           const t = api.t;
           ctx.drawImage(BG, 0, 0);
-          // alçada del desplegable (0 pla, 1 dret)
-          let up = 1;
-          if (st.phase === "rise") up = Ease.outBack(clamp(st.t / 0.9, 0, 1));
-          else if (st.phase === "fold") up = st.t < 1.6 ? 1 : 1 - Ease.inCubic(clamp((st.t - 1.6) / 0.6, 0, 1));
-          else if (st.phase === "turn") up = 0;
-          if (up > 0.01) {
-            const bd = backdrop(st.street % STREETS.length), bh = 520 * up;
-            ctx.save(); ctx.shadowColor = "rgba(40,25,10,0.35)"; ctx.shadowBlur = 18; ctx.shadowOffsetY = 8; ctx.drawImage(bd, 140, 610 - bh, 1320, bh); ctx.restore();
-            ctx.fillStyle = `rgba(50,30,10,${0.25 * (1 - up)})`; ctx.fillRect(140, 610 - bh, 1320, bh);
+          // Dissolve the complete street as one layer; the illustrated book stays still.
+          // Reduced motion uses a direct scene change, without flattening or scaling.
+          let up=1;
+          if(!Settings.reduceMotion){
+            if(st.phase==='rise')up=Ease.inOutCubic(clamp(st.t/.9,0,1));
+            else if(st.phase==='fold' && st.street<NST-1)up=1-Ease.inOutCubic(clamp((st.t-1.6)/.6,0,1));
+            else if(st.phase==='turn')up=0;
+          }
+          if(up>0.001){
+            const streetTarget=ctx,dissolve=up<.999;
+            if(dissolve){ctx=streetCtx;ctx.clearRect(0,0,W,H);}
+            ctx.save();
+            const bh=520;
+            if(!Art.get('g25-book'))ctx.drawImage(backdrop(st.street%STREETS.length),140,90,1320,bh);
             // rètol del carrer
-            if (up > 0.6) {
-              const a = clamp((up - 0.6) * 2.5, 0, 1), sy = 610 - bh + 118, nm = STREETS[st.street % STREETS.length].name;
-              ctx.save(); ctx.globalAlpha = a; const tw = measure(ctx, nm, 30, 900, FONT_T) + 60;
+            if (up > 0) {
+              const a = 1, sy = Art.get("g25-book") ? 135 : 610 - bh + 118, nm = STREETS[st.street % STREETS.length].name;
+              ctx.save(); ctx.globalAlpha *= a; const tw = measure(ctx, nm, 30, 900, FONT_T) + 60;
               ctx.shadowColor = "rgba(0,0,0,0.25)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3; rr(ctx, 800 - tw / 2, sy - 28, tw, 56, 10); ctx.fillStyle = "#2F5E7A"; ctx.fill(); ctx.shadowColor = "transparent";
               ctx.strokeStyle = "#FFFFFF"; ctx.lineWidth = 3; rr(ctx, 800 - tw / 2 + 6, sy - 22, tw - 12, 44, 7); ctx.stroke();
               text(ctx, nm, 800, sy + 1, { size: 30, weight: 900, font: FONT_T, color: "#FFFFFF" }); ctx.restore();
             }
             // vorera de paper
-            ctx.fillStyle = "#C9C2B4"; ctx.fillRect(150, BASE - 4 * up, 1300, 22 * up); ctx.fillStyle = "rgba(0,0,0,0.12)"; ctx.fillRect(150, BASE + 14 * up, 1300, 4);
+            ctx.fillStyle = "#C9C2B4"; ctx.fillRect(150, BASE - 4, 1300, 22); ctx.fillStyle = "rgba(0,0,0,0.12)"; ctx.fillRect(150, BASE + 14, 1300, 4);
             houses.forEach((h, k) => {
-              const delay = st.phase === "rise" ? k * 0.12 : 0, hu = st.phase === "rise" ? Ease.outBack(clamp((st.t - 0.25 - delay) / 0.7, 0, 1)) : up;
-              if (hu <= 0.01) return;
-              const sp = houseSprite(h.kind, h.col, h.roof, h.w, h.h), sh = sp.h * hu, y0 = BASE - sp.h * hu;
-              ctx.drawImage(sp.c, h.x - sp.w / 2, y0 + 130 * hu * 0 + (sp.h - 130 - h.h) * 0, sp.w, sh);
-              if (hu < 0.97) return;
+              const sp=houseSprite(h.kind,h.col,h.roof,h.w,h.h);
+              ctx.drawImage(sp.c,h.x-sp.w/2,BASE-sp.h,sp.w,sp.h);
               // finestra: porticons i veí
-              const wx = h.x - 40, wy = BASE - h.h + 34;
-              if (h.wave > 0 && HAS()) { ctx.save(); ctx.beginPath(); ctx.rect(wx, wy, 80, 76); ctx.clip(); Critters.draw(ctx, h.neigh, wx + 40, wy + 92 - h.wave * 34, 96, { t, pose: "happy" }); ctx.restore(); }
-              drawShutters(ctx, wx, wy, Ease.outCubic(h.wave), h.shut);
+              let wx = h.x - 40, wy = BASE - h.h + 34;
+              ctx.save();
+              if(Art.get('g25-houses')) {
+                const box=Art.rects['g25-houses'][h.kind],win=WINDOWS[h.kind];
+                ctx.translate(h.x-sp.w/2+(win[0]-box[0])*sp.w/box[2],BASE-sp.h+(win[1]-box[1])*sp.h/box[3]);
+                ctx.scale(win[2]*sp.w/box[2]/80,win[3]*sp.h/box[3]/76);wx=0;wy=0;
+                ctx.fillStyle='#302c37';ctx.fillRect(0,0,80,76);
+              }
+              drawNeighbour(ctx,h.neigh,wx,wy,h.wave,t);
+              drawShutters(ctx,wx,wy,Ease.outCubic(h.wave),h.shut,h.kind);
               if (h.wave > 0.5) {
                 const a = clamp((h.wave - 0.5) * 2, 0, 1), bx = wx + 92, by2 = wy - 18;
-                ctx.save(); ctx.globalAlpha = a; ctx.shadowColor = "rgba(0,0,0,0.2)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3;
+                ctx.save(); ctx.globalAlpha *= a; ctx.shadowColor = "rgba(0,0,0,0.2)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3;
                 rr(ctx, bx, by2 - 26, 150, 52, 20); ctx.fillStyle = "#FFFFFF"; ctx.fill(); ctx.shadowColor = "transparent";
                 ctx.beginPath(); ctx.moveTo(bx + 14, by2 + 20); ctx.lineTo(bx - 8, by2 + 34); ctx.lineTo(bx + 30, by2 + 22); ctx.fill();
                 text(ctx, "Gràcies!", bx + 75, by2 + 1, { size: 28, weight: 800, font: FONT_T, color: BRAND.tinta }); ctx.restore();
               }
+              ctx.restore();
               // bústia i placa
               const [mx, my] = mbPos(h), mb = mailbox(h.box), fl = h.flap;
               ctx.fillStyle = "#6A5A4A"; ctx.fillRect(mx - 4, my + 30 * MBS, 8, Math.max(0, BASE - my - 30 * MBS));
@@ -284,15 +332,11 @@
               const [px, py] = platePos(h);
               drawPlate(ctx, h.text, px, py, { size: plateSz, state: h.done ? "ok" : null, shadowBlur: 8, border: h.done ? null : shade(h.box, -0.1), borderW: 4 });
             });
-          }
-          // pàgina que es gira
-          if (st.phase === "turn") {
-            const k = Ease.inOutCubic(clamp(st.t / 0.9, 0, 1)), ang = k * Math.PI, wdt = 704 * Math.cos(ang), lift = Math.sin(ang) * 70;
-            ctx.save(); ctx.beginPath(); ctx.moveTo(800, 606); ctx.lineTo(800 + wdt, 600 - lift); ctx.lineTo(800 + wdt * 1.08, 886 - lift * 0.6); ctx.lineTo(800, 892); ctx.closePath();
-            const g = ctx.createLinearGradient(800, 0, 800 + wdt, 0); g.addColorStop(0, wdt > 0 ? "#D9CDB2" : "#E9DFC9"); g.addColorStop(1, "#FBF6EA"); ctx.fillStyle = g; ctx.shadowColor = "rgba(40,20,5,0.35)"; ctx.shadowBlur = 20; ctx.fill(); ctx.restore();
+            ctx.restore();
+            if(dissolve){ctx=streetTarget;ctx.save();ctx.globalAlpha*=up;ctx.drawImage(streetLayer,0,0);ctx.restore();}
           }
           // carter, saca i sobre
-          const pm = postman(), bob = Math.sin(t * 2.2) * 2;
+          const pm = postman(), bob = Settings.reduceMotion ? 0 : Math.sin(t * 2.2) * 2;
           ctx.drawImage(pm.c, 822 - pm.w * 0.55, 884 - pm.h * 1.1 + bob, pm.w * 1.1, pm.h * 1.1);
           if (env) {
             const sz = plateSize(ctx, env.text, plateSz), ew = sz.w + 70, eh = sz.h + 56;
@@ -308,7 +352,7 @@
             if (flyer.t < 1) drawEnvelope(ctx, x, y, 150, 100, Math.sin(k * Math.PI) * -0.6 + (mx > x0 ? 0.2 : -0.2) * k, lerp(1, 0.32, k));
             if (k < 0.25) drawPlate(ctx, flyer.text, x - 10, y + 6, { size: plateSz, alpha: 1 - k * 4, state: "ok" });
           }
-          const bf = bagFront(); ctx.drawImage(bf.c, ENV[0] - 70, ENV[1] + 44, bf.w * 1.1, bf.h * 1.1);
+          if(!Art.get("g25-postman")){const bf = bagFront(); ctx.drawImage(bf.c, ENV[0] - 70, ENV[1] + 44, bf.w * 1.1, bf.h * 1.1);}
           drawVignette(ctx, 0.25, "40,25,10");
         },
       };

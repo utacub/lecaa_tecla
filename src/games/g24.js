@@ -20,10 +20,12 @@
     if (n >= 1) leg(a, b, b, a, false);
     if (n >= 2) leg(a, a, b, b, true);
   }
-  const cellSpr = col => Sprites.get("g24c" + col, C, C, (c) => { for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) cross(c, i * AI, j * AI, col); });
+  const cellSpr = col => Sprites.get("g24c" + col, C, C, (c) => { const im=Art.cell("g24-sewing",col===SNAKE[2]?1:0,2,2,C,C);if(im){c.drawImage(im,0,0,C,C);return;} for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) cross(c, i * AI, j * AI, col); });
   /* ---------- botó (2.5D) ---------- */
   const buttonSpr = (col, R) => Sprites.get(`g24b${col}${R}`, R * 2 + 30, R * 2 + 30, (c, w) => {
     const m = w / 2;
+    const button=Art.cell('g24-sewing',3,2,2,R*2,R*2);
+    if(button){c.save();c.shadowColor='rgba(65,35,20,.3)';c.shadowBlur=9;c.shadowOffsetY=5;c.drawImage(button,15,15);c.restore();c.save();c.globalCompositeOperation='hue';c.fillStyle=col;c.beginPath();c.arc(m,m,R-3,0,Math.PI*2);c.fill();c.restore();return;}
     c.save(); c.shadowColor = "rgba(60,40,20,0.4)"; c.shadowBlur = 12; c.shadowOffsetY = 6; c.beginPath(); c.arc(m, m, R, 0, 6.28); c.fillStyle = col; c.fill(); c.restore();
     const g = c.createRadialGradient(m - R * 0.4, m - R * 0.45, R * 0.1, m, m, R * 1.05); g.addColorStop(0, shade(col, 0.45)); g.addColorStop(0.6, col); g.addColorStop(1, shade(col, -0.3)); c.fillStyle = g; c.beginPath(); c.arc(m, m, R, 0, 6.28); c.fill();
     // vora aixecada i cubeta interior
@@ -34,6 +36,7 @@
   });
   /* ---------- tela, vores brodades i cinta del títol ---------- */
   const bgSpr = () => Sprites.get("g24bg", W, H, (c) => {
+    if(Art.get('g24-workshop')) {c.drawImage(Art.get('g24-workshop'),0,0,W,H);return;}
     c.drawImage(Tex.aida(W, H, "#F4EEDF", AI), 0, 0, W, H);
     const v = c.createRadialGradient(800, 500, 300, 800, 500, 1000); v.addColorStop(0, "rgba(255,250,235,0)"); v.addColorStop(1, "rgba(120,90,50,0.22)"); c.fillStyle = v; c.fillRect(0, 0, W, H);
     // sanefa de punt de creu al voltant del tauler
@@ -56,7 +59,8 @@
     goal: l => l <= 3 ? "Escolta la lletra i escriu-la: la serp anirà a menjar-se el botó." : l === 4 ? "Escriu la síl·laba en ordre perquè la serp es mengi els botons." : "Escriu la paraula en ordre perquè la serp es mengi els botons. Compte amb les lletres esquer!",
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.translate(x, y);
-      ctx.fillStyle = ctx.createPattern(Tex.aida(260, 260, "#F4EEDF", AI), "repeat"); ctx.fillRect(0, 0, w, h); for (let i = 0; i * AI < w; i++) { cross(ctx, i * AI, 4, i % 4 ? "#D6453A" : "#2E7FB8"); cross(ctx, i * AI, h - AI - 4, i % 4 ? "#D6453A" : "#2E7FB8"); }
+      if(Art.get('g24-workshop'))ctx.drawImage(Art.get('g24-workshop'),0,0,w,h);
+      ctx.fillStyle = ctx.createPattern(Tex.aida(260, 260, "#F4EEDF", AI), "repeat"); ctx.fillRect(0, 0, w, h); if(Art.get('g24-workshop'))ctx.drawImage(Art.get('g24-workshop'),0,0,w,h); for (let i = 0; i * AI < w; i++) { cross(ctx, i * AI, 4, i % 4 ? "#D6453A" : "#2E7FB8"); cross(ctx, i * AI, h - AI - 4, i % 4 ? "#D6453A" : "#2E7FB8"); }
       const s = Math.min(w / 300, h / 180); ctx.translate(w / 2, h / 2); ctx.scale(s, s);
       const cells = [[-5, 1], [-4, 1], [-3, 1], [-2, 1], [-2, 0], [-1, 0], [0, 0], [1, 0]];
       cells.forEach(([i, j], k) => Sprites.draw(ctx, cellSpr(SNAKE[k % 3]), -60 + i * 26, 10 + j * 26, { s: 26 / C }));
@@ -177,8 +181,16 @@
           ctx.drawImage(bgSpr().c, 0, 0, W, H);
           // cua que es descus
           for (const d of dying) Sprites.draw(ctx, cellSpr(d.col), cx(d.c), cy(d.r), { alpha: 1 - d.t / 0.35 });
+          // Fil continu sota els segments de llana: evita una silueta de peces separades.
+          if(Art.get('g24-sewing') && snake.length>1){
+            ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
+            for(const [width,color] of [[31,'#105842'],[23,'#258468']]){
+              ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();
+              snake.forEach((s,i)=>ctx[i?'lineTo':'moveTo'](cx(s.c),cy(s.r)));ctx.stroke();
+            }ctx.restore();
+          }
           // cos brodat (la cel·la nova es broda punt a punt)
-          const wig = st.joy > 0 ? st.joy : 0;
+          const wig = !Settings.reduceMotion && st.joy > 0 ? st.joy : 0;
           for (let i = snake.length - 1; i >= 1; i--) {
             const s = snake[i], col = SNAKE[i % 3], age = s.born < 0 ? 9 : t - s.born, off = wig ? Math.sin(t * 14 - i * 0.9) * 5 * Math.min(1, wig) : 0;
             const x = cx(s.c), y = cy(s.r);
@@ -198,12 +210,16 @@
           const h = snake[0], nk = snake[1] || { c: h.c - 1, r: h.r }, dirA = Math.atan2(h.r - nk.r, h.c - nk.c);
           const hx = cx(h.c), hy = cy(h.r) + (wig ? Math.sin(t * 14) * 5 : 0);
           ctx.save(); ctx.translate(hx, hy); ctx.rotate(dirA);
+          const headArt=Art.cell('g24-sewing',2,2,2,76,52);
+          if(headArt)ctx.drawImage(headArt,-38,-26,76,52);
+          else {
           ctx.fillStyle = "rgba(40,25,15,0.25)"; ctx.beginPath(); ctx.ellipse(2, 3, 30, 24, 0, 0, 6.28); ctx.fill();
           ctx.save(); ctx.beginPath(); ctx.ellipse(0, 0, 30, 24, 0, 0, 6.28); ctx.fillStyle = "#2E9E6A"; ctx.fill(); ctx.clip();
           ctx.strokeStyle = "rgba(255,255,255,0.28)"; ctx.lineWidth = 2; for (let k = -40; k < 40; k += 5) { ctx.beginPath(); ctx.moveTo(k, -30); ctx.lineTo(k + 18, 30); ctx.stroke(); }
           ctx.strokeStyle = "rgba(0,40,20,0.25)"; for (let k = -38; k < 40; k += 5) { ctx.beginPath(); ctx.moveTo(k, -30); ctx.lineTo(k + 18, 30); ctx.stroke(); }
           ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.beginPath(); ctx.ellipse(-6, -10, 16, 6, 0, 0, 6.28); ctx.fill();
           ctx.restore();
+          }
           if (Math.sin(t * 2.2) > 0.6 && !st.look) { ctx.strokeStyle = "#D6453A"; ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(28, 0); ctx.lineTo(40, 0); ctx.lineTo(46, -5); ctx.moveTo(40, 0); ctx.lineTo(46, 5); ctx.stroke(); }
           ctx.restore();
           // ulls (miren el botó, o amunt cap a la paraula quan s'equivoca)
@@ -215,7 +231,7 @@
             ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(ex + Math.cos(lookA) * 3.5 - 1.3, ey + Math.sin(lookA) * 3.5 - 1.5, 1.4, 0, 6.28); ctx.fill();
           }
           // agulla que segueix la serp, amb el fil
-          const bob = Math.sin(t * 9) * 0.5 + 0.5, back = dirA + Math.PI, nx = hx + Math.cos(back) * 30 + Math.cos(back + 1.2) * 34, ny = hy + Math.sin(back) * 30 + Math.sin(back + 1.2) * 34 - 26;
+          const bob = Settings.reduceMotion ? 0 : Math.sin(t * 9) * 0.5 + 0.5, back = dirA + Math.PI, nx = hx + Math.cos(back) * 30 + Math.cos(back + 1.2) * 34, ny = hy + Math.sin(back) * 30 + Math.sin(back + 1.2) * 34 - 26;
           ctx.save(); ctx.strokeStyle = "#2E9E6A"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(hx + Math.cos(back) * 22, hy + Math.sin(back) * 22); ctx.quadraticCurveTo(nx, ny + 30, nx + 6, ny - 26); ctx.stroke(); ctx.restore();
           ctx.save(); ctx.translate(nx, ny + bob * 8); ctx.rotate(0.5);
           ctx.fillStyle = "rgba(40,25,15,0.25)"; ctx.fillRect(4, 6, 6, 64);
