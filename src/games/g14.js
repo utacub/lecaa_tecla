@@ -50,6 +50,9 @@
       S.lyr.split(" ").reduce((acc, tok) => { // les frases poden tenir espais: s'ajunten fins trobar "text:nota:temps"
         acc.buf = acc.buf ? acc.buf + " " + tok : tok; const p = acc.buf.split(":"); if (p.length === 3) { items.push({ text: p[0], midi: +p[1], beat, len: +p[2] }); beat += +p[2]; acc.buf = ""; } return acc;
       }, { buf: "" });
+      // en altres idiomes, la mateixa melodia amb la lletra traduïda (un text per nota)
+      const tr = LX("g14.lyrics", {})[L];
+      if (tr && tr.length === items.length) items.forEach((it, i) => { it.text = tr[i]; });
     }
     const total = beat;
     const chords = harmonize(items, total);
@@ -216,7 +219,7 @@
         notesFx.push({ x: x + rand(-40, 40), y: LINE_Y - 60, t: 0, col: LANE_COL[it.lane % 5], k: randi(0, 1) });
         progress();
       }
-      function progress() { api.hud.progress = [st.judged, items.length]; if (st.judged) api.hud.label = `${Math.round(st.hits / st.judged * 100)}% d'encerts`; }
+      function progress() { api.hud.progress = [st.judged, items.length]; if (st.judged) api.hud.label = L_("{n}% d'encerts", { n: Math.round(st.hits / st.judged * 100) }); }
       function showCmp(it, k) { if (!Settings.errorSupport) return; cmp.length = 0; cmp.push({ e: it.text[it.typed] || it.text[0], p: k, lane: it.lane, t: 0 }); }
       function missKey(it, k) {
         api.miss(it.text[it.typed], k, { sfx: false }); playSour(it.notes[Math.max(0, it.typed - 1)] || it.midi);
@@ -282,7 +285,7 @@
               if (ok) { Sfx.play("crowd"); void 0; st.energy = 1; } else void 0;
               st.ok = ok;
             }
-          } else { st.endT += dt; if (st.endT > 2.2 && !st.fin) { st.fin = true; api.finish(st.ok, { collectName: `el disc d'or «${S.title}»` }); } }
+          } else { st.endT += dt; if (st.endT > 2.2 && !st.fin) { st.fin = true; api.finish(st.ok, { collectName: L_("el disc d'or «{t}»", { t: L_(S.title) }) }); } }
           for (let i = 0; i < N; i++) pulses[i] = Math.max(0, pulses[i] - dt * 2.5);
           for (let i = wrongs.length - 1; i >= 0; i--) { wrongs[i].t += dt; if (wrongs[i].t > 0.5) wrongs.splice(i, 1); }
           for (let i = notesFx.length - 1; i >= 0; i--) { const n = notesFx[i]; n.t += dt; n.y -= dt * 90; if (n.t > 1.4) notesFx.splice(i, 1); }
@@ -340,9 +343,9 @@
             const big = c.e.length > 1 || (c.p && c.p.length > 1) ? 44 : 64;
             if (two) {
               text(ctx, "Busques", bx - 78, by - 76, { size: 22, weight: 800, font: FONT_T, color: BRAND.petroli }); text(ctx, "Has premut", bx + 78, by - 76, { size: 22, weight: 800, font: FONT_T, color: UI.coralDark });
-              drawPlate(ctx, c.e === " " ? "espai" : c.e, bx - 78, by + 12, { size: big, state: "ok" }); drawPlate(ctx, c.p === " " ? "espai" : c.p, bx + 78, by + 12, { size: big, state: "wrong" });
+              drawPlate(ctx, c.e === " " ? L_("espai") : c.e, bx - 78, by + 12, { size: big, state: "ok" }); drawPlate(ctx, c.p === " " ? L_("espai") : c.p, bx + 78, by + 12, { size: big, state: "wrong" });
               text(ctx, "≠", bx, by + 12, { size: 44, weight: 800, font: FONT_T, color: BRAND.tinta });
-            } else { text(ctx, "Calia prémer", bx, by - 76, { size: 22, weight: 800, font: FONT_T, color: BRAND.petroli }); drawPlate(ctx, c.e === " " ? "espai" : c.e, bx, by + 12, { size: 64, state: "ok" }); }
+            } else { text(ctx, "Calia prémer", bx, by - 76, { size: 22, weight: 800, font: FONT_T, color: BRAND.petroli }); drawPlate(ctx, c.e === " " ? L_("espai") : c.e, bx, by + 12, { size: 64, state: "ok" }); }
             ctx.restore();
           });
           // compte d'entrada
@@ -351,7 +354,7 @@
             const k = Ease.outBack(clamp(st.endT / 0.5, 0, 1));
             ctx.save(); ctx.translate(W / 2, 330); ctx.scale(k, k);
             text(ctx, st.ok ? "Bravo! Quin concert!" : "Gairebé! Tornem-hi?", 0, 0, { size: 70, weight: 900, font: FONT_T, color: st.ok ? "#FFE23B" : "#FFFFFF", stroke: "#2A1650", lw: 14 });
-            text(ctx, `${Math.round(st.hits / items.length * 100)}% de notes encertades`, 0, 76, { size: 34, weight: 800, font: FONT_T, color: "#FFFFFF", stroke: "#2A1650", lw: 8 });
+            text(ctx, L_("{n}% de notes encertades", { n: Math.round(st.hits / items.length * 100) }), 0, 76, { size: 34, weight: 800, font: FONT_T, color: "#FFFFFF", stroke: "#2A1650", lw: 8 });
             ctx.restore();
           }
           drawVignette(ctx, 0.35, "5,0,20");

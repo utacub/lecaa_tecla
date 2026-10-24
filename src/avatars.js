@@ -3,8 +3,8 @@
    Avatars de felpa (8 animals × 8 colors) i perfils d'alumne
    ============================================================ */
 const ANIMALS = [
-  { id: "gat", name: "Gat" }, { id: "gos", name: "Gos" }, { id: "conill", name: "Conill" }, { id: "os", name: "Ós" },
-  { id: "guineu", name: "Guineu" }, { id: "granota", name: "Granota" }, { id: "mussol", name: "Mussol" }, { id: "porc", name: "Porc" },
+  { id: "gat", name: L_("Gat") }, { id: "gos", name: L_("Gos") }, { id: "conill", name: L_("Conill") }, { id: "os", name: L_("Ós") },
+  { id: "guineu", name: L_("Guineu") }, { id: "granota", name: L_("Granota") }, { id: "mussol", name: L_("Mussol") }, { id: "porc", name: L_("Porc") },
 ];
 const PLUSH = ["#E9A15B", "#8FB6D9", "#E58FA6", "#9BC27A", "#B79AD6", "#F0D06A", "#C98E6B", "#7FC7BD"];
 

@@ -166,9 +166,11 @@
     pedra: (x) => { clay(x, p => blobPath(p, 0, 6, 40, 33, 0.16, 8), "#8E8C88", { r: 42, cy: 6 }); face(x, 0, 8, 0.9, { grumpy: 1 }); },
   };
   const GOODLIST = Object.keys(FOODS).filter(k => !["mitjó", "sabata", "pedra"].includes(k));
-  const W5 = ["poma", "pera", "pa", "ou", "mel", "llet", "pizza", "suc", "figa", "kiwi", "coco", "pruna"];
-  const W6 = ["maduixa", "xocolata", "taronja", "síndria", "préssec", "plàtan", "galeta", "magdalena", "entrepà", "formatge", "cirera", "pastanaga", "llimona"];
-  const BAD5 = ["sabata", "pedra"], BAD6 = ["sabata", "pedra", "mitjó"];
+  // paraules per escriure (en altres idiomes, traduïdes) i dibuix de cada una
+  const KIND = LK("kind");
+  const W5 = LX("g07.w5", ["poma", "pera", "pa", "ou", "mel", "llet", "pizza", "suc", "figa", "kiwi", "coco", "pruna"]);
+  const W6 = LX("g07.w6", ["maduixa", "xocolata", "taronja", "síndria", "préssec", "plàtan", "galeta", "magdalena", "entrepà", "formatge", "cirera", "pastanaga", "llimona"]);
+  const BAD5 = LX("g07.bad5", ["sabata", "pedra"]), BAD6 = LX("g07.bad6", ["sabata", "pedra", "mitjó"]);
   const foodSprite = k => Sprites.get("g07f_" + k, 120, 120, (x, w, h) => { x.translate(w / 2, h / 2 + 4); FOODS[k](x); });
   const FOODCOL = { poma: "#E5443A", taronja: "#F59A2F", "préssec": "#F7A68A", llimona: "#F3D43B", figa: "#7B4A8E", coco: "#F4EEE2", kiwi: "#8CC63F", pruna: "#6B4FB0", ou: "#F7C531", pera: "#A6CC45", pa: "#D9984E", mel: "#F2B33A", llet: "#FFFFFF", pizza: "#E85A3A", suc: "#F8A43A", maduixa: "#E8344A", xocolata: "#6B3B22", "síndria": "#F25560", "plàtan": "#F6D24A", galeta: "#D69A55", magdalena: "#E9668E", "entrepà": "#E3AE66", formatge: "#F7CC45", cirera: "#C9243A", pastanaga: "#F2862F" };
 
@@ -340,7 +342,7 @@
   Games.register({
     id: 7, key: "g", name: "El monstre golafre", zone: "camp", music: "marimba", demoTime: 10, missAt: [800, 330],
     collect: { one: "barret", many: "barrets" },
-    goal: l => (l <= 3 ? "Escriu la lletra de cada aliment que cau i el monstre se'l menjarà." : l === 4 ? "Escriu la síl·laba de cada aliment que cau i el monstre se'l menjarà." : "Escriu el nom de cada aliment que cau i el monstre se'l menjarà.") + " Compte: el mitjó, la sabata i la pedra no es mengen!",
+    goal: l => L_(l <= 3 ? "Escriu la lletra de cada aliment que cau i el monstre se'l menjarà." : l === 4 ? "Escriu la síl·laba de cada aliment que cau i el monstre se'l menjarà." : "Escriu el nom de cada aliment que cau i el monstre se'l menjarà.") + L_(" Compte: el mitjó, la sabata i la pedra no es mengen!"),
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
       const bg = Art.get("g07_meadow") || bgSprite().c, s = Math.max(w / 760, h / 520), bx = bg.width / W, by = bg.height / H;
@@ -380,12 +382,12 @@
         const excl = live.map(f => f.text);
         let text, kind;
         if (bad) {
-          if (badPool) { text = badPool.next(excl); kind = text; }
+          if (badPool) { text = badPool.next(excl); kind = KIND(text); }
           else { text = pool.next(excl); kind = pick(["mitjó", "sabata", "pedra"]); }
           if (excl.some(e => e[0] === text[0])) return; // la mateixa primera tecla seria ambigua: ho deixem per a després
         } else {
-          text = pool.next(excl); kind = L >= 5 ? text : pick(GOODLIST);
-          if (excl.some(e => e[0] === text[0])) text = pool.next(excl);
+          text = pool.next(excl); if (excl.some(e => e[0] === text[0])) text = pool.next(excl);
+          kind = L >= 5 ? KIND(text) : pick(GOODLIST);
         }
         let x = 0;
         for (let tries = 0; tries < 30; tries++) { x = rand(190, 1410); if (Math.abs(x - 1350) > 170 && live.every(f => Math.abs(f.x - x) > 280) && Math.abs(x - M.x) > (made === 0 ? 120 : 0)) break; }

@@ -6,7 +6,8 @@
   const SKINS = ["#F6D2B8", "#E8B48C", "#C98E64", "#9A6446", "#F3C9A8"];
   const PART_ORDER = ["ulls", "nas", "boca", "orelles", "cabells", "mostatxo", "galtes", "pigues", "barret", "ulleres"];
   const DRAW_ORDER = ["orelles", "HEAD", "galtes", "pigues", "boca", "mostatxo", "ulls", "nas", "ulleres", "cabells", "barret"];
-  const P = {
+  // tecla, síl·laba, nom i adjectius de cada peça: en altres idiomes, LANG_DATA.xx.games["g06.parts"]
+  const P = LXM("g06.parts", {
     ulls:     { key: "u", syl: "ul", word: "ulls",     at: [0, -34],  wh: [270, 130], adj: ["rodons", "grossos", "adormits", "blaus"] },
     nas:      { key: "n", syl: "na", word: "nas",      at: [0, 34],   wh: [150, 150], adj: ["rodó", "vermell", "llarg", "petit"] },
     boca:     { key: "b", syl: "bo", word: "boca",     at: [0, 112],  wh: [200, 120], adj: ["somrient", "oberta", "petita", "amb dents"] },
@@ -17,7 +18,8 @@
     pigues:   { key: "p", syl: "pi", word: "pigues",   at: [0, 14],   wh: [240, 70],  adj: ["marrons", "taronges"] },
     barret:   { key: null, syl: null, word: "barret",  at: [0, -236], wh: [320, 210], adj: ["groc", "vermell", "blau"] },
     ulleres:  { key: null, syl: null, word: "ulleres", at: [0, -34],  wh: [320, 120], adj: ["blaves", "roges"] },
-  };
+  });
+  const CMD = LX("g06.cmd", { put: "posa {w} {a}", del: "treu {w}" });
   const NV = p => P[p].adj.length;
   const ICON = { ulls: [-110, -55, 220, 110], nas: [-70, -60, 140, 120], boca: [-75, -45, 150, 100], orelles: [140, -100, 140, 180], cabells: [-215, -122, 430, 230], mostatxo: [-105, -45, 210, 90], galtes: [60, -45, 110, 90], pigues: [20, -32, 100, 70], barret: [-155, -105, 310, 205], ulleres: [-125, -50, 250, 100] };
   function drawIcon(ctx, p, v, skin, x, y, bw, bh) {
@@ -248,8 +250,8 @@
         for (const p of PART_ORDER) {
           const mv = model.parts[p], fv = face.parts[p];
           if (mv === fv) continue;
-          if (mv == null) cmds.push({ text: "treu " + P[p].word, p, set: null });
-          else cmds.push({ text: "posa " + P[p].word + " " + P[p].adj[mv], p, set: mv });
+          if (mv == null) cmds.push({ text: CMD.del.replace("{w}", P[p].word).replace("{d}", P[p].del || P[p].word), p, set: null }); // {d}: el nom amb article, si l'idioma en té
+          else cmds.push({ text: CMD.put.replace("{w}", P[p].word).replace("{a}", P[p].adj[mv]), p, set: mv });
         }
       }
       const items = () => {
@@ -352,7 +354,7 @@
           }
           // placa del marc
           ctx.save(); ctx.shadowColor = "rgba(40,20,0,0.35)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4; rr(ctx, fx - 110, fy + 246, 220, 50, 14); ctx.fillStyle = "#C8902E"; ctx.fill(); ctx.restore();
-          text(ctx, phase === "free" || phase === "photo" ? "Retorn: foto!" : `Retrat ${Math.min(idx + 1, 10)} de 10`, fx, fy + 272, { size: 26, weight: 900, font: FONT_T, color: "#FFF6E0" });
+          text(ctx, phase === "free" || phase === "photo" ? "Retorn: foto!" : L_("Retrat {n} de 10", { n: Math.min(idx + 1, 10) }), fx, fy + 272, { size: 26, weight: 900, font: FONT_T, color: "#FFF6E0" });
           // cap de feltre amb les peces
           const rot = Math.sin(t * 1.3) * 0.015 + (shake > 0 ? Math.sin(shake * 40) * shake * 0.08 : 0);
           drawFace(ctx, face, HX, HY, 1, { anim, blink, smile, wrinkle, rot, t });

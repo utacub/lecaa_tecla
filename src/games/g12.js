@@ -11,7 +11,7 @@
   const WCOLS = ["#E8B530", "#3C86C8", "#4FA85A", "#D9503A", "#8E6CC8", "#F08A3C"];
   const CARGOS = ["barrels", "logs", "crates", "coal", "milk", "balls"];
   const SPECIAL = ["un vagó de circ", "un vagó de correus", "un vagó de gelats"];
-  const L6_ITEMS = ["estació", "locomotora", "maquinista", "mercaderies", "túnel", "andana", "il·lusió", "hipopòtam", "papallona", "cançó", "bicicleta", "muntanya", "pel·lícula"];
+  const L6_ITEMS = LX("g12.w6", ["estació", "locomotora", "maquinista", "mercaderies", "túnel", "andana", "il·lusió", "hipopòtam", "papallona", "cançó", "bicicleta", "muntanya", "pel·lícula"]);
 
   /* ---------- sons ---------- */
   const snd = {
@@ -135,7 +135,7 @@
     const c = makeCanvas(W, H), x = c.getContext("2d");
     if(Art.get("train-bg")){
       x.drawImage(Art.get("train-bg"),0,0,W,H);trackLoop(x);trackStraight(x,0,LOOP_X,MAIN_Y);trackStraight(x,40,LOOP_X,SIDE_Y);
-      drawPlate(x,st.name,1110,242,{size:25});return c;
+      drawPlate(x,L_(st.name),1110,242,{size:25});return c;
     }
     // fons llunyà (desenfocat com en una maqueta)
     const far = makeCanvas(W, 440), f = far.getContext("2d");
@@ -220,7 +220,8 @@
       const ww = L <= 3 ? 150 : L === 4 ? 140 : L === 5 ? 120 : 96, gap = L === 6 ? 5 : 8, pitch = ww + gap;
       const psz = L <= 3 ? 64 : L === 4 ? 64 : 64;
       const pool = L === 6 ? api.pool({ items: L6_ITEMS.filter(w => w.length <= 11) }) : api.pool({ theme: "tren", filter: L === 5 ? (w => w.length <= 6) : null });
-      const letters = L <= 3 ? LETTERS[L] : "abcdefghijlmnoprstuvxz".split("");
+      // lletres esquer: les habituals de l'idioma
+      const letters = L <= 3 ? LETTERS[L] : (LANG === "ca" ? "abcdefghijlmnoprstuvxz".split("") : Object.keys(LD.freq).filter(c => /^[a-z]$/.test(c) && LD.freq[c] > 0.3));
       const loco = locoSprite();
       const stOrder = shuffle(STATIONS.map((s, i) => i));
       const bgs = {};
@@ -407,7 +408,7 @@
           // cartell de l'estació següent
           const dur = api.demo ? 3.2 : 4.4, nxt = STATIONS[stOrder[(stIdx + 1) % STATIONS.length]];
           const k = clamp((T - (dur - 1.6)) / 0.5, 0, 1);
-          if (k > 0) { ctx.save(); ctx.globalAlpha = k; ctx.translate(800, 160 - (1 - Ease.outBack(k)) * 60); drawPanel(ctx, -280, -42, 560, 84, { r: 42, blur: 16 }); text(ctx, "Arribem a: " + nxt.name.replace("Estació ", "l'estació "), 0, 2, { size: 30, weight: 900, font: FONT_T, color: BRAND.tinta }); ctx.restore(); }
+          if (k > 0) { ctx.save(); ctx.globalAlpha = k; ctx.translate(800, 160 - (1 - Ease.outBack(k)) * 60); drawPanel(ctx, -280, -42, 560, 84, { r: 42, blur: 16 }); text(ctx, LANG === "ca" ? "Arribem a: " + nxt.name.replace("Estació ", "l'estació ") : L_("Arribem a: {lloc}", { lloc: L_(nxt.name) }), 0, 2, { maxW: 520, size: 30, weight: 900, font: FONT_T, color: BRAND.tinta }); ctx.restore(); }
         },
         draw(ctx) {
           if (phase === "travel") this.drawTravel(ctx);

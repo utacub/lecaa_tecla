@@ -103,7 +103,7 @@
       x.fillStyle=enamel;x.beginPath();x.moveTo(10,78);x.lineTo(10,30);x.arc(46,30,36,Math.PI,0);x.lineTo(82,78);x.closePath();x.fill();
       x.strokeStyle='#dcb974';x.lineWidth=2.5;x.stroke();
       x.fillStyle = "rgba(0,0,0,0.55)"; rr(x, 24, 34, 44, 8, 4); x.fill();
-      x.fillStyle = "rgba(255,255,255,0.85)"; x.font = `900 15px ${FONT_T}`; x.textAlign = "center"; x.fillText("CORREU", 46, 66);
+      x.fillStyle = "rgba(255,255,255,0.85)"; x.font = `900 15px ${FONT_T}`; x.textAlign = "center"; x.fillText(L_("CORREU"), 46, 66);
     });
   }
   /* carter amb bicicleta (de cara a la dreta) */
@@ -138,7 +138,7 @@
     Mat.paperCut(x, c => { c.beginPath(); c.moveTo(10, 10); c.lineTo(120, 10); c.lineTo(112, 74); c.quadraticCurveTo(65, 86, 18, 74); c.closePath(); }, "#9A6234", { depth: 5, seed: 7 });
     x.fillStyle = "#7A4A26"; rr(x, 10, 6, 110, 16, 6); x.fill();
     x.fillStyle = "#F2B630"; rr(x, 56, 16, 18, 22, 4); x.fill();
-    x.fillStyle = "rgba(255,255,255,0.7)"; x.font = `900 13px ${FONT_T}`; x.textAlign = "center"; x.fillText("CORREU", 65, 62);
+    x.fillStyle = "rgba(255,255,255,0.7)"; x.font = `900 13px ${FONT_T}`; x.textAlign = "center"; x.fillText(L_("CORREU"), 65, 62);
   });
   function drawEnvelope(ctx, x, y, w, h, rot, s) {
     ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); if (s != null) ctx.scale(s, s);
@@ -183,7 +183,7 @@
   Games.register({
     id: 25, key: "ç", name: "El carter", zone: "poble", music: "waltz", demoTime: 11, kbPos: [800, 236], missAt: [330, 772], captionY: 400,
     collect: { one: "postal dels veïns", many: "postals dels veïns" },
-    goal: l => (l <= 3 ? "Escriu la lletra del sobre per dur-lo a la seva bústia." : l === 4 ? "Escriu la síl·laba del sobre per dur-lo a la seva bústia." : l === 5 ? "Escriu el nom del veí que hi ha al sobre." : "Escriu l'adreça del sobre per dur-hi la carta.") + " Hi ha 5 carrers.",
+    goal: l => L_(l <= 3 ? "Escriu la lletra del sobre per dur-lo a la seva bústia." : l === 4 ? "Escriu la síl·laba del sobre per dur-lo a la seva bústia." : l === 5 ? "Escriu el nom del veí que hi ha al sobre." : "Escriu l'adreça del sobre per dur-hi la carta.") + L_(" Hi ha 5 carrers."),
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
       const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, "#8FD0F0"); g.addColorStop(1, "#E3F4FB"); ctx.fillStyle = g; ctx.fillRect(x, y, w, h);if(Art.get('g25-book'))ctx.drawImage(Art.get('g25-book'),x,y,w,h);

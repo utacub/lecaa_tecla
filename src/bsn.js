@@ -6,7 +6,7 @@
    lletra següent. No s'acaba mai; se'n surt amb la creueta grisa.
    La rodeta grisa obre les opcions: avís d'error, pistes i bloqueig amb contrasenya.
    ============================================================ */
-/* lletra següent: sorteig ponderat per la freqüència del català (AnCora), sense repetir la mateixa dues vegades seguides */
+/* lletra següent: sorteig ponderat per la freqüència de les lletres de l'idioma, sense repetir la mateixa dues vegades seguides */
 function bsnNext(prev) {
   const keys = Object.keys(CALIB_FREQ).filter(l => l !== prev);
   let r = Math.random() * keys.reduce((s, l) => s + CALIB_FREQ[l], 0);
@@ -105,7 +105,8 @@ class BlackWhiteScene {
     ctx.save(); ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0, 0, W, H); Mouse.add(0, 0, W, H, {});
     const pw = 980, ph = 880, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
     rr(ctx, px, py, pw, ph, 24); ctx.fillStyle = "#161616"; ctx.fill(); ctx.strokeStyle = "#3A3A3A"; ctx.lineWidth = 2; ctx.stroke();
-    const T = (s, x, y, o = {}) => text(ctx, s, x, y, Object.assign({ size: 24, weight: 800, font: FONT_T, color: "#D8D8D8", align: "left" }, o));
+    // textos traduïts; les etiquetes de l'esquerra s'encongeixen si no caben abans dels botons
+    const T = (s, x, y, o = {}) => text(ctx, L_(s), x, y, Object.assign({ size: 24, weight: 800, font: FONT_T, color: "#D8D8D8", align: "left" }, o.size ? {} : { maxW: 345 }, o));
     T("Opcions de Blanc sobre negre", px + 44, py + 52, { size: 30, weight: 900, color: "#F2F2F2" });
     let y = py + 130;
     T("Avís quan s'equivoca", px + 44, y);
@@ -126,7 +127,7 @@ class BlackWhiteScene {
     }
     y += 70; T("Una estrella per cada encert", px + 44, y);
     bsnChips(ctx, px + 440, y, [["no", "No"], ["si", "Sí"]], this.o.stars ? "si" : "no", v => { this.o.stars = v === "si"; this.save(); });
-    T(this.o.starN + " estrelles guardades", px + 44, y + 36, { size: 17, weight: 700, color: "#8C8C8C", font: FONT_L });
+    T(L_("{n} estrelles guardades", { n: this.o.starN }), px + 44, y + 36, { size: 17, weight: 700, color: "#8C8C8C", font: FONT_L });
     if (this.o.starN) bsnBtn(ctx, px + 640, y, "Posar a zero", () => { this.o.starN = 0; this.save(); }, { w: 190 });
     y += 100; ctx.fillStyle = "#2A2A2A"; ctx.fillRect(px + 44, y - 30, pw - 88, 2);
     T("Contrasenya per desbloquejar", px + 44, y + 10);
@@ -151,10 +152,10 @@ class BlackWhiteScene {
     ctx.save(); ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0, 0, W, H); Mouse.add(0, 0, W, H, {});
     const pw = 620, ph = 300, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
     rr(ctx, px, py, pw, ph, 24); ctx.fillStyle = "#161616"; ctx.fill(); ctx.strokeStyle = "#3A3A3A"; ctx.lineWidth = 2; ctx.stroke();
-    text(ctx, "Contrasenya", W / 2, py + 52, { size: 28, weight: 900, font: FONT_T, color: "#F2F2F2" });
+    text(ctx, L_("Contrasenya"), W / 2, py + 52, { size: 28, weight: 900, font: FONT_T, color: "#F2F2F2" });
     rr(ctx, px + 60, py + 96, pw - 120, 56, 12); ctx.fillStyle = "#262626"; ctx.fill(); ctx.strokeStyle = P.err ? "#A85A50" : "#9A9A9A"; ctx.stroke();
     text(ctx, "•".repeat(P.s.length) + (Math.floor(this.t * 2) % 2 ? "|" : " "), W / 2, py + 125, { size: 30, weight: 700, font: FONT_T, color: "#E0E0E0" });
-    if (P.err) text(ctx, "No és correcta", W / 2, py + 180, { size: 19, weight: 700, font: FONT_L, color: "#C98A80" });
+    if (P.err) text(ctx, L_("No és correcta"), W / 2, py + 180, { size: 19, weight: 700, font: FONT_L, color: "#C98A80" });
     bsnBtn(ctx, W / 2 - 16, py + 240, "Tornar", () => { this.prompt = null; }, { align: "right", w: 180 });
     bsnBtn(ctx, W / 2 + 16, py + 240, "Desbloquejar", () => this.tryUnlock(), { align: "left", w: 220 });
     ctx.restore();
@@ -203,6 +204,7 @@ function bsnGear(ctx, x, y, col) {
 function bsnChips(ctx, x, y, items, cur, set) {
   let cx = x;
   items.forEach(([v, label]) => {
+    label = L_(label);
     ctx.font = `800 20px ${FONT_T}`; const w = ctx.measureText(label).width + 40, sel = v === cur;
     const ov = Mouse.add(cx, y - 22, w, 44, { click: () => { set(v); Sfx.play("tick"); } });
     rr(ctx, cx, y - 22, w, 44, 22); ctx.fillStyle = sel ? "#E6E6E6" : ov ? "#333333" : "#242424"; ctx.fill();
@@ -211,8 +213,9 @@ function bsnChips(ctx, x, y, items, cur, set) {
   });
 }
 function bsnBtn(ctx, x, y, label, click, o = {}) {
+  label = L_(label);
   ctx.font = `800 21px ${FONT_T}`; const w = o.w || ctx.measureText(label).width + 44, x0 = o.align === "right" ? x - w : x, on = !!click;
   const ov = on && Mouse.add(x0, y - 24, w, 48, { click: () => { click(); } });
   rr(ctx, x0, y - 24, w, 48, 24); ctx.fillStyle = !on ? "#1E1E1E" : ov ? "#4A4A4A" : "#333333"; ctx.fill();
-  text(ctx, label, x0 + w / 2, y + 1, { size: 21, weight: 800, font: FONT_T, color: on ? "#EDEDED" : "#5A5A5A" });
+  text(ctx, label, x0 + w / 2, y + 1, { size: 21, weight: 800, font: FONT_T, color: on ? "#EDEDED" : "#5A5A5A", maxW: w - 20 });
 }

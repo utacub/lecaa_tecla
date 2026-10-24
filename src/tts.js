@@ -8,18 +8,42 @@
    ============================================================ */
 
 const VOICE_DEF = { id: null, rate: 0.95, pitch: 1, volume: 1, showAll: false, shortMode: "phonemes" };
-function voiceCfg() { if (!Settings.voiceCfg) Settings.voiceCfg = Object.assign({}, VOICE_DEF); return Object.assign({}, VOICE_DEF, Settings.voiceCfg); }
-function setVoiceCfg(k, v) { Settings.voiceCfg = Object.assign(voiceCfg(), { [k]: v }); saveSettings(); }
-const isCa = l => /^ca($|-)/.test(String(l || "").trim().replace("_", "-").toLowerCase());
+// la veu triada es desa per idioma ("id" és la del català, com abans; "id_es", "id_eu"…)
+const VOICE_KEY = LANG === "ca" ? "id" : "id_" + LANG;
+function voiceCfg() { if (!Settings.voiceCfg) Settings.voiceCfg = Object.assign({}, VOICE_DEF); const c = Object.assign({}, VOICE_DEF, Settings.voiceCfg); c.id = c[VOICE_KEY] || null; return c; }
+function setVoiceCfg(k, v) { if (k === "id") k = VOICE_KEY; Settings.voiceCfg = Object.assign({}, VOICE_DEF, Settings.voiceCfg || {}, { [k]: v }); saveSettings(); }
+const langOf = l => String(l || "").trim().replace("_", "-").toLowerCase().split("-")[0];
+/* llengües de veu per a cada idioma de l'app. El gallec no té cap veu gratuïta que funcioni dins del
+   navegador: després de les gallegues (Edge en té), s'ofereixen la castellana i la portuguesa. */
+const VOICE_LANGS = { ca: ["ca"], es: ["es"], eu: ["eu"], gl: ["gl", "es", "pt"], en: ["en"], fr: ["fr"] }[LANG] || [LANG];
 
-/* ---------- veus Piper disponibles (només les catalanes de LECAA Docs) ---------- */
+/* ---------- veus Piper disponibles (les de LECAA Docs, més la basca i la portuguesa) ----------
+   Anglès i francès: només les veus del sistema o del navegador (decisió del 2026-10-24). */
 const PIPER_HOSTS = ["https://huggingface.co/rhasspy/piper-voices/resolve/main/", "https://huggingface.co/diffusionstudio/piper-voices/resolve/main/"];
 const piperUrls = p => ({ model: PIPER_HOSTS.map(h => h + p), config: PIPER_HOSTS.map(h => h + p + ".json") });
 const NEURAL_VOICES = [
-  { key: "ona-medium", family: "piper", title: "Ona", description: "Veu femenina, català central.", bytes: 63201294, ...piperUrls("ca/ca_ES/upc_ona/medium/ca_ES-upc_ona-medium.onnx"),
+  { key: "ona-medium", lang: "ca", family: "piper", title: "Ona", description: "Veu femenina, català central.", bytes: 63201294, ...piperUrls("ca/ca_ES/upc_ona/medium/ca_ES-upc_ona-medium.onnx"),
     licence: "Dades de veu de la UPC (Festcat), llicència CC BY-SA 3.0 ES.", licenceUrl: "https://huggingface.co/rhasspy/piper-voices/tree/main/ca/ca_ES",
     voices: [{ id: "ona-medium", name: "Ona", dialect: "central" }] },
+  { key: "davefx-medium", lang: "es", family: "piper", title: "Davefx", description: "Voz masculina, castellano de España.", bytes: 63201294, ...piperUrls("es/es_ES/davefx/medium/es_ES-davefx-medium.onnx"),
+    licence: "Datos de voz OHF-Voice voice-datasets, licencia CC0.", licenceUrl: "https://huggingface.co/rhasspy/piper-voices/tree/main/es/es_ES/davefx/medium",
+    voices: [{ id: "davefx-medium", name: "Davefx", dialect: "España" }] },
+  { key: "sharvard-medium", lang: "es", family: "piper", title: "Sharvard", description: "Dos voces, femenina y masculina, castellano de España.", bytes: 76733615, ...piperUrls("es/es_ES/sharvard/medium/es_ES-sharvard-medium.onnx"),
+    licence: "Corpus Sharvard (Universidad de Edimburgo), licencia CC BY 3.0.", licenceUrl: "https://huggingface.co/rhasspy/piper-voices/tree/main/es/es_ES/sharvard/medium",
+    voices: [{ id: "sharvard-f", name: "Sharvard femenina", dialect: "España", speaker: 1 }, { id: "sharvard-m", name: "Sharvard masculina", dialect: "España", speaker: 0 }] },
+  { key: "maider-medium", lang: "eu", family: "piper", title: "Maider", description: "Emakumezko ahotsa, euskara batua.", bytes: 63531379, ...piperUrls("eu/eu_ES/maider/medium/eu_ES-maider-medium.onnx"),
+    licence: "itzune/maider-dataset, CC BY 4.0 lizentzia.", licenceUrl: "https://huggingface.co/rhasspy/piper-voices/tree/main/eu/eu_ES/maider/medium",
+    voices: [{ id: "maider-medium", name: "Maider", dialect: "Euskadi" }] },
+  { key: "antton-medium", lang: "eu", family: "piper", title: "Antton", description: "Gizonezko ahotsa, euskara batua.", bytes: 63531379, ...piperUrls("eu/eu_ES/antton/medium/eu_ES-antton-medium.onnx"),
+    licence: "itzune/antton-dataset, CC BY 4.0 lizentzia.", licenceUrl: "https://huggingface.co/rhasspy/piper-voices/tree/main/eu/eu_ES/antton/medium",
+    voices: [{ id: "antton-medium", name: "Antton", dialect: "Euskadi" }] },
+  { key: "tugao-medium", lang: "pt", family: "piper", title: "Tugão", description: "Voz do português europeu. Alternativa para o galego.", bytes: 63201294, ...piperUrls("pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx"),
+    licence: "Dados de voz em domínio público (CC0).", licenceUrl: "https://huggingface.co/rhasspy/piper-voices/tree/main/pt/pt_PT/tug%C3%A3o/medium",
+    voices: [{ id: "tugao-medium", name: "Tugão", dialect: "Portugal" }] },
 ];
+// veus descarregables que s'ofereixen en l'idioma actual (per al gallec, una castellana i la portuguesa)
+const NEURAL_HERE = { ca: ["ona-medium"], es: ["davefx-medium", "sharvard-medium"], eu: ["maider-medium", "antton-medium"], gl: ["davefx-medium", "tugao-medium"] }[LANG] || [];
+const NEURAL_LOCALE = { ca: "ca-ES", es: "es-ES", eu: "eu-ES", pt: "pt-PT" };
 const neuralFor = id => NEURAL_VOICES.find(v => v.voices.some(x => x.id === id));
 const PIPER_WASM = "https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/";
 const ORT_WASM = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/";
@@ -68,14 +92,14 @@ const WebTTS = {
     if (!this.available()) return [];
     let v = this.raw();
     if (!v.length) { await new Promise(r => { const t = setTimeout(r, 1500); speechSynthesis.addEventListener("voiceschanged", () => { clearTimeout(t); r(); }, { once: true }); }); v = this.raw(); }
-    return v.map(x => ({ id: "web:" + x.voiceURI + "|" + x.name, name: x.name, lang: x.lang, engine: "Navegador", offline: x.localService }));
+    return v.map(x => ({ id: "web:" + x.voiceURI + "|" + x.name, name: x.name, lang: x.lang, engine: L_("Navegador"), offline: x.localService }));
   },
   onVoicesChanged(f) { if (this.available()) speechSynthesis.addEventListener("voiceschanged", f); },
   speak(id, txt, o) {
     this.stop();
     return new Promise(res => {
       const u = new SpeechSynthesisUtterance(txt), v = this.raw().find(x => "web:" + x.voiceURI + "|" + x.name === id);
-      try { if (v) { u.voice = v; u.lang = v.lang; } else u.lang = "ca-ES"; } catch (e) { }
+      try { if (v) { u.voice = v; u.lang = v.lang; } else u.lang = LOCALE; } catch (e) { }
       u.rate = o.rate; u.pitch = o.pitch; u.volume = o.volume;
       let done = false; const fin = () => { if (done) return; done = true; if (this.cur === u) { this.cur = null; this.finish = null; } res(); };
       u.onend = fin; u.onerror = fin; this.cur = u; this.finish = fin;
@@ -96,7 +120,7 @@ const NeuralTTS = {
   async listVoices() {
     if (!this.available()) return [];
     await this.scan();
-    return NEURAL_VOICES.filter(v => this.installed.has(v.key)).flatMap(v => v.voices.map(x => ({ id: "neural:" + x.id, name: x.name + " · " + x.dialect, lang: "ca-ES", engine: "Veus Piper (dins l'app)", offline: true })));
+    return NEURAL_VOICES.filter(v => this.installed.has(v.key)).flatMap(v => v.voices.map(x => ({ id: "neural:" + x.id, name: x.name + " · " + x.dialect, lang: NEURAL_LOCALE[v.lang] || v.lang, engine: L_("Veus Piper (dins l'app)"), offline: true })));
   },
   onChange(f) { this.listeners.add(f); },
   changed() { for (const f of this.listeners) try { f(); } catch (e) { } },
@@ -187,11 +211,17 @@ const TTS = {
     const all = await Promise.all(this.engines.filter(e => e.available()).map(e => e.listVoices().catch(() => [])));
     this.voices = all.flat(); for (const f of this.listeners) try { f(); } catch (e) { } return this.voices;
   },
-  caVoices() { return this.voices.filter(v => isCa(v.lang)); },
+  // veus de l'idioma (en gallec, primer les gallegues i després la castellana i la portuguesa)
+  langVoices() { const rank = v => VOICE_LANGS.indexOf(langOf(v.lang)); return this.voices.filter(v => rank(v) >= 0).sort((a, b) => rank(a) - rank(b)); },
+  ownVoices() { return this.voices.filter(v => langOf(v.lang) === LANG); },
   current() {
     const id = voiceCfg().id, v = id && this.voices.find(x => x.id === id); if (v) return v;
-    const ca = this.caVoices();
-    return ca.find(x => x.id.startsWith("neural:")) || ca.find(x => x.offline !== false) || ca[0] || null;
+    for (const l of VOICE_LANGS) {
+      const vs = this.voices.filter(x => langOf(x.lang) === l);
+      const pick = vs.find(x => x.id.startsWith("neural:")) || vs.find(x => x.offline !== false) || vs[0];
+      if (pick) return pick;
+    }
+    return null;
   },
   engineFor(v) { return this.engines.find(e => v && v.id.startsWith(e.kind + ":")) || WebTTS; },
   say(txt) {
@@ -209,26 +239,39 @@ const TTS = {
 /* ---------- so de les lletres: locucions enregistrades (veu de l'Anna, LECAA Docs) ---------- */
 // lletra → fonema → fitxer, igual que a LECAA Docs (català central)
 const LETTER_PHON = { a: "a", "à": "a", e: "e", "é": "e", "è": "ɛ", i: "i", "í": "i", "ï": "i", o: "o", "ó": "o", "ò": "ɔ", u: "u", "ú": "u", "ü": "u", b: "b", v: "b", c: "k", k: "k", q: "k", "ç": "s", d: "d", f: "f", g: "ɡ", j: "ʒ", l: "l", m: "m", n: "n", "ñ": "ɲ", p: "p", r: "r", s: "s", t: "t", x: "ʃ", z: "z", w: "w", y: "j", h: null };
+/* castellà: totes les lletres amb els 23 fonemes d'Anna de LECAA Cast (banc "female"). Les lletres que el
+   banc no cobreix: k i q = /k/; x = /ks/ (dues locucions seguides); w = /w/ de la mateixa veu (Anna) al banc
+   català, l'únic enregistrament d'aquest so; h no sona. */
+const LETTER_PHON_ES = { k: "k", q: "k", x: ["k", "s"], w: { bank: "ca", ph: "w" }, "á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u", "ü": "u" };
 // Keep grapheme lookup distinct from IPA lookup (e.g. Catalan j versus /j/).
 const Phon = {
   audio: null, timer: null, finished: null,
-  phonemeClip(phoneme, language = "ca", voice = null) {
+  // idioma de les locucions: el de l'app, si n'hi ha d'enregistrades (català i castellà)
+  hasBank(language = LANG) { return !!PHON_BANK[language]; },
+  phonemeClip(phoneme, language = LANG, voice = null) {
     const bank = PHON_BANK[language];
-    return bank?.voices[voice || bank.defaultVoice]?.[String(phoneme).normalize("NFC")] || null;
+    if (!bank) return null;
+    return bank.voices[voice || bank.defaultVoice]?.[String(phoneme).normalize("NFC")] || null;
   },
-  clip(letter, language = "ca", voice = null) {
+  // una lletra pot ser un fonema o una seqüència (x = /ks/); torna una llista de locucions
+  clips(letter, language = LANG, voice = null) {
     const key = String(letter).normalize("NFC").toLowerCase(), bank = PHON_BANK[language];
-    if (!bank || key === "h") return null;
-    const ph = language === "ca" ? (LETTER_PHON[key] ?? bank.graphemes[key]) : bank.graphemes[key];
-    return ph ? this.phonemeClip(ph, language, voice) : null;
+    if (!bank || key === "h") return [];
+    let ph = language === "ca" ? (LETTER_PHON[key] ?? bank.graphemes[key]) : language === "es" ? (bank.graphemes[key] ?? LETTER_PHON_ES[key]) : bank.graphemes[key];
+    if (ph == null) return [];
+    const list = Array.isArray(ph) ? ph : [ph];
+    return list.map(p => typeof p === "object" ? this.phonemeClip(p.ph, p.bank) : this.phonemeClip(p, language, voice)).filter(Boolean);
   },
-  url(letter, language = "ca", voice = null) { const c = this.clip(letter, language, voice); return c ? PHON_AUDIO[c.file] || null : null; },
-  has(letter, language = "ca", voice = null) { return !!this.url(letter, language, voice); },
-  play(letter, language = "ca", voice = null) { return this.playClip(this.clip(letter, language, voice)); },
-  playAsync(letter, language = "ca", voice = null) {
-    return new Promise(resolve => { if (this.play(letter, language, voice)) this.finished = resolve; else resolve(false); });
+  clip(letter, language = LANG, voice = null) { return this.clips(letter, language, voice)[0] || null; },
+  url(letter, language = LANG, voice = null) { const c = this.clip(letter, language, voice); return c ? PHON_AUDIO[c.file] || null : null; },
+  has(letter, language = LANG, voice = null) { return !!this.url(letter, language, voice); },
+  play(letter, language = LANG, voice = null) { return this.playClip(this.clip(letter, language, voice)); },
+  async playAsync(letter, language = LANG, voice = null) {
+    const list = this.clips(letter, language, voice); let any = false;
+    for (const c of list) { const ok = await new Promise(resolve => { if (this.playClip(c)) this.finished = resolve; else resolve(false); }); any = any || ok !== false; }
+    return any;
   },
-  playPhoneme(phoneme, language = "ca", voice = null) { return this.playClip(this.phonemeClip(phoneme, language, voice)); },
+  playPhoneme(phoneme, language = LANG, voice = null) { return this.playClip(this.phonemeClip(phoneme, language, voice)); },
   playClip(clip) {
     this.stop();
     const u = clip && PHON_AUDIO[clip.file]; if (!u) return false;
@@ -304,33 +347,35 @@ const VoicePanel = {
     const voiceBox = H("div"), neuralBox = H("div"), msg = H("div", { class: "msg", role: "status" });
     const say = t => { msg.textContent = t; clearTimeout(this.mt); this.mt = setTimeout(() => { msg.textContent = ""; }, 4000); };
     const drawVoices = () => {
-      const c = voiceCfg(), list = c.showAll ? TTS.voices : TTS.caVoices(), cur = TTS.current(), sel = H("select", { id: "vp-voice" }), groups = new Map();
+      const c = voiceCfg(), list = c.showAll ? TTS.voices : TTS.langVoices(), cur = TTS.current(), sel = H("select", { id: "vp-voice" }), groups = new Map();
       for (const v of list) groups.set(v.engine, [...(groups.get(v.engine) || []), v]);
-      for (const [eng, vs] of groups) { const g = H("optgroup", { label: eng }); for (const v of vs) { const o = H("option", { value: v.id }, `${v.name} (${v.lang})${v.offline === false ? " · necessita connexió" : ""}`); o.selected = cur && cur.id === v.id; g.append(o); } sel.append(g); }
+      for (const [eng, vs] of groups) { const g = H("optgroup", { label: eng }); for (const v of vs) { const o = H("option", { value: v.id }, `${v.name} (${v.lang})${v.offline === false ? " · " + L_("necessita connexió") : ""}`); o.selected = cur && cur.id === v.id; g.append(o); } sel.append(g); }
       sel.addEventListener("change", () => setVoiceCfg("id", sel.value));
-      const n = TTS.caVoices().length;
+      const n = TTS.ownVoices().length;
       voiceBox.replaceChildren(
-        list.length ? H("div", {}, H("label", { for: "vp-voice" }, `Veu (${n} en català)`), sel)
-          : H("p", { class: "hint" }, "Aquest navegador no té cap veu en català. Pots descarregar-ne una de gratuïta aquí sota, o instal·lar una veu catalana al sistema i tornar a buscar veus."),
+        ...(LANG === "gl" ? [H("div", { class: "item" }, H("p", { class: "hint", style: "margin:0" }, L_("Avís sobre les veus gallegues")))] : []),
+        list.length ? H("div", {}, H("label", { for: "vp-voice" }, L_("Veu ({n} en català)", { n })), sel)
+          : H("p", { class: "hint" }, NEURAL_HERE.length ? L_("Aquest navegador no té cap veu en català. Pots descarregar-ne una de gratuïta aquí sota, o instal·lar una veu catalana al sistema i tornar a buscar veus.")
+            : L_("Aquest navegador no té cap veu en aquest idioma. Instal·la'n una al sistema (és gratuït) i torna a buscar veus.")),
         H("div", { class: "row" },
-          H("button", { class: "btn primary", type: "button", onclick: () => TTS.say("Hola! Aquesta és la veu de LECAA Tecla.") }, "Prova la veu"),
-          H("button", { class: "btn", type: "button", onclick: async () => { await TTS.refresh(); drawVoices(); say("Llista de veus actualitzada"); } }, "Torna a buscar veus")),
-        H("p", { class: "hint" }, "Només es mostren les veus que el navegador permet fer servir. Les marcades “necessita connexió” (per exemple les veus naturals de Microsoft Edge) són gratuïtes però funcionen en línia."));
+          H("button", { class: "btn primary", type: "button", onclick: () => TTS.say(L_("Hola! Aquesta és la veu de LECAA Tecla.")) }, L_("Prova la veu")),
+          H("button", { class: "btn", type: "button", onclick: async () => { await TTS.refresh(); drawVoices(); say(L_("Llista de veus actualitzada")); } }, L_("Torna a buscar veus"))),
+        H("p", { class: "hint" }, L_("Només es mostren les veus que el navegador permet fer servir. Les marcades “necessita connexió” (per exemple les veus naturals de Microsoft Edge) són gratuïtes però funcionen en línia.")));
     };
     const mb = b => Math.round(b / 1e6) + " MB";
     const drawNeural = async () => {
-      if (!NeuralTTS.available()) { neuralBox.replaceChildren(H("p", { class: "hint" }, "Aquest navegador no pot fer servir les veus descarregables.")); return; }
-      const items = await Promise.all(NEURAL_VOICES.map(async v => {
+      if (!NeuralTTS.available()) { neuralBox.replaceChildren(H("p", { class: "hint" }, L_("Aquest navegador no pot fer servir les veus descarregables."))); return; }
+      const items = await Promise.all(NEURAL_VOICES.filter(v => NEURAL_HERE.includes(v.key)).map(async v => {
         const st = await NeuralTTS.state(v.key);
-        const ctl = st.state === "downloading" ? H("div", {}, H("progress", { max: st.total || 1, value: st.loaded }), H("div", { class: "hint" }, `${mb(st.loaded)} de ${mb(st.total)}`))
-          : st.state === "installed" ? H("div", { class: "row" }, H("span", { class: "ok" }, "Descarregada · funciona sense connexió"),
-              H("button", { class: "btn", type: "button", onclick: async () => { if (confirm(`Vols esborrar ${v.title} d'aquest dispositiu?`)) { await NeuralTTS.uninstall(v.key); } } }, "Esborra"))
+        const ctl = st.state === "downloading" ? H("div", {}, H("progress", { max: st.total || 1, value: st.loaded }), H("div", { class: "hint" }, L_("{a} de {b}", { a: mb(st.loaded), b: mb(st.total) })))
+          : st.state === "installed" ? H("div", { class: "row" }, H("span", { class: "ok" }, L_("Descarregada · funciona sense connexió")),
+              H("button", { class: "btn", type: "button", onclick: async () => { if (confirm(L_("Vols esborrar {nom} d'aquest dispositiu?", { nom: v.title }))) { await NeuralTTS.uninstall(v.key); } } }, L_("Esborra")))
           : H("button", { class: "btn primary", type: "button", onclick: async () => {
-              if (!navigator.onLine) { say("Cal connexió a internet per descarregar la veu"); return; }
-              try { await NeuralTTS.install(v.key); await TTS.refresh(); setVoiceCfg("id", "neural:" + v.voices[0].id); drawVoices(); say(`${v.title} ja és a punt`); }
-              catch (e) { say("No s'ha pogut descarregar la veu. Torna-ho a provar més tard."); }
-            } }, `Descarrega (${mb(await NeuralTTS.downloadSize(v))})`);
-        return H("div", { class: "item" }, H("div", { class: "t" }, v.title), H("p", { class: "hint" }, v.description, " ", H("a", { href: v.licenceUrl, target: "_blank", rel: "noopener" }, "Llicència"), ": ", v.licence), ctl);
+              if (!navigator.onLine) { say(L_("Cal connexió a internet per descarregar la veu")); return; }
+              try { await NeuralTTS.install(v.key); await TTS.refresh(); setVoiceCfg("id", "neural:" + v.voices[0].id); drawVoices(); say(L_("{nom} ja és a punt", { nom: v.title })); }
+              catch (e) { say(L_("No s'ha pogut descarregar la veu. Torna-ho a provar més tard.")); }
+            } }, L_("Descarrega ({mida})", { mida: mb(await NeuralTTS.downloadSize(v)) }));
+        return H("div", { class: "item" }, H("div", { class: "t" }, v.title), H("p", { class: "hint" }, L_(v.description), " ", H("a", { href: v.licenceUrl, target: "_blank", rel: "noopener" }, L_("Llicència")), ": ", v.licence), ctl);
       }));
       neuralBox.replaceChildren(...items);
     };
@@ -342,22 +387,24 @@ const VoicePanel = {
     };
     const all = H("input", { type: "checkbox" }); all.checked = !!voiceCfg().showAll;
     all.addEventListener("change", () => { setVoiceCfg("showAll", all.checked); drawVoices(); });
-    const shortMode = H("select", { id: "vp-short-mode", "aria-label": "Lectura de lletres i síl·labes curtes" },
-      H("option", { value: "phonemes" }, "Fonemes"), H("option", { value: "names" }, "Noms de les lletres"));
+    const shortMode = H("select", { id: "vp-short-mode", "aria-label": L_("Lectura de lletres i síl·labes curtes") },
+      H("option", { value: "phonemes" }, L_("Fonemes")), H("option", { value: "names" }, L_("Noms de les lletres")));
     shortMode.value = voiceCfg().shortMode;
     shortMode.addEventListener("change", () => { Voice.stop(); setVoiceCfg("shortMode", shortMode.value); });
     const panel = H("div", { class: "vp", role: "dialog", "aria-modal": "true", "aria-labelledby": "vp-title" },
-      H("header", {}, H("h2", { id: "vp-title" }, "Ajustos de la veu"), H("button", { class: "x", type: "button", "aria-label": "Tanca", onclick: close }, "×")),
+      H("header", {}, H("h2", { id: "vp-title" }, L_("Ajustos de la veu")), H("button", { class: "x", type: "button", "aria-label": L_("Tanca"), onclick: close }, "×")),
       H("div", { class: "body" },
-        H("fieldset", {}, H("legend", {}, "Veu sintètica"), voiceBox,
-          H("details", { open: TTS.caVoices().length === 0 }, H("summary", { class: "btn", style: "display:inline-block;margin:6px 0" }, "Veus catalanes gratuïtes per descarregar"),
-            H("p", { class: "hint" }, "Es descarreguen una sola vegada i després funcionen dins l'app, sense connexió."), neuralBox),
-          H("label", { class: "chk" }, all, "Mostra també veus d'altres llengües"),
-          slider("Velocitat", 0.5, 1.6, 0.05, "rate"), slider("To", 0.6, 1.4, 0.05, "pitch"), slider("Volum", 0.1, 1, 0.05, "volume")),
-        H("fieldset", {}, H("legend", {}, "So de les lletres"),
-          H("label", { for: "vp-short-mode" }, "Lletres aïllades i blocs de dues lletres"), shortMode,
-          H("p", { class: "hint" }, "Una o dues lletres: lectura lletra a lletra. Tres o més: lectura del bloc amb la veu triada. Els fonemes utilitzen els enregistraments de LECAA; la hac no té so. Els noms curts s’anuncien amb «lletra» per evitar abreviatures."),
-          H("div", { class: "row" }, ...["a", "m", "s", "l"].map(l => H("button", { class: "btn", type: "button", onclick: () => Voice.sayItem(l, { force: true }) }, "So de la " + l)))),
+        H("fieldset", {}, H("legend", {}, L_("Veu sintètica")), voiceBox,
+          NEURAL_HERE.length ? H("details", { open: TTS.ownVoices().length === 0 }, H("summary", { class: "btn", style: "display:inline-block;margin:6px 0" }, L_("Veus catalanes gratuïtes per descarregar")),
+            H("p", { class: "hint" }, L_("Es descarreguen una sola vegada i després funcionen dins l'app, sense connexió.")), neuralBox) : null,
+          H("label", { class: "chk" }, all, L_("Mostra també veus d'altres llengües")),
+          slider(L_("Velocitat"), 0.5, 1.6, 0.05, "rate"), slider(L_("To"), 0.6, 1.4, 0.05, "pitch"), slider(L_("Volum"), 0.1, 1, 0.05, "volume")),
+        H("fieldset", {}, H("legend", {}, L_("So de les lletres")),
+          // només el català i el castellà tenen locucions enregistrades dels fonemes
+          ...(Phon.hasBank() ? [H("label", { for: "vp-short-mode" }, L_("Lletres aïllades i blocs de dues lletres")), shortMode,
+            H("p", { class: "hint" }, L_("Una o dues lletres: lectura lletra a lletra. Tres o més: lectura del bloc amb la veu triada. Els fonemes utilitzen els enregistraments de LECAA; la hac no té so. Els noms curts s’anuncien amb «lletra» per evitar abreviatures."))]
+            : [H("p", { class: "hint" }, L_("En aquest idioma la veu diu el nom de cada lletra."))]),
+          H("div", { class: "row" }, ...["a", "m", "s", "l"].map(l => H("button", { class: "btn", type: "button", onclick: () => Voice.sayItem(l, { force: true }) }, L_("So de la {x}", { x: l }))))),
         msg));
     const back = H("div", { class: "vp-back", onclick: e => { if (e.target === back) close(); } }, panel);
     this.onKey = e => { e.stopPropagation(); if (e.key === "Escape") close(); };

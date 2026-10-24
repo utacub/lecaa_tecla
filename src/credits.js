@@ -22,12 +22,14 @@ function drawUTAC(ctx, x, y, h, o = {}) {
   return w;
 }
 
-const CREDITS = [
-  ["LECAA Tecla", "Joc lliure per descobrir on viu cada lletra al teclat a través de 25 minijocs, del viatge inicial i de l'activitat Blanc sobre negre. No és un mètode de mecanografia: l'objectiu és automatitzar la localització de les tecles."],
-  ["UTAC", "La UTAC és un equip de la Universitat de Barcelona i de la Fundació Bosch i Gimpera. Concreta la seva activitat a partir de dos serveis de la Generalitat de Catalunya: UTAC Educació, del Departament d’Educació i Formació Professional, i UTAC Sírius, del Departament de Drets Socials i Inclusió."],
-  ["Disseny, programació i il·lustracions", "Fets amb Claude (Anthropic) a partir de les indicacions de l'equip de LECAA. Totes les il·lustracions i textures es dibuixen per codi."],
-  ["Tipografies i veu", "Andika (SIL International) i Nunito (Vernon Adams, Cyreal i Jacques Le Bailly), amb llicència SIL Open Font License 1.1. Veu: síntesi del navegador o Piper (Ona, dades de la UPC/Festcat, CC BY-SA 3.0 ES). Sons de les lletres: locucions de LECAA Docs (veu de l'Anna)."],
-  ["Freqüència de les lletres", "Corpus AnCora (Taulé, Martí i Recasens, 2008), versió Universal Dependencies, llicència CC BY 4.0."],
+/* textos dels crèdits (es tradueixen; els noms de les institucions no) */
+const CREDITS = () => [
+  ["LECAA Tecla", L_("Joc lliure per descobrir on viu cada lletra al teclat a través de 25 minijocs, del viatge inicial i de l'activitat Blanc sobre negre. No és un mètode de mecanografia: l'objectiu és automatitzar la localització de les tecles.")],
+  ["UTAC", L_("La UTAC és un equip de la Universitat de Barcelona i de la Fundació Bosch i Gimpera. Concreta la seva activitat a partir de dos serveis de la Generalitat de Catalunya: UTAC Educació, del Departament d’Educació i Formació Professional, i UTAC Sírius, del Departament de Drets Socials i Inclusió.")],
+  [L_("Disseny, programació i il·lustracions"), L_("Fets amb Claude (Anthropic) a partir de les indicacions de l'equip de LECAA. Totes les il·lustracions i textures es dibuixen per codi. Alguns aspectes dels gràfics i de les animacions s'han millorat amb ChatGPT (OpenAI).")],
+  [L_("Tipografies"), L_("Andika (SIL International) i Nunito (Vernon Adams, Cyreal i Jacques Le Bailly), amb llicència SIL Open Font License 1.1.")],
+  [L_("Veus"), L_("Síntesi del sistema o del navegador, o veus Piper descarregables: Ona (dades de la UPC/Festcat, CC BY-SA 3.0 ES), Davefx (CC0), Sharvard (Universitat d'Edimburg, CC BY 3.0), Maider i Antton (itzune, CC BY 4.0) i Tugão (CC0). Sons de les lletres en català i en castellà: locucions de LECAA Docs i LECAA Cast (veu de l'Anna).")],
+  [L_("Versió multilingüe"), L_("Traduccions fetes amb Claude (Anthropic), pendents de revisió per parlants nadius. Freqüència de les lletres calculada amb els corpus Universal Dependencies: AnCora català i castellà (Taulé, Martí i Recasens, 2008; CC BY 4.0), BDT basc i CTG gallec (CC BY-NC-SA 3.0), EWT anglès i GSD francès (CC BY-SA 4.0).")],
 ];
 /* logos de les entitats (assets/credits/, en ordre de nom de fitxer) i el seu peu, com a la captura de Marc */
 const CREDIT_CAPTIONS = [
@@ -76,25 +78,25 @@ function drawCredits(ctx, scene) {
   Mouse.add(px, py, pw, ph, {});
   drawPanel(ctx, px, py, pw, ph, { r: 32 });
   drawLogo(ctx, px + 250, py + 56, 48);
-  text(ctx, "Crèdits", px + pw - 60, py + 58, { size: 36, weight: 900, font: FONT_T, color: BRAND.tinta, align: "right" });
+  text(ctx, L_("Crèdits"), px + pw - 60, py + 58, { size: 36, weight: 900, font: FONT_T, color: BRAND.tinta, align: "right" });
   ctx.fillStyle = "#DDE7E4"; ctx.fillRect(px + 40, py + 104, pw - 80, 2);
-  // a l'esquerra, els textos; a la dreta, els logos de les entitats (3 a dalt i 2 a sota)
-  const colW = 600; let y = py + 142; const x = px + 50;
-  CREDITS.forEach(([h, b]) => {
-    text(ctx, h, x, y, { size: 19, weight: 900, font: FONT_T, color: BRAND.petroli, align: "left" });
-    y = wrapText(ctx, b, x, y + 29, colW, 24, { size: 17, weight: 700, color: BRAND.tinta }) + 42;
-  });
-  text(ctx, "© 2026 LECAA · Programari lliure, llicència GPL-3.0 o posterior", x, py + ph - 36, { size: 16, weight: 800, font: FONT_T, color: "#4B6366", align: "left" });
-  const gx = px + 700; ctx.fillStyle = "#DDE7E4"; ctx.fillRect(gx - 20, py + 130, 2, ph - 170);
-  const L = creditLogos(), cellW = (px + pw - 40 - gx) / 3;
+  // a l'esquerra, els textos (la mida s'ajusta perquè hi càpiguen en tots els idiomes); a la dreta, els logos
+  const colW = 820, x = px + 50, top = py + 140, bottom = py + ph - 70, list = CREDITS();
+  const lay = (f, draw) => { let y = top; for (const [h, b] of list) { if (draw) text(ctx, h, x, y, { size: f + 2, weight: 900, font: FONT_T, color: BRAND.petroli, align: "left" }); y = wrapText(ctx, b, x, y + f * 1.65, colW, f * 1.38, { size: f, weight: 700, color: BRAND.tinta, measure: !draw }) + f * 2.3; } return y - f * 2.3; };
+  let fs = 17; while (fs > 12 && lay(fs, false) > bottom) fs -= 0.5;
+  lay(fs, true);
+  text(ctx, L_("© 2026 LECAA · Programari lliure, llicència GPL-3.0 o posterior"), x, py + ph - 36, { size: 16, weight: 800, font: FONT_T, color: "#4B6366", align: "left", maxW: colW });
+  const gx = px + 920; ctx.fillStyle = "#DDE7E4"; ctx.fillRect(gx - 24, py + 130, 2, ph - 170);
+  const L = creditLogos(), cellW = (px + pw - 40 - gx) / 2;
   L.forEach((im, i) => {
-    const row = i < 3 ? 0 : 1, col = i < 3 ? i : i - 3, cx = gx + cellW * (col + 0.5), cy = py + 250 + row * 290;
-    const lh = drawLogoFit(ctx, im, cx, cy, cellW - 24, i === 0 ? 120 : 90);
+    // UTAC sol a dalt, centrat; la resta, de dos en dos
+    const row = i === 0 ? 0 : Math.ceil(i / 2), col = i === 0 ? 0.5 : (i - 1) % 2, cx = gx + cellW * (col + 0.5), cy = py + 200 + row * 215;
+    drawLogoFit(ctx, im, cx, cy, cellW - 24, i === 0 ? 100 : 80);
     const cap = CREDIT_CAPTIONS[i] || "";
-    ctx.save(); ctx.font = `600 18px ${FONT_T}`; ctx.fillStyle = "#4B6366"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.save(); ctx.font = `600 17px ${FONT_T}`; ctx.fillStyle = "#4B6366"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
     const words = cap.split(" "), lines = []; let line = "";
     words.forEach(w => { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > cellW - 24 && line) { lines.push(line); line = w; } else line = t; }); if (line) lines.push(line);
-    lines.forEach((l, li) => ctx.fillText(l, cx, cy + (row ? 70 : 100) + li * 24)); ctx.restore();
+    lines.forEach((l, li) => ctx.fillText(l, cx, cy + (i === 0 ? 72 : 60) + li * 22)); ctx.restore();
   });
   // creu per tancar
   const bx = px + pw - 6, by = py + 6, ov = Mouse.add(bx - 30, by - 30, 60, 60, { click: () => { scene.credits = false; Sfx.play("whoosh"); } });

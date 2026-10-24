@@ -460,12 +460,12 @@
               if (isFly) a.flip = Math.cos(a.t * 1.3 + a.seed) > 0 ? 1 : -1;
             }
             if ((a.phase === "stay") && !a.arrivedSaid) {
-              a.arrivedSaid = true; arrived++; api.hud.label = `Animals ${arrived}/6`;
+              a.arrivedSaid = true; arrived++; api.hud.label = L_("Animals {n}/6", { n: arrived });
               Sfx.play("chime", { note: 84 }); api.particles.emit(a.x, a.y, { count: 10, color: ["#FFFFFF", "#FFE08A"], shape: "star", size: 10, speed: 160, gravity: 0, life: 0.7 });
               void 0;
             }
           });
-          if (!api.hud.label) api.hud.label = `Animals 0/6`;
+          if (!api.hud.label) api.hud.label = L_("Animals {n}/6", { n: 0 });
           // estació: neu o fulles
           if ((S.snow || season === "tardor" || season === "primavera") && ambient.length < 26 && Math.random() < dt * 6) ambient.push({ x: rand(0, W), y: -20, v: rand(30, 60), ph: rand(0, 6.28), r: rand(3, 6), c: S.snow ? "#FFFFFF" : season === "tardor" ? pick(["#E0863A", "#C9542E", "#E8B444"]) : pick(["#F6C2D0", "#FFFFFF"]) });
           for (let i = ambient.length - 1; i >= 0; i--) { const q = ambient[i]; q.y += q.v * dt; q.ph += dt; q.x += Math.sin(q.ph) * 20 * dt; if (q.y > GROUND + 10) ambient.splice(i, 1); }
@@ -474,7 +474,7 @@
           if (finishT >= 0) {
             finishT += dt;
             if (!said && finishT > 0.4) { said = true; void 0; for (let k = 0; k < 5; k++) api.particles.emit(rand(200, 1400), rand(300, 600), { count: 10, color: ["#FFFFFF", "#FFE08A", "#F7A9C4", "#BFE3F2"], shape: "star", size: 12, speed: 200, gravity: 40, life: 1.2 }); Sfx.play("win"); }
-            if (finishT > 2.6) api.finish(true, { collectName: `el jardí ${season === "hivern" ? "d'hivern" : season === "estiu" ? "d'estiu" : season === "tardor" ? "de tardor" : "de primavera"}` });
+            if (finishT > 2.6) api.finish(true, { collectName: season === "hivern" ? "el jardí d'hivern" : season === "estiu" ? "el jardí d'estiu" : season === "tardor" ? "el jardí de tardor" : "el jardí de primavera" });
           }
         },
         draw(ctx) {

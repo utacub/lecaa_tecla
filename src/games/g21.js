@@ -8,7 +8,9 @@
   const FEM = new Set(["vaca", "gallina", "ovella", "cabra", "guineu", "granota", "marieta", "abella"]);
   const NAME = { vaca: "vaca", porc: "porc", gallina: "gallina", ovella: "ovella", cavall: "cavall", anec: "ànec", conill: "conill", cabra: "cabra", ruc: "ruc", gat: "gat", gos: "gos", pollet: "pollet", guineu: "guineu", mussol: "mussol", granota: "granota", esquirol: "esquirol", erico: "eriçó", cargol: "cargol", marieta: "marieta", abella: "abella" };
   const nameOf = id => (HAS() && Critters.name(id)) || NAME[id] || id;
-  const phrase = id => { const n = nameOf(id); return (/^[aàeèéiíoòóuú]/.test(n) ? (FEM.has(id) ? "una " : "un ") : FEM.has(id) ? "la " : "el ") + n; };
+  // nivell 6: l'animal amb article (en altres idiomes, frases fetes a LANG_DATA.xx.games["g21.phrases"])
+  const PHRASES = LX("g21.phrases", {});
+  const phrase = id => { const n = nameOf(id); if (PHRASES[id]) return PHRASES[id]; return (/^[aàeèéiíoòóuú]/.test(n) ? (FEM.has(id) ? "una " : "un ") : FEM.has(id) ? "la " : "el ") + n; };
   const STYLE = { porc: "slide", gallina: "fly", anec: "fly", pollet: "fly", mussol: "fly", abella: "fly", conill: "hop", granota: "hop", esquirol: "hop", cargol: "slow", marieta: "fly" };
   // portes: x, y (centre), w, h, color, fulles (1 o 2)
   const DOORS = [
@@ -192,7 +194,7 @@
     create(api) {
       const L = api.level, GOAL = L >= 5 ? 12 : 20;
       buildScene();
-      let order = shuffle(L === 5 ? ALL.filter(id => /^[a-zç]+$/.test(nameOf(id))) : ALL);
+      let order = shuffle(L === 5 ? ALL.filter(id => PLAIN_RE.test(nameOf(id))) : ALL);
       if (api.demo) order = ["porc", "gallina", "vaca"].concat(order.filter(i => !["porc", "gallina", "vaca"].includes(i)));
       let nextA = 0;
       const pool = api.pool(L >= 5 ? { items: order.map(id => L === 6 ? phrase(id) : nameOf(id)) } : undefined);

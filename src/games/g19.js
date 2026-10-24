@@ -6,8 +6,10 @@
   const holePos = k => { const p = KB_POS[k]; if (!p) return null; return { x: 800 + (p.x - CX) * U, y: ROWY[p.row], s: ROWS[p.row], row: p.row }; };
   const GOALS = [0, 15, 20, 25, 25, 30, 35], TIME = 60;
   const distinct = w => new Set(w).size === w.length;
-  const W5 = WORDS5.concat(["sol", "mar", "gat", "nas", "peu", "cel", "nit", "dia", "riu", "gos", "foc", "pot", "dit", "ull", "mel", "tren", "camp", "poma", "pera", "sopa", "mans", "vent", "neu", "roda", "flor", "bosc", "ruc", "tia", "pare", "mare", "bou", "dau", "nau", "pou", "lupa", "fum", "cuc"]).filter(w => /^[a-zç]{3,4}$/.test(w) && distinct(w));
-  const W6 = ["pluja", "cotxe", "fruit", "pinya", "blanc", "vespa", "corda", "pinta", "sucre", "menta", "dents", "fusta", "mosca", "gelat", "ploma", "regal", "fideu", "porta", "camps", "mitjó", "verds", "groc", "llamp"].filter(w => /^[a-zç]{5}$/.test(w) && distinct(w));
+  // paraules de lletres diferents que tenen forat al prat (en altres idiomes, les seves)
+  const onBoard = w => Array.from(w).every(c => LETTERKEYS.includes(c));
+  const W5 = WORDS5.concat(LX("g19.w5", ["sol", "mar", "gat", "nas", "peu", "cel", "nit", "dia", "riu", "gos", "foc", "pot", "dit", "ull", "mel", "tren", "camp", "poma", "pera", "sopa", "mans", "vent", "neu", "roda", "flor", "bosc", "ruc", "tia", "pare", "mare", "bou", "dau", "nau", "pou", "lupa", "fum", "cuc"])).filter(w => w.length >= 3 && w.length <= 4 && onBoard(w) && distinct(w));
+  const W6 = LX("g19.w6", ["pluja", "cotxe", "fruit", "pinya", "blanc", "vespa", "corda", "pinta", "sucre", "menta", "dents", "fusta", "mosca", "gelat", "ploma", "regal", "fideu", "porta", "camps", "mitjó", "verds", "groc", "llamp"]).filter(w => w.length === 5 && onBoard(w) && distinct(w));
   const FELT = "#6FB04E";
 
   /* ---------- prat de felpa (prerenderitzat per conjunt de forats oberts) ---------- */
@@ -142,7 +144,7 @@
   Games.register({
     id: 19, key: "h", name: "Talps del teclat", zone: "camp", music: "band", keyboard: false, missAt: [800, 806], captionY: 150, demoTime: 9,
     collect: { one: "casc", many: "cascos" },
-    goal: l => l <= 2 ? `Quan surti un talp, prem la tecla que és al mateix lloc del teclat. Atrapa'n ${GOALS[l]} en un minut!` : l <= 4 ? `Els forats són com les tecles: prem la tecla del lloc d'on surt el talp. Atrapa'n ${GOALS[l]} en un minut!` : `Surten uns quants talps que formen una paraula: atrapa'ls en ordre. Atrapa'n ${GOALS[l]} en un minut!`,
+    goal: l => l <= 2 ? L_("Quan surti un talp, prem la tecla que és al mateix lloc del teclat. Atrapa'n {n} en un minut!", { n: GOALS[l] }) : l <= 4 ? L_("Els forats són com les tecles: prem la tecla del lloc d'on surt el talp. Atrapa'n {n} en un minut!", { n: GOALS[l] }) : L_("Surten uns quants talps que formen una paraula: atrapa'ls en ordre. Atrapa'n {n} en un minut!", { n: GOALS[l] }),
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
       const B = bgSprite(new Set(LETTERKEYS.filter(k => k !== "ñ")), "all");
@@ -273,7 +275,7 @@
           for (const mk of marks) {
             const p = holePos(mk.k); if (!p || mk.t > 2.1) continue;
             const a = clamp(Math.min(mk.t * 5, (2.2 - mk.t) * 3), 0, 1);
-            const lbl = mk.ok ? "aquí" : "has premut", ly = p.y + 44 * p.s;
+            const lbl = L_(mk.ok ? "aquí" : "has premut"), ly = p.y + 44 * p.s;
             ctx.save(); ctx.globalAlpha = a; ctx.font = `800 22px ${FONT_T}`; const tw = ctx.measureText(lbl).width + 26;
             rr(ctx, p.x - tw / 2, ly - 15, tw, 30, 15); ctx.fillStyle = mk.ok ? "#1F8A5B" : UI.coralDark; ctx.fill();
             text(ctx, lbl, p.x, ly + 1, { size: 22, weight: 800, font: FONT_T, color: "#fff" }); ctx.restore();

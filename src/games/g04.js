@@ -24,7 +24,7 @@
   const NG = [0, 6, 6, 6, 5, 4, 4];               // portes per volta
   const RIVAL = [0.92, 1.03, 1.14];               // velocitat dels rivals respecte de la base
   const CAR_COL = ["#F2B630", "#E0553A", "#8E6CC8", "#1E9AA0"];
-  const ORD = ["", "1r", "2n", "3r", "4t"];
+  const ORD = LX("g04.ord", ["", "1r", "2n", "3r", "4t"]);
 
   /* ---------- geometria del circuit ---------- */
   function buildTrack(shapeIdx, mirror) {
@@ -267,7 +267,7 @@
     x.fillStyle = "rgba(40,25,10,0.3)"; x.beginPath(); x.ellipse(150, 70, 170, 18, 0, 0, 6.28); x.fill();
     x.fillStyle = "#B88650"; x.beginPath(); x.moveTo(0, 66); x.lineTo(16, 0); x.lineTo(304, 0); x.lineTo(296, 66); x.closePath(); x.fill();
     x.fillStyle = "#D4A56C"; x.beginPath(); x.moveTo(6, 62); x.lineTo(20, 4); x.lineTo(300, 4); x.lineTo(292, 62); x.closePath(); x.fill();
-    text(x, th.name.replace("Circuit ", "Circuit "), 156, 34, { size: th.name.length > 24 ? 19 : 22, weight: 900, font: FONT_T, color: "#3A2614" });
+    text(x, L_(th.name).replace(/^(\S+) /, "$1 "), 156, 34, { size: L_(th.name).length > 24 ? 19 : 22, maxW: 270, weight: 900, font: FONT_T, color: "#3A2614" });
     x.restore();
     return c;
   }
@@ -499,8 +499,8 @@
           // voltes
           const lap = clamp(Math.floor(me.d / tr.L) + 1, 1, LAPS);
           if (lap !== lapShown) { if (lapShown) { Sfx.play("bell", { note: 84 }); if (lap === LAPS) void 0; } lapShown = lap; }
-          api.hud.label = `Volta ${lap} de ${LAPS}`;
-          api.hud.score = `${ORD[place()]} lloc`;
+          api.hud.label = L_("Volta {a} de {b}", { a: lap, b: LAPS });
+          api.hud.score = L_("{o} lloc", { o: ORD[place()] });
           if (fin.on) {
             fin.t += dt;
             if (fin.t > 0.05 && !fin.c) { fin.c = 1; Sfx.play("crowd"); void 0; }

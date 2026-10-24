@@ -2,7 +2,7 @@
 /* 17. La pastisseria — taulell de plastilina pastel, ingredients al bol, forn i decoració lliure */
 (() => {
   const ORDERS = 6;
-  const CITIES = ["Vic", "Olot", "Reus", "Girona", "Lleida", "Tarragona"];
+  const CITIES = LX("g17.cities", ["Vic", "Olot", "Reus", "Girona", "Lleida", "Tarragona"]);
   const BOWL = [750, 660], CUST = [250, 492], OVEN = [900, 442];
   const SLOTS = [[990, 313], [1210, 313], [1430, 313], [990, 541], [1210, 541], [1430, 541]];
   const DECO_X = [560, 800, 1040], DECO_Y = 800;
@@ -56,8 +56,9 @@
   };
   const ING_COL = { farina: "#F6EEDB", ous: "#F7D774", sucre: "#FFFFFF", llet: "#FFFFFF", nata: "#FFFDF6", mel: "#F2B33A", maduixa: "#F28DA2", xocolata: "#7A4A2E", mantega: "#FBE38A", llimona: "#F3E06B", coco: "#FBF6EE", nous: "#C9935E", canyella: "#B8743E", vainilla: "#F3E6C4", ametlles: "#E8C9A0", avellanes: "#B88152", merenga: "#FFFDF6", crema: "#F7D774", fruita: "#F59A6A", sal: "#FFFFFF" };
   const ING_KEYS = Object.keys(ING);
-  const W5 = ["farina", "ous", "sucre", "llet", "nata", "mel", "fruita", "sal", "coco", "nous"];
-  const W6 = ["maduixa", "xocolata", "mantega", "canyella", "vainilla", "llimona", "ametlles", "avellanes", "merenga", "crema"];
+  const KIND = LK("kind");
+  const W5 = LX("g17.w5", ["farina", "ous", "sucre", "llet", "nata", "mel", "fruita", "sal", "coco", "nous"]);
+  const W6 = LX("g17.w6", ["maduixa", "xocolata", "mantega", "canyella", "vainilla", "llimona", "ametlles", "avellanes", "merenga", "crema"]);
   const ingSprite = k => Sprites.get("g17i_" + k, 130, 130, (x, w, h) => {
     // Una targeta opaca separa cada ingredient del decorat, també quan es mou.
     x.fillStyle = "#FFFFFF"; x.strokeStyle = "#D8D0C5"; x.lineWidth = 2;
@@ -79,7 +80,7 @@
     maduixa: (x, s = 1) => { clay(x, p => { p.beginPath(); p.moveTo(0, 6 * s); p.bezierCurveTo(-16 * s, -8 * s, -12 * s, -24 * s, 0, -22 * s); p.bezierCurveTo(12 * s, -24 * s, 16 * s, -8 * s, 0, 6 * s); p.closePath(); }, "#E8344A", { r: 16 * s, cy: -8 * s }); x.fillStyle = "#4E9A3F"; x.beginPath(); x.ellipse(0, -22 * s, 7 * s, 3 * s, 0, 0, 6.28); x.fill(); },
   };
   const DECO_NAME = { cirera: "cirera", cireres: "cirera", espelma: "espelma", espelmes: "espelma", nata: "nata", fideus: "fideus", estel: "estel", estrelles: "estel", xocolata: "xocolata", maduixes: "maduixa" };
-  const D5 = ["cirera", "espelma", "nata", "fideus"], D6 = ["cireres", "espelmes", "xocolata", "maduixes"];
+  const D5 = LX("g17.d5", ["cirera", "espelma", "nata", "fideus"]), D6 = LX("g17.d6", ["cireres", "espelmes", "xocolata", "maduixes"]);
   const decoSprite = k => Sprites.get("g17d_" + k, 70, 70, (x, w, h) => { x.translate(w / 2, h / 2 + 18); DECO[k](x, 1.1); });
 
   /* ---------- pastís ---------- */
@@ -184,7 +185,7 @@
   Games.register({
     id: 17, key: "s", name: "La pastisseria", zone: "poble", music: "jazz", demoTime: 12, captionY: 222, missAt: [800, 440],
     collect: { one: "foto de pastís", many: "fotos de pastissos" },
-    goal: l => (l <= 3 ? "Mira què vol el client i escriu la lletra de cada ingredient." : l === 4 ? "Mira què vol el client i escriu la síl·laba de cada ingredient." : "Mira què vol el client i escriu el nom de cada ingredient.") + " Després, decora el pastís! Serveix 6 encàrrecs.",
+    goal: l => L_(l <= 3 ? "Mira què vol el client i escriu la lletra de cada ingredient." : l === 4 ? "Mira què vol el client i escriu la síl·laba de cada ingredient." : "Mira què vol el client i escriu el nom de cada ingredient.") + L_(" Després, decora el pastís! Serveix 6 encàrrecs."),
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
       const B = bgSprite(), sw = 600, sh = 420, s = Math.max(w / sw, h / sh), cx = 330, cy = 520;
@@ -222,7 +223,7 @@
       });
       function newOrder(first) {
         const items = pool.many(nShelf);
-        const kinds = L >= 5 ? items : shuffle(ING_KEYS).slice(0, nShelf);
+        const kinds = L >= 5 ? items.map(KIND) : shuffle(ING_KEYS).slice(0, nShelf);
         const needIdx = shuffle(items.map((_, i) => i)).slice(0, nRec);
         shelf = items.map((txt, i) => ({ text: txt, kind: kinds[i], slot: SLOTS[i], need: needIdx.includes(i) ? needIdx.indexOf(i) + 1 : 0, used: false, pop: 0, appear: -i * 0.06 }));
         const recipe = needIdx.map(i => shelf[i]);
@@ -245,7 +246,7 @@
         if (decos.length >= nDeco) { phase = "serve"; pt = 0; }
       }
       function setDecoOpts() {
-        const items = dpool.many(3), kinds = L >= 5 ? items.map(t => DECO_NAME[t]) : ["cirera", "espelma", "nata"];
+        const items = dpool.many(3), kinds = L >= 5 ? items.map(t => DECO_NAME[KIND(t)]) : ["cirera", "espelma", "nata"];
         decoOpts = items.map((txt, i) => ({ text: txt, kind: kinds[i], i, pop: 0, x: DECO_X[i] }));
       }
       return {
@@ -293,7 +294,7 @@
           }
           if (phase === "leave") {
             custX = lerp(CUST[0], -260, Ease.inCubic(clamp(pt / 0.7, 0, 1))); if (cakePos) cakePos = [custX + 210, cakePos[1]];
-            if (pt > 0.75) { if (served >= ORDERS) { phase = "done"; api.finish(true, { collectName: `${ORDERS} fotos de pastissos de ${city}` }); } else newOrder(); }
+            if (pt > 0.75) { if (served >= ORDERS) { phase = "done"; api.finish(true, { collectName: L_("{n} fotos de pastissos de {lloc}", { n: ORDERS, lloc: city }) }); } else newOrder(); }
           }
           photos.forEach(p => p.t += dt);
         },

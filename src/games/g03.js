@@ -4,15 +4,15 @@
   const NEON = ["#19E6FF", "#FF3BD4", "#FFE23B"];
   const CX = 800, CY = 470, SHIELD_R = 128, DURATION = 120;
 
-  /* ---------- síl·labes (aproximació a les regles del català) ---------- */
-  const VOW = "aeiouàèéíïòóúü", CLUST = ["pl", "bl", "cl", "gl", "fl", "pr", "br", "tr", "dr", "cr", "gr", "fr"];
+  /* ---------- síl·labes (aproximació a les regles del català; en altres idiomes, amb els seus dígrafs) ---------- */
+  const VOW = "aeiouàèéíïòóúü" + ({ fr: "yâäêëîôöûùœæ", en: "y" }[LANG] || ""), DIGRAPHS = LX("g03.digraphs", ["ll", "ny"]), CLUST = ["pl", "bl", "cl", "gl", "fl", "pr", "br", "tr", "dr", "cr", "gr", "fr"];
   function syllabify(word) {
     const u = []; // unitats: {s, v}
     for (let i = 0; i < word.length;) {
       const c = word[i], two = word.slice(i, i + 2), nx = word[i + 2] || "";
       if (c === " ") { u.push({ s: " ", sp: true }); i++; continue; }
       if (word.slice(i, i + 3) === "l·l") { u.push({ s: "l·", v: false }); i += 2; continue; }
-      if (two === "ll" || two === "ny") { u.push({ s: two, v: false }); i += 2; continue; }
+      if (DIGRAPHS.includes(two)) { u.push({ s: two, v: false }); i += 2; continue; }
       if ((two === "qu" || two === "gu") && "eiéèíï".includes(nx)) { u.push({ s: two, v: false }); i += 2; continue; }
       u.push({ s: c, v: VOW.includes(c) }); i++;
     }

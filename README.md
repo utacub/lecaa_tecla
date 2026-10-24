@@ -12,6 +12,15 @@ La versió actual es publica a https://utacub.github.io/lecaa_tecla/. El fitxer 
 
 Els menús i l'illa es fan servir amb el ratolí; dins dels jocs només es juga amb el teclat. L'accés docent (alumnes i resultats) és a la rodeta d'opcions de la portada i de l'illa. El primer cop es demana crear un codi de 4 xifres, que es pot canviar des de dins; si s'oblida, «No recordo el codi» permet crear-ne un de nou resolent una multiplicació de dos nombres de dues xifres.
 
+## Idiomes
+
+L'app està disponible en els mateixos sis idiomes que els jocs de Mira i Juga: català, castellà, basc, gallec, anglès i francès. L'idioma es tria amb el menú de la part superior dreta de la portada o des de la rodeta d'opcions; la primera vegada se segueix l'idioma del navegador, i qui ja feia servir l'app abans continua en català. Canviar d'idioma no canvia l'estructura ni el funcionament dels jocs: només els textos, les llistes de lletres i paraules, l'ordre de freqüència de les lletres, el teclat dibuixat (AZERTY per al francès, QWERTY britànic per a l'anglès) i les veus.
+
+- **Sons de les lletres:** en català i en castellà, locucions enregistrades (veu de l'Anna, de LECAA Docs i LECAA Cast). En la resta d'idiomes la veu sintètica diu el nom de la lletra.
+- **Veus:** les del sistema o del navegador en tots els idiomes; a més, veus Piper descarregables en català (Ona), castellà (Davefx, Sharvard) i basc (Maider, Antton). En gallec no hi ha cap veu lliure per al navegador: el menú de veus ho explica, recomana les veus gallegues de Microsoft Edge i ofereix com a alternativa una veu castellana o la portuguesa Tugão.
+- **Traduccions:** `src/lang/xx.js` (diccionari `I18N.xx` amb el text català com a clau, i continguts propis a `LANG_DATA.xx`). Estan fetes amb Claude i convé que les revisin parlants nadius.
+- **Proves:** `node tests/i18n-screens.cjs dist/index.html <carpeta> es,eu 1-25 1,6` fa captures de les pantalles i de cada joc i recull els errors.
+
 ## Estructura
 
 - `src/`: codi (Canvas 2D, sense llibreries). `src/games/gNN.js` és cada minijoc.
@@ -44,7 +53,13 @@ La llicència cobreix el codi. **No** cobreix els logotips de la UTAC, de LECAA 
 | piper-phonemize (Michael Hansen) | dins del fonemitzador que es baixa | MIT | `LICENSES/MIT-piper-phonemize.txt` |
 | espeak-ng | dins del fonemitzador que es baixa | GPL-3.0-or-later | `LICENSE` |
 | Veu Piper Ona (UPC, Festcat) | no s'inclou: es baixa des de Hugging Face quan l'usuari ho demana | CC BY-SA 3.0 ES | [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices/tree/main/ca/ca_ES) |
+| Veus Piper Davefx (castellà) i Tugão (portuguès, alternativa per al gallec) | no s'inclouen: es baixen quan l'usuari ho demana | CC0 | [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices) |
+| Veu Piper Sharvard (castellà; Universitat d'Edimburg) | no s'inclou: es baixa quan l'usuari ho demana | CC BY 3.0 | [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices/tree/main/es/es_ES/sharvard) |
+| Veus Piper Maider i Antton (basc; itzune) | no s'inclouen: es baixen quan l'usuari ho demana | CC BY 4.0 | [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices/tree/main/eu/eu_ES) |
 | Freqüència de les lletres: corpus AnCora (Taulé, Martí i Recasens, 2008), versió Universal Dependencies | taula a `src/voyage.js` | CC BY 4.0 | [UD Catalan AnCora](https://github.com/UniversalDependencies/UD_Catalan-AnCora) |
+| Freqüència de les lletres en castellà: UD Spanish AnCora | `src/lang/es.js` | CC BY 4.0 | [UD Spanish AnCora](https://github.com/UniversalDependencies/UD_Spanish-AnCora) |
+| Freqüència de les lletres en basc i gallec: UD Basque BDT i UD Galician CTG | `src/lang/eu.js`, `src/lang/gl.js` (només la taula de percentatges) | CC BY-NC-SA 3.0 | [UD Basque BDT](https://github.com/UniversalDependencies/UD_Basque-BDT), [UD Galician CTG](https://github.com/UniversalDependencies/UD_Galician-CTG) |
+| Freqüència de les lletres en anglès i francès: UD English EWT i UD French GSD | `src/lang/en.js`, `src/lang/fr.js` | CC BY-SA 4.0 | [UD English EWT](https://github.com/UniversalDependencies/UD_English-EWT), [UD French GSD](https://github.com/UniversalDependencies/UD_French-GSD) |
 | Locucions dels sons de les lletres (veus de l'Anna i en Jordi; veu femenina de LECAA CAST) | `assets/sons/phonemes/` | creades per a LECAA (procedeixen de LECAA i LECAA CAST; vegeu `docs/phonemes.md`) | |
 
 Com que el fonemitzador de les veus Piper inclou espeak-ng (GPL-3.0), les versions que el distribueixen s'han de publicar sota una llicència compatible amb la GPL-3.0; per això LECAA Tecla fa servir la GPL-3.0-or-later, igual que LECAA Docs.

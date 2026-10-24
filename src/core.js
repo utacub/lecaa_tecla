@@ -49,7 +49,8 @@ const Settings = Object.assign({
   reduceMotion: false, // moviment reduït
   fullscreen: false,   // pantalla completa en clicar Començar
   calibN: 20,          // lletres del viatge de calibratge
-  layout: "es",        // disposició del teclat en pantalla: es (català/espanyol)
+  layout: "es",        // disposició del teclat en pantalla: es (QWERTY espanyola), fr (AZERTY) o uk (QWERTY britànica)
+  layoutFixed: false,  // si és fals, la disposició segueix l'idioma
 }, Store.get("settings", {}));
 function saveSettings() { Store.set("settings", Settings); }
 const disp = s => Settings.upper ? s.toLocaleUpperCase("ca") : s;
@@ -272,16 +273,25 @@ function blobPath(ctx, x, y, r, seed, wob = 0.18, n = 9) {
   for (let i = 0; i < n; i++) { const p = pts[i], q = pts[(i + 1) % n]; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2; if (i === 0) ctx.moveTo(mx, my); else ctx.quadraticCurveTo(p[0], p[1], mx, my); }
   const p = pts[0], q = pts[1]; ctx.quadraticCurveTo(p[0], p[1], (p[0] + q[0]) / 2, (p[1] + q[1]) / 2); ctx.closePath();
 }
+// tots els textos dibuixats passen pel diccionari de l'idioma (L_, i18n.js): els jocs escriuen en català
 function text(ctx, s, x, y, o = {}) {
+  s = L_(s);
   ctx.save();
   ctx.font = `${o.weight || 700} ${o.size || 32}px ${o.font || FONT_L}`;
+  if (o.maxW) fitFont(ctx, s, o.weight || 700, o.size || 32, o.font || FONT_L, o.maxW);
   ctx.textAlign = o.align || "center"; ctx.textBaseline = o.base || "middle";
   if (o.shadow) { ctx.shadowColor = o.shadow; ctx.shadowBlur = o.blur || 0; ctx.shadowOffsetY = o.sy != null ? o.sy : 3; }
   if (o.stroke) { ctx.lineJoin = "round"; ctx.lineWidth = o.lw || 6; ctx.strokeStyle = o.stroke; ctx.strokeText(s, x, y); }
   ctx.fillStyle = o.color || BRAND.ink; ctx.fillText(s, x, y);
   ctx.restore();
 }
-function measure(ctx, s, size, weight = 700, font = FONT_L) { ctx.save(); ctx.font = `${weight} ${size}px ${font}`; const w = ctx.measureText(s).width; ctx.restore(); return w; }
+/* redueix la mida de la lletra fins que el text hi cap (textos traduïts més llargs que el català) */
+function fitFont(ctx, s, weight, size, font, maxW, min = size * 0.6) {
+  let fs = size; ctx.font = `${weight} ${fs}px ${font}`;
+  while (fs > min && ctx.measureText(s).width > maxW) { fs -= 1; ctx.font = `${weight} ${fs}px ${font}`; }
+  return fs;
+}
+function measure(ctx, s, size, weight = 700, font = FONT_L) { s = L_(s); ctx.save(); ctx.font = `${weight} ${size}px ${font}`; const w = ctx.measureText(s).width; ctx.restore(); return w; }
 
 /* ---------- imatges incrustades ---------- */
 const Img = {

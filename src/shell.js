@@ -45,24 +45,27 @@ TitleScene.prototype.draw=function(ctx){
   const im=ShellArt.get('title');if(im)ctx.drawImage(im,0,0,W,H);
   // Both logos are the exact original functions/assets, never image-generated.
   drawLogo(ctx,800,238,116);
-  text(ctx,'Juga i descobreix on viu cada lletra',800,317,{size:27,weight:800,color:BRAND.petroli});
-  drawButton(ctx,585,636,'Blanc sobre negre',{fs:30,w:380,h:88,style:'dark',click:()=>this.start('bsn')});
-  drawButton(ctx,1000,636,"Anar a l'illa",{fs:32,w:380,h:88,style:'primary',click:()=>this.start('illa')});
+  text(ctx,L_('Juga i descobreix on viu cada lletra'),800,317,{size:27,weight:800,color:BRAND.petroli,maxW:700});
+  drawButton(ctx,585,636,L_('Blanc sobre negre'),{fs:30,w:380,h:88,style:'dark',click:()=>this.start('bsn')});
+  drawButton(ctx,1000,636,L_("Anar a l'illa"),{fs:32,w:380,h:88,style:'primary',click:()=>this.start('illa')});
   const on=!!Settings.fullscreen;
   drawPanel(ctx,635,711,330,55,{r:27,border:false,fill:'#FFFDF6',blur:15});
   Mouse.add(635,711,330,55,{click:()=>{Settings.fullscreen=!on;saveSettings();Sfx.play('tick');}});
   rr(ctx,655,726,25,25,6);ctx.fillStyle=on?BRAND.petroli:'#fff';ctx.fill();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=3;ctx.stroke();
   if(on)text(ctx,'✓',668,738,{size:23,color:'#fff'});
-  text(ctx,'Pantalla completa',700,739,{size:23,weight:800,color:BRAND.tinta,align:'left'});
-  drawButton(ctx,30,48,'Crèdits',{fs:22,h:48,align:'left',click:()=>{this.credits=true;Sfx.play('whoosh');}});
+  text(ctx,L_('Pantalla completa'),700,739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:245});
+  drawButton(ctx,30,48,L_('Crèdits'),{fs:22,h:48,align:'left',click:()=>{this.credits=true;Sfx.play('whoosh');}});
   drawGearButton(ctx,W-60,50,this,.88);
+  // menú d'idioma a dalt a la dreta, com a Mira i Juga i LECAA Docs
+  if(!this.opts&&!this.credits){drawLangButton(ctx,W-116,50,this,{h:54,fs:23});}
   const lh=54,uw=drawUTACMeasure(lh);drawPanel(ctx,W-uw-70,H-108,uw+48,78,{r:34,border:false,blur:12});drawUTAC(ctx,W-uw-46,H-68,lh);
+  if(!this.opts&&!this.credits)drawLangList(ctx,this);
   if(this.opts)drawIslandOptions(ctx,this);if(this.credits)drawCredits(ctx,this);
 };
 
 ProfileScene.prototype.draw=function(ctx){
   const im=ShellArt.get('profiles');if(im)ctx.drawImage(im,0,0,W,H);
-  text(ctx,'Qui juga?',800,85,{size:57,weight:900,font:FONT_T,color:BRAND.tinta});
+  text(ctx,L_('Qui juga?'),800,85,{size:57,weight:900,font:FONT_T,color:BRAND.tinta});
   const slots=this.slots(),page=Math.floor(this.sel/6),start=page*6;
   const xs=[535,800,1065],ys=[301,585];
   for(let n=0;n<6;n++){
@@ -78,7 +81,7 @@ ProfileScene.prototype.draw=function(ctx){
       ctx.save();ctx.strokeStyle=BRAND.petroli;ctx.setLineDash([8,7]);ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy-12,53,0,Math.PI*2);ctx.stroke();ctx.restore();
       text(ctx,'+',cx,cy-15,{size:84,weight:800,color:BRAND.petroli});
     }
-    const label=p?p.name:'Nou';const fs=Math.min(29,190/Math.max(1,label.length)*1.5);
+    const label=p?p.name:L_('Nou');const fs=Math.min(29,190/Math.max(1,label.length)*1.5);
     drawPanel(ctx,cx-108,cy+89,216,46,{r:17,border:false,fill:sel?BRAND.petroli:'#FFF7E8',blur:6});
     text(ctx,label,cx,cy+112,{size:fs,weight:900,font:FONT_T,color:sel?'#fff':BRAND.petroli});
   }
@@ -89,7 +92,7 @@ ProfileScene.prototype.draw=function(ctx){
     drawPanel(ctx,720,782,160,38,{r:19,border:false,fill:'rgba(255,253,246,.95)',blur:3});
     text(ctx,`${page+1} / ${pages}`,800,801,{size:20,color:BRAND.petroli});
   }
-  drawButton(ctx,34,838,'‹  Portada',{align:'left',w:215,h:60,fs:25,click:this.mode==='pick'?()=>this.onKey('Escape'):null});
+  drawButton(ctx,34,838,L_('‹  Portada'),{align:'left',w:215,h:60,fs:25,click:this.mode==='pick'?()=>this.onKey('Escape'):null});
   const lh=43,lw=logoWidth(lh);drawPanel(ctx,W-lw-64,808,lw+38,62,{r:28,border:false,blur:10});drawLogo(ctx,W-lw/2-45,839,lh);
   if(this.mode==='new')this.drawNew(ctx);
 };
@@ -153,12 +156,12 @@ IslandScene.prototype.draw=function(ctx){
   islandAvatar(ctx,this);
   ctx.restore();
   if(this.hoverId&&!this.walk){const [hx,hy]=this.worldToScreen(PLACES[this.hoverId][0],PLACES[this.hoverId][1]-80);drawChip(ctx,clamp(hx,150,W-150),Math.max(122,hy-20),Games.byId[this.hoverId].name,{align:'center',fs:23,h:44,fill:'rgba(23,103,107,.97)'});}
-  if(this.hoverVoy&&!this.hoverId){const [hx,hy]=this.worldToScreen(...VOYAGE_POS);drawChip(ctx,Math.max(180,hx),hy-95,"El viatge a l'illa",{align:'center',fs:22,h:44,fill:BRAND.petroli});}
+  if(this.hoverVoy&&!this.hoverId){const [hx,hy]=this.worldToScreen(...VOYAGE_POS);drawChip(ctx,Math.max(180,hx),hy-95,L_("El viatge a l'illa"),{align:'center',fs:22,h:44,fill:BRAND.petroli});}
   this.drawHUD(ctx);
-  drawButton(ctx,30,H-44,'‹  Portada',{align:'left',fs:22,h:52,w:180,click:()=>App.go(new TitleScene())});
+  drawButton(ctx,30,H-44,L_('‹  Portada'),{align:'left',fs:22,h:52,w:180,click:()=>App.go(new TitleScene())});
   drawButton(ctx,W/2-120,H-44,'−',{w:54,h:52,fs:34,click:()=>this.onWheel(1)});
   drawButton(ctx,W/2-50,H-44,'+',{w:54,h:52,fs:32,click:()=>this.onWheel(-1)});
-  drawButton(ctx,W/2+80,H-44,'Vista general',{w:170,h:52,fs:20,click:()=>{this.closeCard();this.zoomT=.43;this.cam.z=.43;this.free=[1200,750];}});
+  drawButton(ctx,W/2+80,H-44,L_('Vista general'),{w:170,h:52,fs:20,click:()=>{this.closeCard();this.zoomT=.43;this.cam.z=.43;this.free=[1200,750];}});
   if(this.cardOpen&&this.cardT>0&&!this.walk){if(this.cardVoy)this.drawVoyageCard(ctx);else this.drawCard(ctx);}
   if(this.opts)drawIslandOptions(ctx,this);if(this.credits)drawCredits(ctx,this);
 };

@@ -163,8 +163,8 @@
     5: { waves: [3, 3, 4, 4, 1], vy: 4.6, vx: 38, fire: 0, shots: 0, size: 52 },
     6: { waves: [3, 3, 3, 4, 1], vy: 4, vx: 34, fire: 0, shots: 0, size: 48 },
   };
-  const GIANT5 = ["planeta", "estrella", "astronauta", "cometa", "meteorit"];
-  const GIANT6 = ["la lluna surt", "som astronautes", "adéu estrelles", "bon viatge", "la nau gegant"];
+  const GIANT5 = LX("g02.giant5", ["planeta", "estrella", "astronauta", "cometa", "meteorit"]);
+  const GIANT6 = LX("g02.giant6", ["la lluna surt", "som astronautes", "adéu estrelles", "bon viatge", "la nau gegant"]);
 
   Games.register({
     id: 2, key: "i", name: "Invasors de l'alfabet", zone: "espai", music: "arcade",
@@ -290,16 +290,16 @@
               st.cleared++; api.hud.progress = [st.cleared, WAVES];
               shots.forEach(q => { if (!q.dead) { q.dead = true; explode(q); } });
               if (st.cleared >= WAVES) { st.phase = "won"; st.t = 0; banner = { text: "Sector superat!", sub: "Has guanyat la insígnia de pilot", t: 0 }; Sfx.play("win"); }
-              else { st.phase = "cleared"; st.t = 0; banner = { text: "Onada superada!", sub: `Ara ve l'onada ${st.cleared + 1} de 5`, t: 0 }; Sfx.play("star", { i: st.cleared % 3 }); }
+              else { st.phase = "cleared"; st.t = 0; banner = { text: "Onada superada!", sub: L_("Ara ve l'onada {n} de 5", { n: st.cleared + 1 }), t: 0 }; Sfx.play("star", { i: st.cleared % 3 }); }
             }
           }
           if (st.phase === "cleared" && st.t > (api.demo ? 0.6 : 1.8)) {
-            st.wave++; api.hud.label = "Onada " + (st.wave + 1);
+            st.wave++; api.hud.label = L_("Onada {n}", { n: st.wave + 1 });
             const giant = L >= 5 && st.wave === WAVES - 1;
-            banner = { text: giant ? "Atenció: nau gegant!" : `Onada ${st.wave + 1} de 5`, sub: giant ? (L === 6 ? "Escriu tota la frase, amb els espais" : "Escriu la paraula llarga") : "", t: 0 };
+            banner = { text: giant ? "Atenció: nau gegant!" : L_("Onada {n} de 5", { n: st.wave + 1 }), sub: giant ? (L === 6 ? "Escriu tota la frase, amb els espais" : "Escriu la paraula llarga") : "", t: 0 };
             st.phase = "banner"; st.t = 0;
           }
-          if (st.phase === "won" && st.t > 1.6 && !st.fin) { st.fin = true; api.finish(true, { collectName: `la insígnia del sector ${L}` }); }
+          if (st.phase === "won" && st.t > 1.6 && !st.fin) { st.fin = true; api.finish(true, { collectName: L_("la insígnia del sector {n}", { n: L }) }); }
           if (st.phase === "over" && st.t > 1.6 && !st.fin) { st.fin = true; api.finish(false); }
           // projectils: cauen cap al canó, els escuts els aturen
           for (const q of shots) {
