@@ -457,7 +457,7 @@
       let nCaught = 0, said = false, card = null, done = false, endT = -1, castAnim = 0, laneFree = [0, 0, 0];
       const fontSize = L <= 3 ? 64 : L === 4 ? 50 : 42;
       const typer = api.typer({
-        targets: () => fishes.filter(f => f.a >= .9),
+        targets: () => fishes.filter(f => f.a > 0),
         rank: f => Math.abs(f.x - 800) * 0.6 + (900 - f.y),
         onStep: (f) => {
           if (f.typed === 1) cast(f.x, f.y + 8, f);

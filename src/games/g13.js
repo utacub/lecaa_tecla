@@ -196,9 +196,9 @@
       }
       function fireworksBurst() { const x = rand(300, 1300), y = rand(160, 420); fireworks.push({ x, y, t: 0 }); api.particles.emit(x, y, { count: 34, color: ["#E8453C", "#F5B82E", "#3B8FE0", "#46B35C", "#F07AA8", "#FFFFFF"], shape: pick(["confetti", "star"]), speed: 420, gravity: 160, drag: 0.95, size: 15, life: 1.8 }); Sfx.play("pop"); setTimeout(() => Sfx.play("chime", { note: randi(76, 88) }), 90); }
       return {
-        expected() { return st.phase === "swing" && cur && !st.done ? cur.text[cur.typed] : null; },
+        expected() { return (st.phase === "swing" || st.phase === "lower") && cur && !st.done ? cur.text[cur.typed] : null; },
         onKey(k) {
-          if (st.phase !== "swing" || !cur || st.done || k.length !== 1) return;
+          if ((st.phase !== "swing" && st.phase !== "lower") || !cur || st.done || k.length !== 1) return;
           const ch = cur.text[cur.typed];
           if (k === ch) { cur.typed++; api.hit({ sfx: cur.typed >= cur.text.length ? "clack" : "tick" }); if (cur.typed >= cur.text.length) release(); }
           else { api.miss(ch, k, { sfx: "thud" }); cur.wob = 1; }

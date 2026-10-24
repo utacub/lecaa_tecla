@@ -144,9 +144,9 @@
       }
       api.hud.progress = [0, GOAL];
       return {
-        expected() { return st.phase === "play" && !st.done && st.typed < st.word.length ? st.word[st.typed] : null; },
+        expected() { return (st.phase === "play" || st.phase === "sew") && !st.done && st.typed < st.word.length ? st.word[st.typed] : null; },
         onKey(k) {
-          if (st.done || st.phase !== "play" || k.length !== 1 || st.typed >= st.word.length) return;
+          if (st.done || (st.phase !== "play" && st.phase !== "sew") || k.length !== 1 || st.typed >= st.word.length) return;
           const ch = st.word[st.typed];
           if (k === ch) {
             // botó lliure més proper (des d'on serà la serp quan hi arribi)

@@ -256,7 +256,7 @@
       const sh = { k: 0 };                                                       // el nostre xutador
       const rival = { k: 0 };                                                    // xutador rival
       const typer = api.typer({
-        targets: () => turn === "shoot" ? (phase === "aim" ? corners.filter(c => !c.cov) : []) : ((phase === "runup" || phase === "flight") && ball && !ball.res ? [ball] : []),
+        targets: () => turn === "shoot" ? ((phase === "aim" || (phase === "intro" && started && pt > 0)) ? corners.filter(c => !c.cov) : []) : ((phase === "runup" || phase === "flight" || (phase === "intro" && started && pt > 0)) && ball && !ball.res ? [ball] : []),
         rank: c => c.i || 0,
         onLock: () => { if (turn === "save") me.ready = 1; },
         onDone: c => { if (turn === "shoot") doShot(c, "goal"); else saveDone(); },
@@ -281,7 +281,7 @@
         Sfx.play("whistle");
       }
       function doShot(c, res) {
-        if (phase !== "aim") return;
+        if (phase !== "aim" && phase !== "intro") return;
         phase = "kick"; pt = 0; shot = { c, res, from: [800, 790], to: c ? CORN[c.i] : (Math.random() < 0.5 ? [GOAL.l + 4, 300] : [GOAL.r - 4, 300]) };
         if (res === "goal") { kp.dir = (CORN[c.i][0] < 800) ? 1 : -1; } else if (res === "saved") kp.dir = CORN[c.i][0] < 800 ? -1 : 1; else kp.dir = shot.to[0] < 800 ? -1 : 1;
         if (res === "saved") kp.dir = CORN[c.i][0] < kp.x ? -1 : 1;
@@ -311,7 +311,7 @@
       nextKick();
       return {
         start() { started = true; },
-        expected() { if (turn === "shoot") return phase === "aim" ? typer.expected() : null; return (phase === "runup" || phase === "flight") && ball && !ball.res ? typer.expected() : null; },
+        expected() { if (turn === "shoot") return (phase === "aim" || (phase === "intro" && started && pt > 0)) ? typer.expected() : null; return (phase === "runup" || phase === "flight" || (phase === "intro" && started && pt > 0)) && ball && !ball.res ? typer.expected() : null; },
         onKey(k) { if (k.length !== 1) return; if (!this.expected()) return; typer.key(k); },
         update(dt0) {
           slowT = Math.max(0, slowT - dt0); slow = slowT > 0 ? 0.35 : lerp(slow, 1, 0.1);

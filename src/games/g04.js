@@ -428,7 +428,7 @@
       const total = tr.L * LAPS;
       function active() {
         let best = null;
-        for (const g of gates) if (!g.done && !g.gone && g.rise >= 1 && g.d > me.d && g.d <= total + 1 && (!best || g.d < best.d)) best = g;
+        for (const g of gates) if (!g.done && !g.gone && g.rise > 0.6 && g.d > me.d && g.d <= total + 1 && (!best || g.d < best.d)) best = g;
         return fin.on ? null : best;
       }
       function skid(car, amt) { car.skid = Math.max(car.skid, 1.1 * amt); snd.skid(); }

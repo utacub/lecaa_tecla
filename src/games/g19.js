@@ -179,7 +179,7 @@
       function target() {
         if (over) return null;
         if (L >= 5) { const m = wordMoles().find(m => m.wi === wordIdx && m.state === "up"); return m || null; }
-        let best = null; for (const m of moles) if (m.state === "up" && m.rise > 0.15 && (!best || m.t > best.t)) best = m; return best;
+        let best = null; for (const m of moles) if (m.state === "up" && m.rise > 0 && (!best || m.t > best.t)) best = m; return best;
       }
       function bloom() {
         for (let n = 0; n < 3 && flowers.length < 46; n++) {
@@ -205,7 +205,7 @@
             if (!tg) return;
             if (k === tg.k) { catchMole(tg); wordIdx++; if (wordIdx >= word.length) { word = null; popT = 0.7; } return; }
           } else {
-            const m = moles.find(m => m.state === "up" && m.rise > 0.15 && m.k === k);
+            const m = moles.find(m => m.state === "up" && m.rise > 0 && m.k === k);
             if (m) { catchMole(m); popT = Math.min(popT, 0.35); return; }
             if (!tg) return;
           }

@@ -756,6 +756,7 @@ class TeacherScene {
       ["Música", () => Settings.music, () => { Settings.music = !Settings.music; }],
       ["Efectes de so", () => Settings.sfx, () => Settings.sfx = !Settings.sfx],
       ["Ajudes al teclat en pantalla", () => Settings.hints, () => Settings.hints = !Settings.hints],
+  ["Ajuda i pausa en errors", () => Settings.errorSupport, () => Settings.errorSupport = !Settings.errorSupport],
       ["Moviment reduït", () => Settings.reduceMotion, () => Settings.reduceMotion = !Settings.reduceMotion],
       ["Tots els jocs oberts", () => Settings.allOpen !== false, () => Settings.allOpen = Settings.allOpen === false],
       ["Lletres del viatge de calibratge", () => Settings.calibN || 20, () => { }],
@@ -861,6 +862,7 @@ const ISLAND_OPTS = [
   // columna dreta
   ["Explicació del joc", () => Settings.intro || "sempre", null, [["sempre", "Sempre"], ["primer", "El primer cop"], ["mai", "Mai"]], v => Settings.intro = v],
   ["Ajudes al teclat en pantalla", () => Settings.hints, () => Settings.hints = !Settings.hints],
+  ["Ajuda i pausa en errors", () => Settings.errorSupport, () => Settings.errorSupport = !Settings.errorSupport],
   ["Moviment reduït", () => Settings.reduceMotion, () => Settings.reduceMotion = !Settings.reduceMotion],
   ["Tots els jocs oberts", () => Settings.allOpen !== false, scene => { Settings.allOpen = Settings.allOpen === false; if (scene instanceof IslandScene) scene.open = unlockedSet(scene.p); }],
   ["Lletres del viatge inicial", () => Settings.calibN || 20, null, null, null, [5, 27, v => Settings.calibN = v]],
@@ -875,7 +877,7 @@ function drawIslandOptions(ctx, scene) {
   ctx.save(); ctx.fillStyle = `rgba(20,38,42,${0.55 * clamp(scene.optsT * 4, 0, 1)})`; ctx.fillRect(0, 0, W, H);
   Mouse.add(0, 0, W, H, { click: () => { scene.opts = false; } });
   ctx.translate(W / 2, H / 2); ctx.scale(k, k); ctx.translate(-W / 2, -H / 2);
-  const pw = 1280, ph = 590, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
+  const pw = 1280, ph = 656, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
   Mouse.add(px, py, pw, ph, {});
   drawPanel(ctx, px, py, pw, ph, { r: 32 });
   ctx.save(); ctx.translate(px + 62, py + 58); bsnGear(ctx, 0, 0, BRAND.petroli); ctx.restore();
@@ -883,7 +885,7 @@ function drawIslandOptions(ctx, scene) {
   ctx.fillStyle = "#DDE7E4"; ctx.fillRect(px + 40, py + 102, pw - 80, 2);
   const colW = (pw - 100) / 2;
   ISLAND_OPTS.forEach(([l, get, set, choices, pick, step, cfg], i) => {
-    const x0 = px + 40 + (i < 5 ? 0 : colW + 20), y = py + 124 + (i % 5) * 66, on = get();
+    const x0 = px + 40 + (i < Math.ceil(ISLAND_OPTS.length / 2) ? 0 : colW + 20), y = py + 124 + (i % Math.ceil(ISLAND_OPTS.length / 2)) * 66, on = get();
     if (step) { // nombre amb − i +
       rr(ctx, x0, y, colW, 56, 14); ctx.fillStyle = "#F4F8F6"; ctx.fill();
       text(ctx, l, x0 + 26, y + 29, { size: 24, weight: 700, color: BRAND.tinta, align: "left" });

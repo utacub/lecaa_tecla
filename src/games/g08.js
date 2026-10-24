@@ -249,7 +249,7 @@
       /* temps fins que la fruita torna a amagar-se sota la taula */
       const timeLeft = f => { const dy = EXIT_Y - f.y, a = f.g * 0.5; return (-f.vy + Math.sqrt(Math.max(0, f.vy * f.vy + 4 * a * dy))) / (2 * a); };
       const platePos = p => { const f = p.fruit; if (p.side === -1) return [f.x, f.y]; return [f.x, f.y + (p.side === 0 ? -1 : 1) * f.r * 0.42]; };
-      const visible = p => { const [, py] = platePos(p); return py < TABLE_Y - 52 && py > 60; };
+      const visible = p => { const [, py] = platePos(p); return py < TABLE_Y - 30 && py + 50 > 0; };
       const typer = api.typer({
         targets: () => { const out = []; for (const f of fruits) if (!f.gone && !f.whole && !f.bomb) for (const p of f.parts) if (!p.done && visible(p)) out.push(p); return out; },
         rank: p => timeLeft(p.fruit) + (p.side === 1 ? 0.01 : 0),

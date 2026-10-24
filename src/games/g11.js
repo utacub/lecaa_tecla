@@ -178,7 +178,7 @@
       const knotY = b => L >= 5 ? b.y + 118 : b.y + BRY + 78;     // on penja la placa (la vora de dalt)
       const plateCenter = (b, i) => { if (L === 4) { const bl = b.balloons[i]; return [b.x + bl.dx * 1 + Math.sin(b.ph + i) * 3, b.y + bl.dy + BRY + 74 + 42]; } return [b.plateX, knotY(b) + (L >= 5 ? 32 : 42)]; };
       const live = () => bunches.filter(b => !b.done && !b.esc);
-      const visible = b => { const [, py] = plateCenter(b, Math.min(b.typed, b.balloons.length - 1)); return py < H - 60; };
+      const visible = b => { const [, py] = plateCenter(b, Math.min(b.typed, b.balloons.length - 1)); return py - (L >= 5 ? 32 : 42) < H; };
       const typer = api.typer({
         targets: () => live().filter(visible),
         rank: b => b.y,

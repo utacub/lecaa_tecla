@@ -117,8 +117,8 @@
             if (typed >= item.length) { Sfx.play("hit"); reward(); }
           } else {
             api.miss(ch, k, { sfx: "thud" });
-            const c = cards[typed]; ghosts.push({ c: k, x0: c.x + 420, x: c.x + 420, y: c.y, w: c.w, h: c.h, tx: c.x, t: 0 });
-            askAgain = 1.3;
+            const c = cards[typed]; if (Settings.errorSupport) ghosts.push({ c: k, x0: c.x + 420, x: c.x + 420, y: c.y, w: c.w, h: c.h, tx: c.x, t: 0 });
+            if (Settings.errorSupport) askAgain = 1.3;
           }
         },
         update(dt) {

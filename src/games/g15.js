@@ -172,7 +172,7 @@
         api.hud.progress = [done, PER_ROUND];
       }
       newConstellation();
-      function target() { return con && con.phase === "play" ? con.stars[con.cur] : null; }
+      function target() { return con && (con.phase === "play" || con.phase === "intro") && con.stars[con.cur]?.appear > 0.3 ? con.stars[con.cur] : null; }
       return {
         expected() { const s = target(); return s ? s.text[con.typed] : null; },
         onKey(k) {

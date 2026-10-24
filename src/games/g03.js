@@ -137,7 +137,7 @@
       const st = { t: 0, spawnT: 0, shield: 3, blink: 0, hit: 0, ang: -Math.PI / 2, tang: -Math.PI / 2, phase: "play", endT: 0, seed: randi(1, 9999), rot: 0 };
       api.hud.timer = DURATION; api.hud.lives = [3, 3];
       const typer = api.typer({
-        targets: () => rocks.filter(r => r.x - r.r * 0.55 > 0 && r.x + r.r * 0.55 < W && r.y > 110 && r.y < H - 40),
+        targets: () => rocks.filter(r => r.x + r.r > 0 && r.x - r.r < W && r.y + r.size > 0 && r.y - r.size < H),
         rank: r => dist(r.x, r.y, CX, CY) - SHIELD_R - r.r * 0.7,
         onStep(r) { st.tang = Math.atan2(r.y - CY, r.x - CX); if (!r.done) { beams.push({ x: r.x, y: r.y, t: 0, small: true, col: r.col }); sfx(() => tone({ f: 1800, f2: 900, d: 0.07, type: "sine", v: 0.06 })); } },
         onDone(r) { blast(r); },

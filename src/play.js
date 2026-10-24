@@ -25,6 +25,7 @@ class Typer {
     if (k === "Backspace") { this.release(); return true; }
     if (k.length !== 1) return false;
     const T = this.live();
+    if (!T.length) { this.lock = null; return false; } // cap objectiu: cap error
     if (this.lock && !T.includes(this.lock)) this.lock = null;
     if (this.lock) {
       const t = this.lock, ch = t.text[t.typed];
@@ -76,8 +77,8 @@ class GameScene {
       },
       miss(expected, pressed, o = {}) {
         api.misses++; api.idle = 0; api.win.push(0); api.adapt();
-        if (!demo) { api.freeze = 0.5; sc.halt = true; } // el joc queda aturat fins que es prem espai
-        sc.showMiss(expected, pressed, o);
+        if (!demo && Settings.errorSupport) { api.freeze = 0.5; sc.halt = true; sc.haltT = 0; }
+        if (Settings.errorSupport) sc.showMiss(expected, pressed, o);
         if (o.sfx !== false) Sfx.play(o.sfx || "miss");
         if (expected && pressed && !demo) api.errs.push([expected, pressed]);
       },
@@ -293,6 +294,7 @@ class GameScene {
     ctx.restore();
   }
   onKey(k, e) {
+    if (e && e.repeat) return; // mantenir una tecla no ha de crear errors nous
     if (this.halt && this.state === "play") {
       if (k === " ") { this.halt = false; this.haltT = 0; if (this.missFx) this.missFx.t = Math.max(this.missFx.t, 1.5); this.kbShow = Math.min(this.kbShow, 0.4); this.api.freeze = 0.12; Sfx.play("tick"); }
       else if (k === "Escape") { this.state = "pause"; this.pauseSel = 0; Voice.stop(); }
@@ -306,8 +308,10 @@ class GameScene {
     if (this.state === "pause") return this.pauseKey(k);
     if (this.state === "end") return this.endKey(k);
     if (k === "Escape") { this.state = "pause"; this.pauseSel = 0; Voice.stop(); return; }
+    if (this.state === "count" && this.countdown >= 2.25 && this.g.expected?.() != null) this.state = "play";
     if (this.state !== "play") return;
     if (this.api.freeze > 0) return;
+    if (k.length === 1 && this.g.expected && this.g.expected() == null) return;
     if (this.g.onKey) this.g.onKey(k, e);
   }
   onKeyUp(k, e) { if (this.state === "play" && this.g.onKeyUp) this.g.onKeyUp(k, e); }

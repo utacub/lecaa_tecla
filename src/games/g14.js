@@ -217,7 +217,7 @@
         progress();
       }
       function progress() { api.hud.progress = [st.judged, items.length]; if (st.judged) api.hud.label = `${Math.round(st.hits / st.judged * 100)}% d'encerts`; }
-      function showCmp(it, k) { cmp.length = 0; cmp.push({ e: it.text[it.typed] || it.text[0], p: k, lane: it.lane, t: 0 }); }
+      function showCmp(it, k) { if (!Settings.errorSupport) return; cmp.length = 0; cmp.push({ e: it.text[it.typed] || it.text[0], p: k, lane: it.lane, t: 0 }); }
       function missKey(it, k) {
         api.miss(it.text[it.typed], k, { sfx: false }); playSour(it.notes[Math.max(0, it.typed - 1)] || it.midi);
         wrongs.push({ lane: it.lane, t: 0 }); st.energy = clamp(st.energy - 0.12, 0, 1); showCmp(it, k);
@@ -237,7 +237,7 @@
         expected() {
           if (api.demo || st.phase !== "play") return null;
           const act = items.find(i => i.state === "active"); if (act) return act.text[act.typed];
-          const nx = items.find(i => i.state === "pending"); return nx && nx.beat - st.ct <= 1.5 ? nx.text[0] : null;
+          const nx = items.find(i => i.state === "pending"); return nx && nx.beat - st.ct < S.lead ? nx.text[0] : null;
         },
         onKey(k) {
           if (st.phase !== "play" || k.length !== 1) return;
@@ -247,7 +247,7 @@
             else missKey(act, k);
             return;
           }
-          const inWin = items.filter(i => i.state === "pending" && i.beat - st.ct <= S.early && st.ct - i.beat <= S.late);
+          const inWin = items.filter(i => i.state === "pending" && i.beat - st.ct < S.lead && st.ct - i.beat <= S.late);
           const m = inWin.find(i => i.text[0] === k);
           if (m) {
             const ahead = Math.max(0, m.beat - st.ct) * spb();
@@ -258,7 +258,7 @@
           if (inWin.length) { missKey(inWin[0], k); return; }
           const nx = items.find(i => i.state === "pending" && i.beat - st.ct <= 2);
           if (nx && nx.text[0] !== k) missKey(nx, k);
-          // la tecla bona massa d'hora no compta com a error: s'espera que arribi a la línia
+          // Les notes accepten respostes des del primer fotograma visible.
         },
         update(dt) {
           const db = dt * bpm() / 60;

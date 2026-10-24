@@ -150,7 +150,7 @@
       const st = { spawnT: 2.2, spawned: 0, landed: 0, emerg: 0, done: 0, lastApp: -9, t: 0, colI: randi(0, 4), fin: false, endT: -1, lastCity: "Girona" };
       api.hud.progress = [0, GOAL];
       const typer = api.typer({
-        targets: () => planes.filter(p => (p.state === "circle" || p.state === "loop") && p.ready),
+        targets: () => planes.filter(p => (p.state === "enter" && p.t > 0) || p.state === "circle" || p.state === "loop"),
         rank: p => p.fuel,
         onDone(p) { clearPlane(p); },
         onMiss(p) { if (p && p.state === "circle") { p.state = "loop"; p.loopT = 0; p.loopC = [p.x - Math.sin(p.h) * 70, p.y + Math.cos(p.h) * 70]; p.loopA = Math.atan2(p.y - (p.y + Math.cos(p.h) * 70), p.x - (p.x - Math.sin(p.h) * 70)); p.wrongT = 1; } },

@@ -40,10 +40,11 @@ const Store = {
 /* ---------- configuració (panell del docent) ---------- */
 const Settings = Object.assign({
   intro: "sempre",     // explicació del minijoc: sempre, primer (només el primer cop) o mai
-  upper: false,        // mostrar les lletres en majúscula
+  upper: true,        // mostrar les lletres en majúscula
   voice: true,         // veu
   sfx: true,           // efectes
   music: true,         // música
+  errorSupport: true, // missatge de suport i pausa després dels errors
   hints: true,         // il·luminar la tecla quan l'alumne triga
   reduceMotion: false, // moviment reduït
   fullscreen: false,   // pantalla completa en clicar Començar
