@@ -1,0 +1,278 @@
+[
+  {
+    "id": 10,
+    "level": 1,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 13,
+    "hits": 12,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.166666666666623,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "perca",
+        "peix gat",
+        "anguila",
+        "carpí",
+        "tenca",
+        "bagra",
+        "lluç de riu",
+        "espinós",
+        "madrilleta",
+        "gambúsia",
+        "carpa",
+        "gardí"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "level": 2,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 13,
+    "hits": 12,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.13333333333329,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "barb",
+        "carpa",
+        "anguila",
+        "gardí",
+        "llop de riu",
+        "bavosa de riu",
+        "esturió",
+        "bagra",
+        "madrilleta",
+        "truita",
+        "salmó",
+        "espinós"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "level": 3,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 13,
+    "hits": 12,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.166666666666623,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "sard",
+        "molla",
+        "lluç",
+        "sardina",
+        "llobarro",
+        "gerret",
+        "orada",
+        "sarg",
+        "mabre",
+        "tonyina",
+        "verat",
+        "sorell"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "level": 4,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 25,
+    "hits": 24,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.066666666666624,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "tord",
+        "rap",
+        "déntol",
+        "morena",
+        "serrà",
+        "cavallet de mar",
+        "castanyola",
+        "donzella",
+        "peix lluna",
+        "aranya",
+        "salpa",
+        "escórpora"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "level": 5,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 67,
+    "hits": 66,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.066666666666624,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "molla",
+        "tonyina",
+        "sard",
+        "verat",
+        "llobarro",
+        "orada",
+        "sardina",
+        "lluç",
+        "gerret",
+        "sorell",
+        "mabre",
+        "sarg"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "level": 6,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 88,
+    "hits": 87,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.066666666666624,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "tord",
+        "déntol",
+        "serrà",
+        "escórpora",
+        "peix lluna",
+        "cavallet de mar",
+        "salpa",
+        "donzella",
+        "morena",
+        "aranya",
+        "rap",
+        "castanyola"
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "level": 1,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 27,
+    "hits": 22,
+    "progress": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": 23,
+    "level": 2,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 27,
+    "hits": 22,
+    "progress": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": 23,
+    "level": 3,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 27,
+    "hits": 22,
+    "progress": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": 23,
+    "level": 4,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 44,
+    "hits": 40,
+    "progress": [
+      4,
+      4
+    ]
+  },
+  {
+    "id": 23,
+    "level": 5,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 74,
+    "hits": 70,
+    "progress": [
+      4,
+      4
+    ]
+  },
+  {
+    "id": 23,
+    "level": 6,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 143,
+    "hits": 140,
+    "progress": [
+      3,
+      3
+    ]
+  }
+]

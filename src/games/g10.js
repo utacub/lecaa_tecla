@@ -1,5 +1,5 @@
 "use strict";
-/* 10. Pesca a l'estany — aquarel·la, aigua animada amb càustiques i reflexos */
+/* 10. Pesca a l'estany — diorama naturalista, peixos independents i aquari de col·lecció */
 (() => {
   const INK = "#2E3A3A";
   /* ---------- espècies (pintades a mà amb paràmetres) ----------
@@ -76,7 +76,61 @@
     },
   };
   const POND_BY_LEVEL = ["estany", "riu", "mar", "fons", "mar", "fons"];
-  const LANES = [262, 402, 542], BOAT = [800, 820], TANK = [1296, 712, 284, 170], GOAL = 12;
+  const LANES = [240, 430, 620], BOAT = [800, 820], TANK = [1234, 708, 342, 171], GOAL = 12;
+
+
+  // Límit útil d’aigua per carril; inclou el marge de la silueta i de la placa.
+  const WATER_LANES = [[430, 1170], [360, 1250], [470, 1200]];
+  function swimBounds(f, fontSize) {
+    const half = Math.max(95*f.s, (f.pw || (f.text.length*fontSize*.65+40))/2) + 22;
+    const [left,right] = WATER_LANES[f.lane];
+    return [left+half,right-half];
+  }
+  const submergedCache = new Map();
+  function submergedArt(sp) {
+    const key=FISH_ART[sp.name],im=Art.get(key);if(!im)return null;
+    if(submergedCache.has(key))return submergedCache.get(key);
+    const k=Math.min(280/im.width,200/im.height),w=Math.ceil(im.width*k),h=Math.ceil(im.height*k);
+    const layer=makeCanvas(w+12,h+12),c=layer.getContext("2d");
+    c.filter="blur(1.4px)";c.drawImage(im,6,6,w,h);c.filter="none";
+    c.globalCompositeOperation="source-atop";c.fillStyle="rgba(42,145,155,.24)";c.fillRect(0,0,layer.width,layer.height);
+    submergedCache.set(key,layer);return layer;
+  }
+
+  // Each species keeps its own illustration in the pond, flight and aquarium.
+  const FISH_ART = {"carpa": "g10_fish_0_00", "tenca": "g10_fish_0_01", "perca": "g10_fish_0_02", "gardí": "g10_fish_0_03", "carpí": "g10_fish_0_04", "lluç de riu": "g10_fish_0_05", "peix gat": "g10_fish_0_06", "gambúsia": "g10_fish_0_07", "bagra": "g10_fish_0_08", "madrilleta": "g10_fish_0_09", "anguila": "g10_fish_0_10", "espinós": "g10_fish_0_11", "sardina": "g10_fish_1_00", "verat": "g10_fish_1_01", "tonyina": "g10_fish_1_02", "llobarro": "g10_fish_1_03", "orada": "g10_fish_1_04", "sard": "g10_fish_1_05", "sarg": "g10_fish_1_06", "mabre": "g10_fish_1_07", "molla": "g10_fish_1_08", "lluç": "g10_fish_1_09", "gerret": "g10_fish_1_10", "sorell": "g10_fish_1_11", "rap": "g10_fish_2_00", "aranya": "g10_fish_2_01", "castanyola": "g10_fish_2_02", "donzella": "g10_fish_2_03", "serrà": "g10_fish_2_04", "tord": "g10_fish_2_05", "cavallet de mar": "g10_fish_2_06", "peix lluna": "g10_fish_2_07", "escórpora": "g10_fish_2_08", "morena": "g10_fish_2_09", "salpa": "g10_fish_2_10", "déntol": "g10_fish_2_11", "truita": "g10_fish_3_00", "salmó": "g10_fish_3_01", "barb": "g10_fish_3_02", "esturió": "g10_fish_3_03", "llop de riu": "g10_fish_3_04", "bavosa de riu": "g10_fish_3_05"};
+  function illustratedFish(ctx, sp, x, y, scale, rotation, face, alpha = 1, maxHeight = 136) {
+    const im = Art.get(FISH_ART[sp.name]); if (!im) return false;
+    const k = Math.min(190 / im.width, maxHeight / im.height) * scale;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(rotation || 0); ctx.scale(face || 1, 1);
+    ctx.globalAlpha *= alpha; ctx.drawImage(im, -im.width*k/2, -im.height*k/2, im.width*k, im.height*k); ctx.restore();
+    return true;
+  }
+  function aquarium(ctx, fish, x, y, w, h, t, expanded) {
+    const im = Art.get("g10_aquarium");
+    ctx.save(); ctx.shadowColor = "rgba(4,28,32,0.42)"; ctx.shadowBlur = expanded ? 32 : 14; ctx.shadowOffsetY = 10;
+    if (im) ctx.drawImage(im, x, y, w, h);
+    else { ctx.fillStyle = "#318f9b"; ctx.fillRect(x,y,w,h); }
+    ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.rect(x+w*.025,y+h*.05,w*.95,h*.80); ctx.clip();
+    const motion = Settings.reduceMotion ? 0 : t;
+    fish.forEach((c,i) => {
+      const col=i%4,row=Math.floor(i/4),phase=motion*.6+c.ph;
+      const fx=x+w*(.17+col*.22)+Math.sin(phase)*w*.018;
+      const fy=y+h*(.22+row*.235)+Math.sin(phase*1.3)*h*.015;
+      const size=(w/1400)*(.78+.10*clamp(c.sp.size,.7,1.3));
+      drawSide(ctx,c.sp,fx,fy,size,Settings.reduceMotion?0:Math.sin(phase)*.025,c.dir,false);
+      if(expanded) {
+        ctx.save(); const nm=c.sp.name, fs=Math.max(13,w/63),lw=measure(ctx,nm,fs,700,FONT_T)+22;
+        ctx.fillStyle="rgba(247,248,227,.88)";rr(ctx,fx-lw/2,fy+h*.10,lw,fs+10,12);ctx.fill();
+        text(ctx,nm,fx,fy+h*.10+(fs+10)/2,{size:fs,weight:700,font:FONT_T,color:"#124f58"});ctx.restore();
+      }
+    });
+    // Small moving reflections, without hiding the collection.
+    ctx.strokeStyle="rgba(228,255,255,.35)";ctx.lineWidth=1.5;
+    for(let i=0;i<8;i++){const bx=x+w*(.08+i*.12),by=y+h*(.8-((motion*.06+i*.13)%.7));ctx.beginPath();ctx.arc(bx,by,w*.0025,0,Math.PI*2);ctx.stroke();}
+    ctx.restore();
+  }
 
   /* ---------- aquarel·la ---------- */
   function seamless(src) {
@@ -171,6 +225,7 @@
   }
   const eyePos = sp => sp.shape === "eel" ? [160 * 0.5, -3] : sp.shape === "horse" ? [22, -46] : [160 * 0.36, -160 * sp.h * 0.12];
   function drawSide(ctx, sp, x, y, s, rot, flip, surprised) {
+    if (illustratedFish(ctx,sp,x,y,s,rot,flip)) return;
     const spr = sideSprite(sp);
     ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(flip * s, s);
     ctx.drawImage(spr.c, -spr.w / 2 - 6, -spr.h / 2, spr.w, spr.h);
@@ -228,6 +283,17 @@
   }
   /* dibuixa el peix de dalt amb la cua ondulant (dues meitats) */
   function drawTop(ctx, sp, x, y, s, dir, wag, o = {}) {
+    if (Art.get(FISH_ART[sp.name])) {
+      if (o.shadow) {ctx.save();ctx.globalAlpha=(o.alpha ?? .3)*.3;ctx.fillStyle="#053c42";ctx.beginPath();ctx.ellipse(x,y,70*s,19*s,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+      else {
+        const im=Art.get(FISH_ART[sp.name]),soft=submergedArt(sp),k=Math.min(190/im.width,88/s/im.height)*s;
+        const w=im.width*k,h=im.height*k;
+        ctx.save();ctx.translate(x,y);ctx.rotate(wag*.15);ctx.scale(dir,1);
+        ctx.globalAlpha *= (o.alpha == null ? 1:o.alpha)*.66;
+        ctx.drawImage(soft,-w/2-3,-h/2-3,w+6,h+6);ctx.restore();
+      }
+      return;
+    }
     const spr = o.shadow ? topShadow(sp) : topSprite(sp), k = spr.c.width / spr.w, jx = spr.w / 2 + 4 - 150 * 0.08;
     ctx.save(); ctx.translate(x, y); ctx.scale(dir * s, s); if (o.alpha != null) ctx.globalAlpha *= o.alpha;
     const ox = -spr.w / 2 - 4, oy = -spr.h / 2;
@@ -249,6 +315,8 @@
   function bottomLayer(pk) {
     const P = PONDS[pk];
     return bake("g10bot_" + pk, W, H, x => {
+      const scene = Art.get(pk === "mar" || pk === "fons" ? "g10_sea" : "g10_pond");
+      if (scene) {x.drawImage(scene,0,0,W,H);if(pk==="fons"){x.fillStyle="rgba(3,54,115,.19)";x.fillRect(0,0,W,H);}return;}
       const painted = Art.get("g10_water");
       if (painted) {
         x.drawImage(painted, 0, 0, W, H);
@@ -283,6 +351,7 @@
   function surfaceLayer(pk) {
     const P = PONDS[pk];
     return bake("g10surf_" + pk, W, H, x => {
+      if (Art.get("g10_pond")) return;
       const R = mulberry32(pk.length * 7 + 5);
       // ombra suau barata: tres còpies desplaçades i translúcides (sense filtres sobre la capa gran)
       const sh = path => { for (let k = 0; k < 3; k++) { x.save(); x.translate(6 + k * 3, 9 + k * 4); path(x); x.fillStyle = "rgba(10,40,40,0.1)"; x.fill(); x.restore(); } };
@@ -360,7 +429,7 @@
       if (Settings.reduceMotion) t = 0;
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.translate(x, y);
       const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, "#5EA8A0"); g.addColorStop(1, "#2F6A70"); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
-      if (Art.get("g10_water")) ctx.drawImage(Art.get("g10_water"), 0, 0, w, h);
+      if (Art.get("g10_pond")) ctx.drawImage(Art.get("g10_pond"), 0, 0, w, h);
       const s = Math.max(w / 320, h / 220); ctx.translate(w / 2, h / 2); ctx.scale(s, s);
       ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = 0.25; ctx.fillStyle = ctx.createPattern(causticTile(), "repeat"); ctx.translate(t * 8, t * 5); ctx.fillRect(-400 - t * 8, -300 - t * 5, 800, 600); ctx.restore();
       ctx.fillStyle = "#4E8E3E"; ctx.beginPath(); ctx.moveTo(-120, -60); ctx.arc(-120, -60, 30, 0.4, 6); ctx.closePath(); ctx.fill();
@@ -384,10 +453,11 @@
       const [anim, acol] = avatarOf(api);
       const ROD = [BOAT[0] + 120, BOAT[1] - 168];
       const hook = { state: "idle", x: ROD[0], y: ROD[1] + 60, t: 0 };
+      let spawned = 0, finished = false;
       let nCaught = 0, said = false, card = null, done = false, endT = -1, castAnim = 0, laneFree = [0, 0, 0];
       const fontSize = L <= 3 ? 64 : L === 4 ? 50 : 42;
       const typer = api.typer({
-        targets: () => fishes.filter(f => f.x > 90 && f.x < W - 90),
+        targets: () => fishes.filter(f => f.a >= .9),
         rank: f => Math.abs(f.x - 800) * 0.6 + (900 - f.y),
         onStep: (f) => {
           if (f.typed === 1) cast(f.x, f.y + 8, f);
@@ -418,9 +488,12 @@
         return speciesQ.splice(i, 1)[0];
       }
       function spawn(lane, first) {
+        spawned++;
         const sp = nextSpecies(), fromLeft = Math.random() < 0.5;
         const sz = (L === 5 ? 1.45 : 1.22) * clamp(sp.size, 0.75, 1.35);
-        const f = { sp, text: textFor(sp), lane, x: first ? rand(260, 1340) : (fromLeft ? -90 : W + 90), y: LANES[lane], dir: fromLeft ? 1 : -1, face: fromLeft ? 1 : -1, v: rand(36, 52), ph: rand(0, 6.28), s: sz, state: "swim", tug: 0, t: 0, a: first ? 1 : 1 };
+        const f = { sp, text: textFor(sp), lane, x: 800, y: LANES[lane], dir: fromLeft ? 1 : -1, face: fromLeft ? 1 : -1, v: rand(36, 52), ph: rand(0, 6.28), s: sz, state: "swim", tug: 0, t: 0, a: 0 };
+        const [left,right]=swimBounds(f,fontSize);
+        f.x=first ? clamp([650,1040,730][lane],left,right) : (fromLeft?left:right);
         if (first) { f.dir = f.x < 800 ? 1 : -1; f.face = f.dir; }
         fishes.push(f);
       }
@@ -428,35 +501,38 @@
       api.hud.progress = [0, GOAL];
       function land(j) {
         Sfx.play("splash"); api.particles.emit(BOAT[0] + 70, BOAT[1] + 40, { count: 16, color: ["#BFE3F2", "#FFFFFF", "#7EC8E0"], speed: 200, gravity: 500, size: 7, life: 0.6, angle: -Math.PI / 2, spread: 1.2 });
-        setTimeout(() => {
+        {
           caught.push({ sp: j.sp, x: TANK[0] + rand(60, TANK[2] - 60), y: TANK[1] + rand(40, TANK[3] - 60), dir: pick([-1, 1]), ph: rand(0, 6), v: rand(14, 24), pop: 1 });
           nCaught++; api.hud.progress = [nCaught, GOAL];
           card = { sp: j.sp, t: 0 }; Sfx.play("chime", { note: 76 + (nCaught % 5) * 2 });
           api.particles.emit(TANK[0] + TANK[2] / 2, TANK[1] + 30, { count: 14, color: ["#FFFFFF", "#FFE08A", "#BFE3F2"], shape: "star", size: 10, speed: 180, gravity: 120, life: 0.8 });
           void 0;
           if (nCaught >= GOAL && !done) { done = true; endT = 0; }
-        }, 450);
+        }
       }
+      function finishCollection(){if(done && endT>1.8 && !finished){finished=true;api.finish(true,{collectName:`${caught.length} peixos de ${P.name}`});}}
       return {
-        expected() { return done ? null : typer.expected(); },
-        onKey(k) { if (!done) typer.key(k); },
+        expected() { return done ? (endT > 1.8 ? "Enter" : null) : typer.expected(); },
+        onKey(k) {
+          if (done) {if(k === "Enter")finishCollection();return;}
+          typer.key(k);
+        },
         update(dt) {
           const sp = api.speed, t = api.t;
           castAnim = Math.max(0, castAnim - dt * 2.2);
           // peixos
           for (let i = fishes.length - 1; i >= 0; i--) {
-            const f = fishes[i]; f.t += dt; f.tug = Math.max(0, f.tug - dt * 2.5);
+            const f = fishes[i]; f.t += dt; f.a = Math.min(1,f.a+dt/1.1); f.tug = Math.max(0, f.tug - dt * 2.5);
             if (f.state === "swim") {
               const stop = f.hooked || f.locked;
-              const entering = f.x < 150 && f.dir > 0 || f.x > W - 150 && f.dir < 0;
-              const vv = stop ? 0 : f.v * sp * (entering ? 4 : 1);
-              f.x += f.dir * vv * dt;
-              const edge = Math.max(170, (f.pw || 0) / 2 + 30);
-              if (!stop && ((f.x > W - edge && f.dir > 0) || (f.x < edge && f.dir < 0))) f.dir *= -1;
+              const vv = stop || f.a < 1 ? 0 : f.v * sp;
+              const [left,right]=swimBounds(f,fontSize);
+              f.x = clamp(f.x+f.dir*vv*dt,left,right);
+              if (!stop && ((f.x >= right && f.dir > 0) || (f.x <= left && f.dir < 0))) f.dir *= -1;
               f.face = lerp(f.face, f.dir, clamp(dt * 3, 0, 1));
-              f.y = LANES[f.lane] + Math.sin(f.t * 0.35 + f.ph) * 26;
+              f.y = LANES[f.lane] + Math.sin(f.t * 0.35 + f.ph) * 8;
               if (f.hooked && !f.locked && f.typed === 0) f.hooked = false;
-              if (Math.random() < dt * 1.2 && !stop) wakes.push({ x: f.x - f.dir * 40 * f.s, y: f.y - 4, t: 0 });
+              if (Math.random() < dt * 1.2 && !stop && f.a >= 1) wakes.push({ x: f.x - f.dir * 40 * f.s, y: f.y - 4, t: 0 });
             } else if (f.state === "caught") {
               f.doneT += dt;
               if (f.doneT > (hook.state === "cast" ? 0.5 : 0.08)) {
@@ -470,7 +546,7 @@
             }
           }
           // carrils buits: arriba un peix nou nedant des de la vora
-          [0, 1, 2].forEach(l => { if (laneFree[l] > 0) { laneFree[l] -= dt; if (laneFree[l] <= 0 && nCaught + fishes.length + jumps.length < GOAL + 3 && !done) spawn(l, false); } });
+          [0, 1, 2].forEach(l => { if (laneFree[l] > 0) { laneFree[l] -= dt; if (laneFree[l] <= 0 && spawned < GOAL && !done) spawn(l, false); } });
           // ham
           hook.t += dt;
           if (hook.state === "cast") { const k = clamp(hook.t / 0.45, 0, 1); hook.x = lerp(hook.fx, hook.tx, Ease.outQuad(k)); hook.y = lerp(hook.fy, hook.ty, Ease.outQuad(k)); hook.z = Math.sin(k * Math.PI) * 120; if (k >= 1) { hook.state = hook.fish ? "wait" : "empty"; hook.t = 0; ripples.push({ x: hook.x, y: hook.y, t: 0, r: 10 }); Sfx.play("plof"); if (hook.fish) hook.fish.tug = 1; } }
@@ -479,19 +555,27 @@
           else if (hook.state === "reel") { const k = Ease.inOutQuad(clamp(hook.t / 0.6, 0, 1)); hook.x = lerp(hook.fx, ROD[0], k); hook.y = lerp(hook.fy, ROD[1] + 60, k); hook.z = Math.sin(k * Math.PI) * 50; if (k >= 1) { hook.state = "idle"; hook.z = 0; } }
           else { hook.x = ROD[0] + Math.sin(t * 1.5) * 4; hook.y = ROD[1] + 60; hook.z = 0; }
           // salts
-          for (let i = jumps.length - 1; i >= 0; i--) { const j = jumps[i]; j.t += dt / 1.0; if (j.t >= 1 && !j.landed) { j.landed = true; land(j); } if (j.t > 1.15) jumps.splice(i, 1); }
+          for (let i = jumps.length - 1; i >= 0; i--) { const j = jumps[i]; j.t += dt / 1.0; if (j.t >= 1.45 && !j.landed) { j.landed = true; land(j); } if (j.t >= 1.45) jumps.splice(i, 1); }
           for (let i = ripples.length - 1; i >= 0; i--) { ripples[i].t += dt; if (ripples[i].t > 1.6) ripples.splice(i, 1); }
           for (let i = wakes.length - 1; i >= 0; i--) { wakes[i].t += dt; if (wakes[i].t > 1.4) wakes.splice(i, 1); }
           if (wakes.length > 40) wakes.splice(0, wakes.length - 40);
           caught.forEach(c => { c.x += c.dir * c.v * dt; c.pop = Math.max(0, c.pop - dt * 1.5); if ((c.x > TANK[0] + TANK[2] - 40 && c.dir > 0) || (c.x < TANK[0] + 40 && c.dir < 0)) c.dir *= -1; });
           if (card) { card.t += dt; if (card.t > 2.6) card = null; }
-          if (endT >= 0) { endT += dt; if (endT > 0.3 && !said) { said = true; void 0; Sfx.play("win"); } if (endT > 2.8) api.finish(true, { collectName: `12 peixos de ${P.name}` }); }
+          if (endT >= 0) { endT += dt; if (endT > 0.3 && !said) { said = true; void 0; Sfx.play("win"); } api.idle = 0; }
         },
         draw(ctx) {
           const t = api.t;
           ctx.drawImage(bot, 0, 0);
+          if (done) {
+            const k=Settings.reduceMotion?1:Ease.inOutCubic(clamp(endT/1.2,0,1));
+            ctx.fillStyle=`rgba(4,30,36,${.72*k})`;ctx.fillRect(0,0,W,H);
+            aquarium(ctx,caught,lerp(TANK[0],100,k),lerp(TANK[1],158,k),lerp(TANK[2],1400,k),lerp(TANK[3],650,k),t,k>.95);
+            if(k>.95){text(ctx,"El teu aquari · 12 peixos",800,112,{size:38,weight:900,font:FONT_T,color:"#fff4d5"});
+              drawPanel(ctx,573,825,454,56,{r:28,border:"#cea556"});text(ctx,"Retorn · Continua",800,853,{size:25,weight:800,font:FONT_T,color:"#174f56"});if(endT>1.8)Mouse.add(573,825,454,56,{click:finishCollection});}
+            return;
+          }
           // ombres i peixos sota l'aigua
-          fishes.forEach(f => { const wag = Math.sin(f.t * (f.hooked ? 14 : 5) + f.ph) * (f.hooked ? 0.35 : 0.22) + f.tug * Math.sin(f.t * 30) * 0.3; if (f.sp.shape !== "horse") drawTop(ctx, f.sp, f.x + 16, f.y + 22, f.s, Math.sign(f.face) || 1, wag, { shadow: true, alpha: 0.5 }); });
+          fishes.forEach(f => { const wag = Math.sin(f.t * (f.hooked ? 14 : 5) + f.ph) * (f.hooked ? 0.35 : 0.22) + f.tug * Math.sin(f.t * 30) * 0.3; if (f.sp.shape !== "horse") drawTop(ctx, f.sp, f.x + 16, f.y + 22, f.s, Math.sign(f.face) || 1, wag, { shadow: true, alpha: 0.5*f.a }); });
           // càustiques i flux del riu
           ctx.save(); ctx.globalCompositeOperation = "lighter";
           const waterTime = Settings.reduceMotion ? 0 : t, flow = P.flow ? waterTime * 30 : 0, ct = causticTile();
@@ -504,8 +588,7 @@
           fishes.forEach(f => {
             const wag = Math.sin(f.t * (f.hooked ? 14 : 5) + f.ph) * (f.hooked ? 0.35 : 0.22) + f.tug * Math.sin(f.t * 30) * 0.3;
             const fx = f.x + (f.tug ? Math.sin(f.t * 40) * 3 * f.tug : 0);
-            if (f.sp.shape === "horse") drawSeahorse(ctx, f.sp, fx, f.y + 6, 0.62 * f.s, Math.sign(f.face) || 1, f.t);
-            else drawTop(ctx, f.sp, fx, f.y, f.s, Math.abs(f.face) < 0.2 ? 0.2 * Math.sign(f.face || 1) : f.face, wag, { alpha: 0.97 });
+            drawTop(ctx, f.sp, fx, f.y, f.s, Math.abs(f.face) < 0.2 ? 0.2 * Math.sign(f.face || 1) : f.face, wag, { alpha: f.a });
           });
           // reflex del cel
           ctx.save(); const rg = ctx.createLinearGradient(0, 0, W, H); rg.addColorStop(0, rgba(P.sky, 0.28)); rg.addColorStop(0.5, rgba(P.sky, 0.05)); rg.addColorStop(1, rgba(P.sky, 0.18)); ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
@@ -520,7 +603,7 @@
           ctx.restore();
           // aleta dorsal fora de l'aigua (sense deformar mai la placa)
           fishes.forEach(f => {
-            if (f.sp.shape === "horse") return;
+            if (f.sp.shape === "horse" || Art.get(FISH_ART[f.sp.name])) return;
             const fx = f.x, fy = f.y - 6, fc = f.sp.fin, s = f.s;
             ctx.save(); ctx.translate(fx, fy);
             ctx.strokeStyle = "rgba(255,255,255,0.55)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(0, 4, 26 * s, 8 * s, 0, 0, 6.28); ctx.stroke();
@@ -532,13 +615,15 @@
           });
           // barca, avatar, canya i fil
           const tilt = castAnim > 0 ? Math.sin((1 - castAnim) * Math.PI) * 0.12 : Math.sin(t * 1.2) * 0.02;
-          ctx.save(); ctx.translate(BOAT[0], BOAT[1] + 60); ctx.rotate(Math.sin(t * 0.9) * 0.012); Sprites.draw(ctx, boat, 0, 0); ctx.restore();
+          ctx.save(); ctx.translate(BOAT[0], BOAT[1] + 60); ctx.rotate(Math.sin(t * 0.9) * 0.012); if(Art.get("g10_rowboat")) ctx.drawImage(Art.get("g10_rowboat"),-175,-220,350,610); else Sprites.draw(ctx, boat, 0, 0); ctx.restore();
           ctx.save(); ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 2; for (let i = 0; i < 2; i++) { const k = ((t * 0.5 + i * 0.5) % 1); ctx.globalAlpha = 1 - k; ctx.beginPath(); ctx.ellipse(BOAT[0], BOAT[1] + 80, 130 + k * 60, 190 + k * 50, 0, Math.PI * 1.08, Math.PI * 1.92); ctx.stroke(); } ctx.restore();
-          Sprites.draw(ctx, bucket, BOAT[0] + 70, BOAT[1] + 40, { s: 0.9 });
+          if(Art.get("g10_sailor_bucket"))ctx.drawImage(Art.get("g10_sailor_bucket"),BOAT[0]+35,BOAT[1]+8,80,80);else Sprites.draw(ctx, bucket, BOAT[0] + 70, BOAT[1] + 40, { s: 0.9 });
           caught.slice(-3).forEach((c, i) => { ctx.save(); ctx.beginPath(); ctx.arc(BOAT[0] + 70, BOAT[1] + 40, 26, 0, 6.28); ctx.clip(); drawTop(ctx, c.sp, BOAT[0] + 64 + i * 6, BOAT[1] + 34 + i * 8, 0.3, i % 2 ? 1 : -1, Math.sin(t * 4 + i) * 0.2, { alpha: 0.9 }); ctx.restore(); });
           const rodA = -1.0 + tilt * 3 - castAnim * 0.6;
           const rx = BOAT[0] + 22, ry = BOAT[1] - 14, tipX = rx + Math.cos(rodA) * 190, tipY = ry + Math.sin(rodA) * 190;
-          drawAvatar(ctx, BOAT[0] - 6, BOAT[1] - 30, 118, anim, acol, { tilt: tilt - 0.04 });
+          const sailor=Art.get("g10_sailor_"+anim);
+          if(sailor){const sk=Math.min(144/sailor.width,153/sailor.height);ctx.save();ctx.translate(BOAT[0]-8,BOAT[1]-8);ctx.rotate(tilt*.4);ctx.drawImage(sailor,-sailor.width*sk/2,-sailor.height*sk,sailor.width*sk,sailor.height*sk);ctx.restore();}
+          else drawAvatar(ctx, BOAT[0] - 6, BOAT[1] - 30, 118, anim, acol, { tilt: tilt - 0.04 });
           ctx.save(); ctx.lineCap = "round"; ctx.strokeStyle = "#5A3A22"; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx + Math.cos(rodA) * 60, ry + Math.sin(rodA) * 60); ctx.stroke();
           ctx.strokeStyle = "#B88A4A"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(rx + Math.cos(rodA) * 60, ry + Math.sin(rodA) * 60); ctx.lineTo(tipX, tipY); ctx.stroke();
           ctx.fillStyle = "#8A8A8A"; ctx.beginPath(); ctx.arc(rx + Math.cos(rodA) * 40, ry + Math.sin(rodA) * 40, 8, 0, 6.28); ctx.fill();
@@ -556,12 +641,8 @@
             const rot = Math.atan2(vy, Math.abs(vx)) * 0.8;
             if (k < 1) { ctx.fillStyle = "rgba(0,30,40,0.18)"; ctx.beginPath(); ctx.ellipse(x + 20, lerp(j.y0, j.y1, k) + 20, 50 * s, 14 * s, 0, 0, 6.28); ctx.fill(); drawSide(ctx, j.sp, x, y, s, j.flip > 0 ? rot : -rot, j.flip, true); }
           });
-          // aquari
-          ctx.drawImage(tankBack(pk).c, TANK[0] - 10, TANK[1] - 10, TANK[2] + 20, TANK[3] + 20);
-          ctx.save(); rr(ctx, TANK[0] + 6, TANK[1] + 6, TANK[2] - 12, TANK[3] - 12, 10); ctx.clip();
-          caught.forEach((c, i) => { const s = 0.3 * clamp(c.sp.size, 0.7, 1.3) * (1 + c.pop * 0.4); if (c.sp.shape === "horse") drawSide(ctx, c.sp, c.x, c.y + Math.sin(t * 2 + c.ph) * 4, s * 0.8, 0, c.dir, false); else drawSide(ctx, c.sp, c.x, c.y + Math.sin(t * 1.5 + c.ph) * 5, s, Math.sin(t * 2 + c.ph) * 0.05, c.dir, false); });
-          ctx.restore();
-          ctx.drawImage(tankFront().c, TANK[0] - 10, TANK[1] - 10, TANK[2] + 20, TANK[3] + 20);
+          // Every capture appears once in the small collection tank.
+          aquarium(ctx,caught,...TANK,t,false);
           // fitxa de l'espècie nova
           if (card) {
             const a = card.t < 0.25 ? Ease.outBack(card.t / 0.25) : card.t > 2.2 ? 1 - (card.t - 2.2) / 0.4 : 1, cx = TANK[0] + TANK[2] / 2, cy = TANK[1] - 70;
@@ -573,10 +654,10 @@
             text(ctx, nm, 52, 2, { size: nm.length > 12 ? 24 : 30, weight: 900, font: FONT_T, color: BRAND.tinta });
             ctx.restore();
           }
-          ctx.save(); ctx.globalCompositeOperation = "multiply"; ctx.globalAlpha = 0.18; ctx.fillStyle = ctx.createPattern(paperTile(), "repeat"); ctx.fillRect(0, 0, W, H); ctx.restore();
-          drawVignette(ctx, 0.3, "10,40,50");
+          ctx.save(); ctx.globalCompositeOperation = "multiply"; ctx.globalAlpha = 0.025; ctx.fillStyle = ctx.createPattern(paperTile(), "repeat"); ctx.fillRect(0, 0, W, H); ctx.restore();
+          drawVignette(ctx, 0.12, "10,40,50");
           // plaques sobre l'aleta (sempre a sobre, mai deformades)
-          fishes.forEach(f => { if (!f.pw) f.pw = plateSize(ctx, f.text, fontSize).w; drawPlate(ctx, f.text, clamp(f.x, f.pw / 2 + 14, W - f.pw / 2 - 14), f.y - 48 * f.s - (fontSize < 64 ? 26 : 40), { size: fontSize, progress: f.typed, state: f.locked ? "active" : null, border: f.locked ? null : "#3E8E9A", borderW: 3 }); });
+          fishes.forEach(f => { if (!f.pw) f.pw = plateSize(ctx, f.text, fontSize).w; drawPlate(ctx, f.text, clamp(f.x, f.pw / 2 + 14, W - f.pw / 2 - 14), f.y - 90, { size: fontSize, alpha: f.a, progress: f.typed, state: f.locked ? "active" : null, border: f.locked ? null : "#3E8E9A", borderW: 3 }); });
         },
       };
     },

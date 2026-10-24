@@ -1,0 +1,70 @@
+[
+  {
+    "id": 10,
+    "level": 1,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 13,
+    "hits": 12,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.166666666666623,
+      "nCaught": 12,
+      "spawned": 12,
+      "fish": [],
+      "names": [
+        "carpa",
+        "anguila",
+        "carpí",
+        "lluç de riu",
+        "peix gat",
+        "gardí",
+        "perca",
+        "gambúsia",
+        "tenca",
+        "madrilleta",
+        "espinós",
+        "bagra"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "level": 6,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 88,
+    "hits": 87,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.066666666666624,
+      "nCaught": 12,
+      "spawned": 12,
+      "fish": [],
+      "names": [
+        "peix lluna",
+        "rap",
+        "cavallet de mar",
+        "aranya",
+        "tord",
+        "castanyola",
+        "donzella",
+        "salpa",
+        "morena",
+        "serrà",
+        "escórpora",
+        "déntol"
+      ]
+    }
+  }
+]

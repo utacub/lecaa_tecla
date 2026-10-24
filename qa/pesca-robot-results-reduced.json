@@ -1,0 +1,94 @@
+[
+  {
+    "id": 10,
+    "level": 1,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 13,
+    "hits": 12,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.166666666666623,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "lluç de riu",
+        "carpí",
+        "perca",
+        "bagra",
+        "espinós",
+        "gambúsia",
+        "tenca",
+        "madrilleta",
+        "carpa",
+        "peix gat",
+        "anguila",
+        "gardí"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "level": 6,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 88,
+    "hits": 87,
+    "progress": [
+      12,
+      12
+    ],
+    "qa": {
+      "done": true,
+      "endT": 15.066666666666624,
+      "nCaught": 12,
+      "spawned": 12,
+      "names": [
+        "cavallet de mar",
+        "rap",
+        "déntol",
+        "serrà",
+        "escórpora",
+        "castanyola",
+        "donzella",
+        "salpa",
+        "peix lluna",
+        "morena",
+        "tord",
+        "aranya"
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "level": 1,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 27,
+    "hits": 22,
+    "progress": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": 23,
+    "level": 6,
+    "finished": true,
+    "finishCalls": 1,
+    "earlyFinish": false,
+    "keys": 142,
+    "hits": 139,
+    "progress": [
+      3,
+      3
+    ]
+  }
+]

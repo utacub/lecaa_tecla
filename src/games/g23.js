@@ -11,7 +11,7 @@
     6: [["salta alt", "Salt", "jump"], ["gira rodó", "Gir", "spin"], ["pica de mans", "Picar de mans", "clap"], ["cop de cap", "Cop de cap", "nod"], ["fes el robot", "Robot", "robot"], ["braços amunt", "Braços amunt", "armsUp"]],
   };
   const LENS = { 1: [2, 3, 3, 4, 4], 2: [2, 3, 3, 4, 4], 3: [2, 3, 3, 4, 4], 4: [2, 3, 3, 4], 5: [2, 2, 3, 3], 6: [2, 2, 3] };
-  const MODEL_X = 360, MODEL_Y = 520, MY_X = 1090, MY_Y = 548, TAPE_Y = 612;
+  const MODEL_X = 360, MODEL_Y = 578, MY_X = 1180, MY_Y = 602, TAPE_Y = 704;
   const NEON = ["#FF4FA0", "#4FD1FF", "#FFD84F", "#7CFF7A", "#B57CFF"];
 
   /* ---------- sons ---------- */
@@ -162,6 +162,8 @@
   }
   function bgDisco() {
     return Sprites.get("g23bg", W, H, (x) => {
+      const stage=Art.get("g23_stage");
+      if(stage){x.drawImage(stage,0,0,W,H);x.save();x.shadowColor="#ffae40";x.shadowBlur=22;text(x,"Disco Tecla",800,275,{size:54,weight:900,font:FONT_T,color:"#ffe3a1"});x.restore();return;}
       const g = x.createLinearGradient(0, 0, 0, 470); g.addColorStop(0, "#140A2A"); g.addColorStop(1, "#2E1650"); x.fillStyle = g; x.fillRect(0, 0, W, 470);
       // panells de la paret amb bombetes
       for (let i = 0; i < 6; i++) { const px = 300 + i * 170; x.fillStyle = "rgba(255,255,255,0.04)"; rr(x, px, 200, 140, 230, 12); x.fill(); x.strokeStyle = "rgba(180,140,255,0.18)"; x.lineWidth = 3; x.stroke(); }
@@ -208,6 +210,10 @@
   /* ---------- miniatura ---------- */
   function thumb(ctx, x, y, w, h, t) {
     ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.translate(x, y);
+    if(Art.get("g23_stage")) {
+      ctx.drawImage(bgDisco().c,0,0,w,h);const r=makeRobot("#D9503A","#F2C230");ANIM.armsUp(r.p,(t*.8)%1);
+      drawRobot(ctx,r,w*.58,h*.88,h/470,t);ctx.restore();return;
+    }
     const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#140A2A"); g.addColorStop(0.55, "#2E1650"); g.addColorStop(0.55, "#1A1030"); g.addColorStop(1, "#1A1030"); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
     const sc = Math.min(Math.max(w / 300, h / 180), h / 170); ctx.translate(w / 2, h * 0.5); ctx.scale(sc, sc);
     for (let j = 0; j < 3; j++) for (let i = -4; i < 4; i++) { ctx.fillStyle = rgba(NEON[(i + j + 8 + Math.floor(t * 2)) % 5], 0.45); ctx.beginPath(); ctx.moveTo(i * 38 - j * 6, 20 + j * 22); ctx.lineTo(i * 38 + 36 - j * 6 + (i + 1) * 3, 20 + j * 22); ctx.lineTo(i * 38 + 36 + j * 6 + (i + 1) * 3, 40 + j * 22); ctx.lineTo(i * 38 + j * 6, 40 + j * 22); ctx.fill(); }
@@ -275,7 +281,7 @@
           }
         },
         update(dt) {
-          t += dt; pt += dt; spotsA += dt * (party > 0 ? 0.9 : 0.3);
+          t += dt; pt += dt; if(!Settings.reduceMotion) spotsA += dt * (party > 0 ? 0.9 : 0.3);
           beatT += dt; if (beatT > 60 / 108) { beatT = 0; beat++; }
           party = Math.max(0, party - dt * 0.12);
           robotUpdate(model, dt, t); robotUpdate(mine, dt, t + 1.7);
@@ -309,22 +315,27 @@
           ctx.drawImage(bgDisco().c, 0, 0, W, H);
           // pista de rajoles lluminoses (canvis suaus al ritme)
           const fRows = 6, cols = 10, glowK = 0.32 + party * 0.35 + (1 - Math.min(1, beatT / 0.35)) * 0.12;
-          for (let j = 0; j < fRows; j++) for (let i = 0; i < cols; i++) {
+          if(!Art.get("g23_stage")) for (let j = 0; j < fRows; j++) for (let i = 0; i < cols; i++) {
             const q = floorQuad(i, j, fRows, cols), c = NEON[(i + j * 3 + beat) % 5];
             ctx.beginPath(); q.forEach((p, n) => n ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
             ctx.fillStyle = "#1A1030"; ctx.fill(); ctx.fillStyle = rgba(c, glowK * ((i + j) % 2 ? 0.75 : 1)); ctx.fill();
             ctx.strokeStyle = "rgba(10,5,20,0.9)"; ctx.lineWidth = 3; ctx.stroke();
           }
-          const fl = ctx.createLinearGradient(0, 462, 0, 900); fl.addColorStop(0, "rgba(20,10,40,0.6)"); fl.addColorStop(0.4, "rgba(20,10,40,0)"); ctx.fillStyle = fl; ctx.fillRect(0, 462, W, 438);
+          if(!Art.get("g23_stage")){const fl = ctx.createLinearGradient(0, 462, 0, 900); fl.addColorStop(0, "rgba(20,10,40,0.6)"); fl.addColorStop(0.4, "rgba(20,10,40,0)"); ctx.fillStyle = fl; ctx.fillRect(0, 462, W, 438);}
           // focus de llum
           ctx.save(); ctx.globalCompositeOperation = "lighter";
-          for (const [sx, tx, c] of [[60, MODEL_X, "#4FD1FF"], [1540, MY_X, "#FF4FA0"]]) { const sw = Math.sin(t * 0.7 + sx) * 40; const g = ctx.createLinearGradient(sx, 0, tx, 560); g.addColorStop(0, rgba(c, 0.32)); g.addColorStop(1, rgba(c, 0.04)); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(sx - 20, 0); ctx.lineTo(sx + 20, 0); ctx.lineTo(tx + 150 + sw, 560); ctx.lineTo(tx - 150 + sw, 560); ctx.closePath(); ctx.fill(); }
+          for (const [sx, tx, c] of [[60, MODEL_X, "#4FD1FF"], [1540, MY_X, "#FF4FA0"]]) { const sw = Settings.reduceMotion ? 0 : Math.sin(t * 0.7 + sx) * 40; const g = ctx.createLinearGradient(sx, 0, tx, 560); g.addColorStop(0, rgba(c, 0.10)); g.addColorStop(1, rgba(c, 0.04)); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(sx - 20, 0); ctx.lineTo(sx + 20, 0); ctx.lineTo(tx + 150 + sw, 560); ctx.lineTo(tx - 150 + sw, 560); ctx.closePath(); ctx.fill(); }
           // reflexos de la bola de miralls
-          for (let i = 0; i < 26; i++) { const a = spotsA + i * 2.4, R = 160 + (i * 97) % 640, px = 800 + Math.cos(a) * R, py = 330 + Math.sin(a * 1.3 + i) * 220; ctx.fillStyle = rgba(NEON[i % 5], 0.22 + party * 0.15); ctx.beginPath(); ctx.ellipse(px, py, 7 + (i % 3) * 2, 5, 0, 0, 6.28); ctx.fill(); }
+          for (let i = 0; i < 26; i++) { const a = spotsA + i * 2.4, R = 160 + (i * 97) % 640, px = 800 + Math.cos(a) * R, py = 330 + Math.sin(a * 1.3 + i) * 220; ctx.fillStyle = rgba(NEON[i % 5], 0.07 + party * 0.07); ctx.beginPath(); ctx.ellipse(px, py, 7 + (i % 3) * 2, 5, 0, 0, 6.28); ctx.fill(); }
           ctx.restore();
           // bola de miralls
-          ctx.strokeStyle = "#8A8A9A"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(800, 0); ctx.lineTo(800, 40); ctx.stroke();
-          Sprites.draw(ctx, mirrorBall(), 800, 92, { s: 0.95, rot: Math.sin(t * 0.4) * 0.15 });
+          if(!Art.get("g23_stage")){ctx.strokeStyle = "#8A8A9A"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(800, 0); ctx.lineTo(800, 40); ctx.stroke();
+          Sprites.draw(ctx, mirrorBall(), 800, 92, { s: 0.95, rot: Math.sin(t * 0.4) * 0.15 });}
+          // Permanent role labels above the characters.
+          for(const [x,y,label] of [[MODEL_X,240,phase === "show" ? "Model · Mira’m!" : "Model"],[MY_X,165,"El teu robot"]]) {
+            drawPanel(ctx,x-112,y-23,224,46,{r:23,border:"#c79643",blur:10});
+            text(ctx,label,x,y,{size:24,weight:900,font:FONT_T,color:"#563b27"});
+          }
           // robots
           drawRobot(ctx, model, MODEL_X, MODEL_Y, 0.74, t);
           drawRobot(ctx, mine, MY_X, MY_Y, 0.98, t + 1.7);
@@ -337,8 +348,8 @@
             const ty = TAPE_Y + ri * 136, tot = row.reduce((a, i) => a + ws[i], 0) + gap * (row.length - 1), bw = Math.max(520, tot + 170);
             ctx.save();
             ctx.fillStyle = "rgba(0,0,0,0.45)"; rr(ctx, 800 - bw / 2 + 6, ty - 44 + 8, bw, 92, 46); ctx.fill();
-            const tg = ctx.createLinearGradient(0, ty - 44, 0, ty + 48); tg.addColorStop(0, "#3A3446"); tg.addColorStop(0.5, "#24202C"); tg.addColorStop(1, "#16131C"); ctx.fillStyle = tg; rr(ctx, 800 - bw / 2, ty - 44, bw, 92, 46); ctx.fill();
-            ctx.strokeStyle = "rgba(255,255,255,0.08)"; ctx.lineWidth = 2; const off = (t * (phase === "dance" ? 120 : 20)) % 28; for (let x0 = 800 - bw / 2 + 40 + off; x0 < 800 + bw / 2 - 40; x0 += 28) { ctx.beginPath(); ctx.moveTo(x0, ty - 38); ctx.lineTo(x0, ty + 42); ctx.stroke(); }
+            const tg = ctx.createLinearGradient(0, ty - 44, 0, ty + 48); tg.addColorStop(0, "#fff8e5"); tg.addColorStop(0.5, "#f4e7c9"); tg.addColorStop(1, "#d5b87f"); ctx.fillStyle = tg; rr(ctx, 800 - bw / 2, ty - 44, bw, 92, 46); ctx.fill();
+            ctx.strokeStyle="#9d6a2b";ctx.lineWidth=5;ctx.stroke();ctx.strokeStyle="#ffe3a2";ctx.lineWidth=2;ctx.stroke();
             for (const sx of [800 - bw / 2 + 46, 800 + bw / 2 - 46]) screw(ctx, sx, ty + 2, 14);
             ctx.restore();
             let x = 800 - tot / 2;
@@ -355,12 +366,11 @@
               ctx.save(); ctx.globalAlpha = alpha; rr(ctx, cx - lw / 2, ty - 92, lw, 30, 15); ctx.fillStyle = "rgba(255,255,255,0.92)"; ctx.fill();
               stepIcon(ctx, s[2], cx - lw / 2 + 18, ty - 70, 0.5, "#3A2A5A");
               text(ctx, lab, cx + 12, ty - 76, { size: 17, weight: 800, font: FONT_T, color: "#3A2A5A" }); ctx.restore();
-              drawPlate(ctx, s[0], cx, ty + 2, { size: psz, state: st, progress: prog, alpha });
+              drawPlate(ctx, s[0], cx, ty + 2, { size: psz, state: st, progress: prog, alpha, border: st ? null : "#b88a42", borderW: 3 });
             });
           });
           // indicacions
           if (phase === "ready") { const b = Math.sin(pt * 3) * 4; ctx.save(); ctx.globalAlpha = clamp(pt * 3, 0, 1); drawPanel(ctx, 800 - 220, 386 + b - 40, 440, 80, { r: 40, blur: 18, border: "#B57CFF" }); drawKeyHint(ctx, 800, 386 + b, "Retorn", "A ballar!", { ks: 56, fs: 34, theme: "petroli" }); ctx.restore(); }
-          if (phase === "show" && pt > -0.3) { ctx.save(); ctx.globalAlpha = clamp((pt + 0.3) * 3, 0, 1); rr(ctx, MODEL_X - 90, 232, 180, 40, 20); ctx.fillStyle = "rgba(255,255,255,0.92)"; ctx.fill(); text(ctx, "Mira'm!", MODEL_X, 253, { size: 24, weight: 900, font: FONT_T, color: "#3C86C8" }); ctx.restore(); }
           if (phase === "freeIntro" || phase === "free" || phase === "end") {
             const k = phase === "freeIntro" ? Ease.outBack(clamp(pt / 0.5, 0, 1)) : 1;
             ctx.save(); ctx.translate(800, 384); ctx.scale(k, k);
@@ -369,7 +379,7 @@
             drawPanel(ctx, -w / 2, -34, w, 68, { r: 34, blur: 16, border: "#FF4FA0" }); text(ctx, label, 0, 2, { size: 34, weight: 900, font: FONT_T, color: "#3A2A5A" });
             ctx.restore();
           }
-          drawVignette(ctx, 0.4, "10,0,25");
+          drawVignette(ctx, 0.12, "10,0,25");
         },
       };
     },

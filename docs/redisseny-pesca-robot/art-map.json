@@ -1,0 +1,114 @@
+{
+  "fish": {
+    "carpa": "g10_fish_0_00",
+    "tenca": "g10_fish_0_01",
+    "perca": "g10_fish_0_02",
+    "gardí": "g10_fish_0_03",
+    "carpí": "g10_fish_0_04",
+    "lluç de riu": "g10_fish_0_05",
+    "peix gat": "g10_fish_0_06",
+    "gambúsia": "g10_fish_0_07",
+    "bagra": "g10_fish_0_08",
+    "madrilleta": "g10_fish_0_09",
+    "anguila": "g10_fish_0_10",
+    "espinós": "g10_fish_0_11",
+    "sardina": "g10_fish_1_00",
+    "verat": "g10_fish_1_01",
+    "tonyina": "g10_fish_1_02",
+    "llobarro": "g10_fish_1_03",
+    "orada": "g10_fish_1_04",
+    "sard": "g10_fish_1_05",
+    "sarg": "g10_fish_1_06",
+    "mabre": "g10_fish_1_07",
+    "molla": "g10_fish_1_08",
+    "lluç": "g10_fish_1_09",
+    "gerret": "g10_fish_1_10",
+    "sorell": "g10_fish_1_11",
+    "rap": "g10_fish_2_00",
+    "aranya": "g10_fish_2_01",
+    "castanyola": "g10_fish_2_02",
+    "donzella": "g10_fish_2_03",
+    "serrà": "g10_fish_2_04",
+    "tord": "g10_fish_2_05",
+    "cavallet de mar": "g10_fish_2_06",
+    "peix lluna": "g10_fish_2_07",
+    "escórpora": "g10_fish_2_08",
+    "morena": "g10_fish_2_09",
+    "salpa": "g10_fish_2_10",
+    "déntol": "g10_fish_2_11",
+    "truita": "g10_fish_3_00",
+    "salmó": "g10_fish_3_01",
+    "barb": "g10_fish_3_02",
+    "esturió": "g10_fish_3_03",
+    "llop de riu": "g10_fish_3_04",
+    "bavosa de riu": "g10_fish_3_05"
+  },
+  "sources": [
+    [
+      "6d4de73d-a113-40a0-b1eb-593d8807ea5b",
+      3,
+      [
+        "carpa",
+        "tenca",
+        "perca",
+        "gardí",
+        "carpí",
+        "lluç de riu",
+        "peix gat",
+        "gambúsia",
+        "bagra",
+        "madrilleta",
+        "anguila",
+        "espinós"
+      ]
+    ],
+    [
+      "441b4d88-d451-4876-a53b-9bb3e4d708b1",
+      3,
+      [
+        "sardina",
+        "verat",
+        "tonyina",
+        "llobarro",
+        "orada",
+        "sard",
+        "sarg",
+        "mabre",
+        "molla",
+        "lluç",
+        "gerret",
+        "sorell"
+      ]
+    ],
+    [
+      "6119e02e-162d-4d89-945e-f366ec778a0a",
+      3,
+      [
+        "rap",
+        "aranya",
+        "castanyola",
+        "donzella",
+        "serrà",
+        "tord",
+        "cavallet de mar",
+        "peix lluna",
+        "escórpora",
+        "morena",
+        "salpa",
+        "déntol"
+      ]
+    ],
+    [
+      "b038c0e7-a216-49f1-af6c-e36eaef65f31",
+      2,
+      [
+        "truita",
+        "salmó",
+        "barb",
+        "esturió",
+        "llop de riu",
+        "bavosa de riu"
+      ]
+    ]
+  ]
+}
