@@ -13,6 +13,8 @@ if only:
     keep = {f"g{int(x):02d}" for x in only.split(",")}
     games = [g for g in games if os.path.basename(g)[:3] in keep]
 for g in games: parts.append(f"/* ---- {os.path.basename(g)} ---- */\n" + open(g, encoding="utf-8").read())
+for f in ("shell", "native-scenery"):
+    parts.append(open(os.path.join(ROOT, "src", f + ".js"), encoding="utf-8").read())
 parts.append(open(os.path.join(ROOT, "src", "main.js"), encoding="utf-8").read())
 logoP = open(os.path.join(ROOT, "assets", "LECAA-petroli-transparent.svg"), encoding="utf-8").read()
 logoW = open(os.path.join(ROOT, "assets", "LECAA-blanc-transparent.svg"), encoding="utf-8").read()
@@ -80,3 +82,4 @@ canvas {{ display: block; outline: none; }}
 os.makedirs(os.path.dirname(out), exist_ok=True)
 open(out, "w", encoding="utf-8").write(html)
 print(out, f"{len(html)/1024:.0f} KB", f"{len(games)} jocs")
+

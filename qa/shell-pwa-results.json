@@ -1,0 +1,13 @@
+{
+  "profilePreserved": true,
+  "offlineBoot": true,
+  "offlineIsland": true,
+  "icons": 25,
+  "cache": {
+    "keys": [
+      "lecaa-tecla-d56941b6f7"
+    ],
+    "controller": "http://127.0.0.1:8768/lecaa_tecla/sw.js"
+  },
+  "errors": []
+}

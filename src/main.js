@@ -29,6 +29,7 @@ async function boot() {
     const acc = +(q.acc || 0.9), every = +(q.every || 350);
     setInterval(() => { const s = App.scene; if (s instanceof GameScene && s.state === "play" && s.halt) { s.onKey(" "); return; } if (s instanceof GameScene && s.state === "play" && s.api.freeze <= 0) { const e = s.g.expected && s.g.expected(); if (!e && s.def.autoKey) { const k = s.def.autoKey(s.g); if (k) s.onKey(k); return; } if (e) s.onKey(Math.random() < acc ? e : pick("qwxzjk".split("").filter(c => c !== e))); } }, every);
   }
-  window.LT = { App, Games, GameScene, Settings, Profiles, Voice, Sfx };
+  window.LT = { App, Games, GameScene, Settings, Profiles, Voice, Sfx, ShellArt, TitleScene, ProfileScene, IslandScene, VoyageScene, PLACES, Mouse, Store, ANIMALS, PLUSH, drawAvatar, NativeIsland, SHELL_MAP };
 }
 addEventListener("load", boot);
+

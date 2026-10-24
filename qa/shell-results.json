@@ -1,0 +1,393 @@
+{
+  "resolution": {
+    "dpr": 2,
+    "maxZoom": 2,
+    "props": [
+      {
+        "key": "hill",
+        "nativeWidth": 1434,
+        "requiredWidth": 1425
+      },
+      {
+        "key": "hill",
+        "nativeWidth": 1434,
+        "requiredWidth": 1425
+      },
+      {
+        "key": "hill",
+        "nativeWidth": 1434,
+        "requiredWidth": 1307
+      },
+      {
+        "key": "observatory",
+        "nativeWidth": 769,
+        "requiredWidth": 762
+      },
+      {
+        "key": "barn",
+        "nativeWidth": 744,
+        "requiredWidth": 743
+      },
+      {
+        "key": "windmill",
+        "nativeWidth": 601,
+        "requiredWidth": 485
+      },
+      {
+        "key": "house-a",
+        "nativeWidth": 731,
+        "requiredWidth": 683
+      },
+      {
+        "key": "house-b",
+        "nativeWidth": 684,
+        "requiredWidth": 654
+      },
+      {
+        "key": "church",
+        "nativeWidth": 710,
+        "requiredWidth": 703
+      },
+      {
+        "key": "house-a",
+        "nativeWidth": 731,
+        "requiredWidth": 673
+      },
+      {
+        "key": "house-b",
+        "nativeWidth": 684,
+        "requiredWidth": 664
+      },
+      {
+        "key": "house-a",
+        "nativeWidth": 731,
+        "requiredWidth": 634
+      },
+      {
+        "key": "cabin",
+        "nativeWidth": 589,
+        "requiredWidth": 584
+      },
+      {
+        "key": "lighthouse",
+        "nativeWidth": 370,
+        "requiredWidth": 367
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 446
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 426
+      },
+      {
+        "key": "cypress",
+        "nativeWidth": 362,
+        "requiredWidth": 238
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 456
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 357
+      },
+      {
+        "key": "cypress",
+        "nativeWidth": 362,
+        "requiredWidth": 228
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 396
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 406
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 416
+      },
+      {
+        "key": "cypress",
+        "nativeWidth": 362,
+        "requiredWidth": 218
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 485
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 426
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 475
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 416
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 426
+      },
+      {
+        "key": "cypress",
+        "nativeWidth": 362,
+        "requiredWidth": 238
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 426
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 446
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 406
+      },
+      {
+        "key": "cypress",
+        "nativeWidth": 362,
+        "requiredWidth": 218
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 446
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 396
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 426
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 386
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 456
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 426
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 456
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 416
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 456
+      },
+      {
+        "key": "oak",
+        "nativeWidth": 949,
+        "requiredWidth": 396
+      }
+    ]
+  },
+  "motion": true,
+  "initial": {
+    "cam": {
+      "x": 1200,
+      "y": 750,
+      "z": 0.43
+    },
+    "n": 25,
+    "icons": 25
+  },
+  "zoom": 0.49449999999999994,
+  "pan": {
+    "x": 917.7957532861478,
+    "y": 689.332659251769,
+    "z": 0.49449999999999994
+  },
+  "behavior": {
+    "markerCalls": 0,
+    "cardCalls": 1
+  },
+  "avatars": [
+    {
+      "id": "gat",
+      "w": 337,
+      "h": 414
+    },
+    {
+      "id": "gos",
+      "w": 387,
+      "h": 397
+    },
+    {
+      "id": "conill",
+      "w": 267,
+      "h": 442
+    },
+    {
+      "id": "os",
+      "w": 334,
+      "h": 407
+    },
+    {
+      "id": "guineu",
+      "w": 358,
+      "h": 401
+    },
+    {
+      "id": "granota",
+      "w": 319,
+      "h": 370
+    },
+    {
+      "id": "mussol",
+      "w": 371,
+      "h": 396
+    },
+    {
+      "id": "porc",
+      "w": 381,
+      "h": 384
+    }
+  ],
+  "gameResults": [
+    {
+      "id": 1,
+      "ok": true
+    },
+    {
+      "id": 2,
+      "ok": true
+    },
+    {
+      "id": 3,
+      "ok": true
+    },
+    {
+      "id": 4,
+      "ok": true
+    },
+    {
+      "id": 5,
+      "ok": true
+    },
+    {
+      "id": 6,
+      "ok": true
+    },
+    {
+      "id": 7,
+      "ok": true
+    },
+    {
+      "id": 8,
+      "ok": true
+    },
+    {
+      "id": 9,
+      "ok": true
+    },
+    {
+      "id": 10,
+      "ok": true
+    },
+    {
+      "id": 11,
+      "ok": true
+    },
+    {
+      "id": 12,
+      "ok": true
+    },
+    {
+      "id": 13,
+      "ok": true
+    },
+    {
+      "id": 14,
+      "ok": true
+    },
+    {
+      "id": 15,
+      "ok": true
+    },
+    {
+      "id": 16,
+      "ok": true
+    },
+    {
+      "id": 17,
+      "ok": true
+    },
+    {
+      "id": 18,
+      "ok": true
+    },
+    {
+      "id": 19,
+      "ok": true
+    },
+    {
+      "id": 20,
+      "ok": true
+    },
+    {
+      "id": 21,
+      "ok": true
+    },
+    {
+      "id": 22,
+      "ok": true
+    },
+    {
+      "id": 23,
+      "ok": true
+    },
+    {
+      "id": 24,
+      "ok": true
+    },
+    {
+      "id": 25,
+      "ok": true
+    }
+  ],
+  "errors": []
+}

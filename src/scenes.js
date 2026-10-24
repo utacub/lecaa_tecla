@@ -372,7 +372,7 @@ class ProfileScene {
       else if (k.length === 1 && n.name.length < 14 && /[\p{L} ·'-]/u.test(k)) { n.name += k; Sfx.play("key"); }
       return;
     }
-    const S = this.slots(), cols = 6;
+    const S = this.slots(), cols = 3;
     if (k === "ArrowLeft") this.sel = (this.sel + S.length - 1) % S.length;
     else if (k === "ArrowRight") this.sel = (this.sel + 1) % S.length;
     else if (k === "ArrowUp") this.sel = Math.max(0, this.sel - cols);
@@ -934,3 +934,4 @@ function drawIslandOptions(ctx, scene) {
   ctx.strokeStyle = ov ? "#fff" : BRAND.tinta; ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(bx - 9, cy - 9); ctx.lineTo(bx + 9, cy + 9); ctx.moveTo(bx + 9, cy - 9); ctx.lineTo(bx - 9, cy + 9); ctx.stroke();
   ctx.restore();
 }
+
