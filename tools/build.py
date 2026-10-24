@@ -13,7 +13,7 @@ if only:
     keep = {f"g{int(x):02d}" for x in only.split(",")}
     games = [g for g in games if os.path.basename(g)[:3] in keep]
 for g in games: parts.append(f"/* ---- {os.path.basename(g)} ---- */\n" + open(g, encoding="utf-8").read())
-for f in ("shell", "native-scenery"):
+for f in ("shell", "native-scenery", "paper-island"):
     parts.append(open(os.path.join(ROOT, "src", f + ".js"), encoding="utf-8").read())
 parts.append(open(os.path.join(ROOT, "src", "main.js"), encoding="utf-8").read())
 logoP = open(os.path.join(ROOT, "assets", "LECAA-petroli-transparent.svg"), encoding="utf-8").read()

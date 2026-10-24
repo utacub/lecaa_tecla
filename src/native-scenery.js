@@ -96,12 +96,6 @@ const NativeIsland={
 
 function islandAvatar(ctx,scene){
   if(!scene.p)return;const size=82,x=scene.pos[0]-108,y=scene.pos[1]+113;
-  ctx.save();
-  // A quiet, opaque inner backing and dark outline retain contrast on every terrain.
-  const g=ctx.createRadialGradient(x,y+7,24,x,y+7,100);g.addColorStop(0,'rgba(255,252,214,.7)');g.addColorStop(.65,'rgba(255,247,183,.34)');g.addColorStop(1,'rgba(255,247,183,0)');ctx.fillStyle=g;ctx.fillRect(x-105,y-103,210,220);
-  ctx.shadowColor='rgba(11,55,58,.35)';ctx.shadowBlur=12;ctx.shadowOffsetY=5;
-  ctx.beginPath();ctx.ellipse(x,y-4,53,76,0,0,Math.PI*2);ctx.fillStyle='rgba(255,253,239,.94)';ctx.fill();ctx.shadowColor='transparent';ctx.lineWidth=5;ctx.strokeStyle='#17676B';ctx.stroke();
-  ctx.beginPath();ctx.ellipse(x,y-4,48,71,0,0,Math.PI*2);ctx.lineWidth=2;ctx.strokeStyle='#fff';ctx.stroke();ctx.restore();
   drawAvatar(ctx,x,y,82,ANIMALS[scene.p.animal%8].id,PLUSH[scene.p.color%8],{body:true,walk:scene.walk?scene.t:0,tilt:scene.walk?Math.sin(scene.t*11)*.04:0});
 }
 
@@ -132,12 +126,19 @@ VoyageScene.prototype.drawWorld=function(ctx){
   VoyageArt.ocean(ctx,t,scroll);
   const wrap=(v,span)=>((v%span)+span)%span-180;
   VoyageArt.cloud(ctx,wrap(430-scroll*.075,W+360),140,1.2,.6);VoyageArt.cloud(ctx,wrap(1100-scroll*.12,W+360),220,.75,.55);VoyageArt.cloud(ctx,wrap(1550-scroll*.05,W+360),110,.6,.45);
-  // Distant layers drift more slowly than the departure harbor and near-water wake.
-  VoyageArt.sprite(ctx,'destination',wrap(970-scroll*.14,W+500),489,420,.19);
-  VoyageArt.sprite(ctx,'destination',wrap(250-scroll*.23,W+700),496,330,.15);
+  // Separate low silhouettes, never the playable island map.
+  for(const [origin,speed,width,height,opacity] of [[970,.14,380,74,.24],[250,.23,290,48,.17]]){
+    const x=wrap(origin-scroll*speed,W+700),y=487;
+    ctx.save();ctx.globalAlpha=opacity;ctx.fillStyle='#436F80';ctx.beginPath();ctx.moveTo(x,y);
+    ctx.bezierCurveTo(x+width*.12,y-9,x+width*.18,y-height*.72,x+width*.32,y-height*.6);
+    ctx.bezierCurveTo(x+width*.43,y-height*1.05,x+width*.49,y-height,x+width*.57,y-height*.62);
+    ctx.bezierCurveTo(x+width*.68,y-height*.45,x+width*.75,y-14,x+width,y);
+    ctx.closePath();ctx.fill();ctx.restore();
+  }
   VoyageArt.sprite(ctx,'harbor',-110-pr*2050-Math.min(this.t,3.2)*24,530,940);
-  const arrival=Ease.inOutQuad(pr),destW=lerp(530,1080,arrival),destX=lerp(W+100,555,arrival);
-  VoyageArt.sprite(ctx,'destination',destX,552,destW);
+  // Coast enters from the right late in the journey at boat height.
+  const arrival=Ease.inOutQuad(clamp((pr-.48)/.52,0,1));
+  VoyageArt.sprite(ctx,'arrival-coast',lerp(W+80,900,arrival),760,1100);
   this.drawBoat(ctx,t);
   // A few small glints in front of the hull reinforce its contact with the sea.
   for(let i=0;i<7;i++){const x=270+i*64+Math.sin(t+i)*8,y=715+Math.sin(t*.8+i)*3;ctx.strokeStyle='rgba(199,239,227,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+28,y-1);ctx.stroke();}
