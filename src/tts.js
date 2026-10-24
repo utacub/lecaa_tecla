@@ -239,10 +239,10 @@ const TTS = {
 /* ---------- so de les lletres: locucions enregistrades (veu de l'Anna, LECAA Docs) ---------- */
 // lletra → fonema → fitxer, igual que a LECAA Docs (català central)
 const LETTER_PHON = { a: "a", "à": "a", e: "e", "é": "e", "è": "ɛ", i: "i", "í": "i", "ï": "i", o: "o", "ó": "o", "ò": "ɔ", u: "u", "ú": "u", "ü": "u", b: "b", v: "b", c: "k", k: "k", q: "k", "ç": "s", d: "d", f: "f", g: "ɡ", j: "ʒ", l: "l", m: "m", n: "n", "ñ": "ɲ", p: "p", r: "r", s: "s", t: "t", x: "ʃ", z: "z", w: "w", y: "j", h: null };
-/* castellà: totes les lletres amb els 23 fonemes d'Anna de LECAA Cast (banc "female"). Les lletres que el
-   banc no cobreix: k i q = /k/; x = /ks/ (dues locucions seguides); w = /w/ de la mateixa veu (Anna) al banc
-   català, l'únic enregistrament d'aquest so; h no sona. */
-const LETTER_PHON_ES = { k: "k", q: "k", x: ["k", "s"], w: { bank: "ca", ph: "w" }, "á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u", "ü": "u" };
+/* castellà: totes les lletres amb els 23 fonemes d'Anna de LECAA Cast (banc "female"). Revisat per Marc
+   (2026-10-24): c = /k/, g = /g/ i r = /r/ (el so de la lletra sola, no el de ce/ge/pera); k i q = /k/;
+   x i w = /ʃ/ i /w/ de la mateixa veu (Anna) al banc català; h no sona. Aquesta taula mana sobre la de LECAA Cast. */
+const LETTER_PHON_ES = { c: "k", g: "g", r: "r", k: "k", q: "k", x: { bank: "ca", ph: "ʃ" }, w: { bank: "ca", ph: "w" }, "á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u", "ü": "u" };
 // Keep grapheme lookup distinct from IPA lookup (e.g. Catalan j versus /j/).
 const Phon = {
   audio: null, timer: null, finished: null,
@@ -257,7 +257,7 @@ const Phon = {
   clips(letter, language = LANG, voice = null) {
     const key = String(letter).normalize("NFC").toLowerCase(), bank = PHON_BANK[language];
     if (!bank || key === "h") return [];
-    let ph = language === "ca" ? (LETTER_PHON[key] ?? bank.graphemes[key]) : language === "es" ? (bank.graphemes[key] ?? LETTER_PHON_ES[key]) : bank.graphemes[key];
+    let ph = language === "ca" ? (LETTER_PHON[key] ?? bank.graphemes[key]) : language === "es" ? (LETTER_PHON_ES[key] ?? bank.graphemes[key]) : bank.graphemes[key];
     if (ph == null) return [];
     const list = Array.isArray(ph) ? ph : [ph];
     return list.map(p => typeof p === "object" ? this.phonemeClip(p.ph, p.bank) : this.phonemeClip(p, language, voice)).filter(Boolean);
