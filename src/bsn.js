@@ -43,14 +43,14 @@ class BlackWhiteScene {
   }
   save() { Store.set("bsn", this.o); }
   enter() { Music.stop(); Voice.stop(); }
-  exit() { Phon.stop(); }
+  exit() { Voice.stop(); }
   update(dt) {
     this.t += dt; this.shake = Math.max(0, this.shake - dt * 4);
     this.fly = this.fly.filter(f => { f.t += dt / 0.7; if (f.t >= 1) { this.o.starN++; this.save(); return false; } return true; });
     if (this.panel || this.prompt) return;
     this.lt += dt;
     if (this.ok > 0) { this.ok += dt; if (this.ok > 0.45) { this.ok = 0; this.l = bsnNext(this.l); this.lt = 0; this.wrong = 0; this.saidL = false; } }
-    if (this.o.so === "veure" && !this.saidL && this.ok === 0 && this.lt > 0.25) { this.saidL = true; Phon.play(this.l, "ca"); }
+    if (this.o.so === "veure" && !this.saidL && this.ok === 0 && this.lt > 0.25) { this.saidL = true; Voice.sayItem(this.l, { force: true }); }
   }
   showHint() {
     const h = this.o.hint; if (this.ok > 0) return false;
@@ -115,8 +115,8 @@ class BlackWhiteScene {
     const up = this.o.upper != null ? this.o.upper : !!Settings.upper;
     bsnChips(ctx, px + 400, y, [["min", "minúscules"], ["maj", "MAJÚSCULES"]], up ? "maj" : "min", v => { this.o.upper = v === "maj"; this.save(); });
     y += 78; T("So de la lletra", px + 44, y);
-    bsnChips(ctx, px + 400, y, BSN_SO, this.o.so || "cap", v => { this.o.so = v; this.save(); if (v !== "cap") Phon.play(this.l, "ca"); });
-    T("Sona quan apareix cada lletra (locució enregistrada, veu de l'Anna).", px + 44, y + 36, { size: 17, weight: 700, color: "#8C8C8C", font: FONT_L });
+    bsnChips(ctx, px + 400, y, BSN_SO, this.o.so || "cap", v => { this.o.so = v; this.save(); if (v !== "cap") Voice.sayItem(this.l, { force: true }); });
+    T("Sona en aparèixer: fonema o nom, segons els ajustos de la veu.", px + 44, y + 36, { size: 17, weight: 700, color: "#8C8C8C", font: FONT_L });
     y += 92; T("Pistes de la tecla", px + 44, y);
     bsnChips(ctx, px + 44, y + 52, BSN_HINTS, this.o.hint, v => { this.o.hint = v; this.save(); });
     y += 108;

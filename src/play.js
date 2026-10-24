@@ -91,7 +91,7 @@ class GameScene {
         }
       },
       say(txt, o) { if (!demo || o && o.demo) Voice.say(txt, o); },
-      sayItem(item, tpl) { const n = spoken(item); api.say((tpl || "{x}").replace("{x}", n), { caption: (tpl || "{x}").replace("{x}", disp(item)) }); },
+      sayItem(item, tpl) { if (!demo) return Voice.sayItem(item, { template: tpl || "{x}" }); },
       finish(success = true, extra = {}) { if (demo) { sc.demoDone = true; return; } sc.finish(success, extra); },
       clearCaption() { Voice.capT = 0; },
       shake(a = 8) { sc.shakeA = Math.max(sc.shakeA || 0, a); },

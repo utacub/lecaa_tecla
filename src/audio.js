@@ -268,12 +268,36 @@ const Music = {
 
 /* veu: passa pel gestor de motors (tts.js: veus del navegador o Piper); subtítol sempre */
 const Voice = {
-  last: "", caption: "", capT: 0, ready: false,
+  last: "", caption: "", capT: 0, ready: false, token: 0,
   init() { try { TTS.init(); this.ready = true; } catch (e) { } },
+  isShort(txt) { return /^\p{L}{1,2}$/u.test(String(txt).normalize("NFC").trim()); },
   say(txt, o = {}) {
-    this.caption = o.caption || txt; this.capT = Math.max(2.2, txt.length * 0.09);
-    if (!Settings.voice) return;
-    try { TTS.say(txt); } catch (e) { }
+    txt = String(txt);
+    if (this.isShort(txt)) return this.sayItem(txt, o);
+    return this.sequence([{ text: txt }], { ...o, caption: o.caption || txt });
   },
-  stop() { this.caption = ""; this.capT = 0; try { TTS.stop(); } catch (e) { } },
+  sayItem(item, o = {}) {
+    const raw = String(item).normalize("NFC").trim(), chars = Array.from(raw.toLocaleLowerCase("ca"));
+    const parts = this.isShort(raw) ? chars.map(letter => voiceCfg().shortMode === "names"
+      // Naming a letter is explicit prose, never a bare two-letter synthesis request.
+      ? { text: "La lletra " + (LETTER_NAME[letter] || letter) + "." }
+      : { letter }) : [{ text: raw }];
+    const tpl = o.template || "{x}", index = tpl.indexOf("{x}");
+    if (index >= 0) {
+      const before = tpl.slice(0, index).trim(), after = tpl.slice(index + 3).trim();
+      if (before) parts.unshift({ text: before }); if (after) parts.push({ text: after });
+    }
+    return this.sequence(parts, { ...o, caption: o.caption || tpl.replace("{x}", disp(raw)) });
+  },
+  async sequence(parts, o = {}) {
+    this.stop(); const token = this.token;
+    this.caption = o.caption || ""; this.capT = Math.max(2.2, this.caption.length * 0.09);
+    if (!Settings.voice && !o.force) return;
+    for (const part of parts) {
+      if (token !== this.token) return;
+      try { if (part.letter != null) await Phon.playAsync(part.letter); else if (part.text.trim()) await TTS.say(part.text); } catch (e) {}
+      if (token !== this.token) return;
+    }
+  },
+  stop() { this.token++; this.caption = ""; this.capT = 0; try { TTS.stop(); Phon.stop(); } catch (e) {} },
 };

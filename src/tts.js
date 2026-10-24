@@ -7,7 +7,7 @@
    El motor "native:" de LECAA Docs només existeix a l'app d'escriptori (Tauri) i aquí no s'activa.
    ============================================================ */
 
-const VOICE_DEF = { id: null, rate: 0.95, pitch: 1, volume: 1, showAll: false };
+const VOICE_DEF = { id: null, rate: 0.95, pitch: 1, volume: 1, showAll: false, shortMode: "phonemes" };
 function voiceCfg() { if (!Settings.voiceCfg) Settings.voiceCfg = Object.assign({}, VOICE_DEF); return Object.assign({}, VOICE_DEF, Settings.voiceCfg); }
 function setVoiceCfg(k, v) { Settings.voiceCfg = Object.assign(voiceCfg(), { [k]: v }); saveSettings(); }
 const isCa = l => /^ca($|-)/.test(String(l || "").trim().replace("_", "-").toLowerCase());
@@ -211,7 +211,7 @@ const TTS = {
 const LETTER_PHON = { a: "a", "à": "a", e: "e", "é": "e", "è": "ɛ", i: "i", "í": "i", "ï": "i", o: "o", "ó": "o", "ò": "ɔ", u: "u", "ú": "u", "ü": "u", b: "b", v: "b", c: "k", k: "k", q: "k", "ç": "s", d: "d", f: "f", g: "ɡ", j: "ʒ", l: "l", m: "m", n: "n", "ñ": "ɲ", p: "p", r: "r", s: "s", t: "t", x: "ʃ", z: "z", w: "w", y: "j", h: null };
 // Keep grapheme lookup distinct from IPA lookup (e.g. Catalan j versus /j/).
 const Phon = {
-  audio: null, timer: null,
+  audio: null, timer: null, finished: null,
   phonemeClip(phoneme, language = "ca", voice = null) {
     const bank = PHON_BANK[language];
     return bank?.voices[voice || bank.defaultVoice]?.[String(phoneme).normalize("NFC")] || null;
@@ -225,6 +225,9 @@ const Phon = {
   url(letter, language = "ca", voice = null) { const c = this.clip(letter, language, voice); return c ? PHON_AUDIO[c.file] || null : null; },
   has(letter, language = "ca", voice = null) { return !!this.url(letter, language, voice); },
   play(letter, language = "ca", voice = null) { return this.playClip(this.clip(letter, language, voice)); },
+  playAsync(letter, language = "ca", voice = null) {
+    return new Promise(resolve => { if (this.play(letter, language, voice)) this.finished = resolve; else resolve(false); });
+  },
   playPhoneme(phoneme, language = "ca", voice = null) { return this.playClip(this.phonemeClip(phoneme, language, voice)); },
   playClip(clip) {
     this.stop();
@@ -249,6 +252,7 @@ const Phon = {
     const a = this.audio; this.audio = null;
     if (a) { a.onloadedmetadata = a.onended = a.onerror = null; try { a.pause(); } catch (e) {} }
     Audio2.duck("phoneme", false);
+    const finished = this.finished; this.finished = null; if (finished) finished();
   },
 };
 
@@ -338,6 +342,10 @@ const VoicePanel = {
     };
     const all = H("input", { type: "checkbox" }); all.checked = !!voiceCfg().showAll;
     all.addEventListener("change", () => { setVoiceCfg("showAll", all.checked); drawVoices(); });
+    const shortMode = H("select", { id: "vp-short-mode", "aria-label": "Lectura de lletres i síl·labes curtes" },
+      H("option", { value: "phonemes" }, "Fonemes"), H("option", { value: "names" }, "Noms de les lletres"));
+    shortMode.value = voiceCfg().shortMode;
+    shortMode.addEventListener("change", () => { Voice.stop(); setVoiceCfg("shortMode", shortMode.value); });
     const panel = H("div", { class: "vp", role: "dialog", "aria-modal": "true", "aria-labelledby": "vp-title" },
       H("header", {}, H("h2", { id: "vp-title" }, "Ajustos de la veu"), H("button", { class: "x", type: "button", "aria-label": "Tanca", onclick: close }, "×")),
       H("div", { class: "body" },
@@ -347,8 +355,9 @@ const VoicePanel = {
           H("label", { class: "chk" }, all, "Mostra també veus d'altres llengües"),
           slider("Velocitat", 0.5, 1.6, 0.05, "rate"), slider("To", 0.6, 1.4, 0.05, "pitch"), slider("Volum", 0.1, 1, 0.05, "volume")),
         H("fieldset", {}, H("legend", {}, "So de les lletres"),
-          H("p", { class: "hint" }, "Els sons de les lletres són locucions enregistrades amb la veu de l'Anna (les mateixes de LECAA Docs). Es fan servir a Blanc sobre negre."),
-          H("div", { class: "row" }, ...["a", "m", "s", "l"].map(l => H("button", { class: "btn", type: "button", onclick: () => Phon.play(l) }, "So de la " + l)))),
+          H("label", { for: "vp-short-mode" }, "Lletres aïllades i blocs de dues lletres"), shortMode,
+          H("p", { class: "hint" }, "Una o dues lletres: lectura lletra a lletra. Tres o més: lectura del bloc amb la veu triada. Els fonemes utilitzen els enregistraments de LECAA; la hac no té so. Els noms curts s’anuncien amb «lletra» per evitar abreviatures."),
+          H("div", { class: "row" }, ...["a", "m", "s", "l"].map(l => H("button", { class: "btn", type: "button", onclick: () => Voice.sayItem(l, { force: true }) }, "So de la " + l)))),
         msg));
     const back = H("div", { class: "vp-back", onclick: e => { if (e.target === back) close(); } }, panel);
     this.onKey = e => { e.stopPropagation(); if (e.key === "Escape") close(); };
