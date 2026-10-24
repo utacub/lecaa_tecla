@@ -4,8 +4,8 @@
   const INK = "#24324A", PAPER = "#F1E6CC", TEAL = "#2F8C8A", MUST = "#E8B23A", ORANGE = "#E0613A", OLIVE = "#9DB46A", PINK = "#E99A8C", SKY = "#8FC1C4";
   const PLANE_COLS = [ORANGE, TEAL, MUST, PINK, "#5B7DB8"];
   const EC = { cx: 800, cy: 365, rx: 610, ry: 215 }; // circuit d'espera
-  const RW = { x0: 250, x1: 1350, y: 560, h: 86 };   // pista
-  const GATES = [985, 1105, 1225, 1345, 1465], PARK_Y = 742, GOAL = 20;
+  const RW = { x0: 110, x1: 1300, y: 570, h: 80 };   // pista
+  const GATES = [910, 1008, 1105, 1203, 1300], PARK_Y = 775, GOAL = 20;
 
   /* ---------- fons serigrafiat (prerenderitzat) ---------- */
   function halftone() {
@@ -13,6 +13,7 @@
   }
   function airportBg() {
     return Sprites.get("ctrlBg", W, H, (x) => {
+      if(Art.get("airport-bg")){x.drawImage(Art.get("airport-bg"),0,0,W,H);return;}
       const outlines = [];
       const shape = (path, fill, o = {}) => { x.fillStyle = fill; x.beginPath(); path(x); x.fill(o.rule || "nonzero"); if (o.line !== false) outlines.push([path, o.lw || 3]); };
       const shadow = (path, dx = 10, dy = 12) => { x.save(); x.translate(dx, dy); x.fillStyle = x.createPattern(halftone(), "repeat"); x.beginPath(); path(x); x.fill(); x.restore(); };
@@ -82,6 +83,7 @@
   }
   function planeSprite(col) {
     return Sprites.get("ctrlPlane" + col, 140, 140, (x) => {
+      const im=Art.cell("airport-planes",Math.max(0,PLANE_COLS.indexOf(col)),5,1,140,140);if(im){x.drawImage(im,0,0,140,140);return;}
       x.translate(70, 70);
       x.fillStyle = shade(col, -0.12); x.beginPath(); wingPath(x); x.fill();
       x.fillStyle = "#F4EEDC"; x.beginPath(); planePath(x); x.fill();
@@ -284,12 +286,19 @@
           planes.filter(p => p.state === "dizzy").forEach(p => { for (let k = 0; k < 3; k++) { const a = t * 3 + k * 2.09; ctx.fillStyle = k % 2 ? MUST : ORANGE; starPath(ctx, p.x + Math.cos(a) * 34, p.y - 30 + Math.sin(a) * 12, 10, 4.5, 5); ctx.fill(); } });
           drawVignette(ctx, 0.22, "60,40,20");
           // plaques a la cua (sempre dretes) amb l'indicador de combustible
-          const cur = typer.current();
+          const cur = typer.current(), labels = [];
           planes.forEach(p => {
             const show = ["enter", "circle", "loop"].includes(p.state) || (p.state === "wait" && p.okT < 0.9) || (p.state === "landing" && p.okT < 0.9);
             if (!show) return;
             const ps = plateSize(ctx, p.text, cfg.size), pw = ps.w, off = 60 + Math.min(pw / 2, 120) + 4;
-            const px = clamp(p.x - Math.cos(p.h) * off, pw / 2 + 12, W - pw / 2 - 44), py = clamp(p.y - Math.sin(p.h) * off - 4, 84 + ps.h / 2, H - ps.h / 2 - 10);
+            let px = clamp(p.x - Math.cos(p.h) * off, pw / 2 + 12, W - pw / 2 - 44), py = clamp(p.y - Math.sin(p.h) * off - 4, 84 + ps.h / 2, H - ps.h / 2 - 10);
+            const baseY=py;
+            for(let attempt=0;attempt<12;attempt++){
+              if(!labels.some(b=>Math.abs(px-b.x)<(pw+b.w)/2+40&&Math.abs(py-b.y)<(ps.h+b.h)/2+16))break;
+              py=clamp(baseY+(attempt%2?1:-1)*Math.ceil((attempt+1)/2)*(ps.h+24),84+ps.h/2,H-ps.h/2-10);
+            }
+            labels.push({x:px,y:py,w:pw,h:ps.h});
+            if(Math.abs(py-baseY)>8){ctx.save();ctx.strokeStyle=p.col;ctx.lineWidth=2;ctx.globalAlpha=.65;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(px,py);ctx.stroke();ctx.restore();}
             const a = p.state === "enter" ? clamp(p.t * 2, 0, 1) : p.okT != null ? clamp(1 - (p.okT - 0.5) / 0.4, 0, 1) : 1;
             const state = p.cleared ? "ok" : p === cur ? "active" : p.wrongT > 0 ? "wrong" : null;
             const r = drawPlate(ctx, p.text, px, py, { size: cfg.size, progress: p.cleared ? p.text.length : p.typed, state, border: state ? null : p.col, borderW: 5, alpha: a, shadowBlur: 0, shadowY: 4 });

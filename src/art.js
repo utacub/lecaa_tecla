@@ -22,7 +22,7 @@ const Art = {
     const c = makeCanvas(w,h), x = c.getContext('2d'), sw=im.width/cols, sh=im.height/rows;
     x.imageSmoothingQuality='high';
     const box=this.rects?.[key]?.[index];
-    if(box){const [bx,by,bw,bh]=box,k=Math.min(w/bw,h/bh);x.drawImage(im,bx,by,bw,bh,(w-bw*k)/2,(h-bh*k)/2,bw*k,bh*k);}
+    if(box){const [bx,by,bw,bh]=box,k=Math.min(w/bw,h/bh),ox=(w-bw*k)/2,oy=(h-bh*k)/2,path=this.clipPaths?.[key]?.[index];x.save();if(path){x.beginPath();path.forEach(([px,py],i)=>x[i?"lineTo":"moveTo"](ox+(px-bx)*k,oy+(py-by)*k));x.closePath();x.clip();}x.drawImage(im,bx,by,bw,bh,ox,oy,bw*k,bh*k);x.restore();}
     else x.drawImage(im,index%cols*sw,Math.floor(index/cols)*sh,sw,sh,0,0,w,h);
     return this.cells[id]=c;
   },

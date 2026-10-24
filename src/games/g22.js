@@ -11,8 +11,8 @@
     { name: "LLEONS", art: "els Lleons", kind: "lion", fur: "#E2B04A", fur2: "#FFF0C8", shirt: "#2A2A2E", trim: "#E9B934", keeper: "#5FC0B0", num: "10" },
   ];
   // posicions (vista de xut)
-  const GOAL = { l: 420, r: 1180, top: 232, bot: 530 };
-  const CORN = [[545, 318], [1055, 318], [545, 456], [1055, 456]];
+  const GOAL = { l: 380, r: 1220, top: 300, bot: 570 };
+  const CORN = [[500, 365], [1100, 365], [500, 500], [1100, 500]];
   // vista de porter (des de darrere de la nostra porteria)
   const SPOT = [800, 446], TGT = [[330, 262], [1270, 262], [370, 640], [1230, 640]];
 
@@ -58,6 +58,14 @@
   }
   // pose: {back, keeper, arms:[aL,aR] (angles, 0 = avall), legs:[lL,lR], lift, rot, sad, cheer}
   function drawAnimal(ctx, sp, x, y, s, o = {}) {
+    const kinds=["frog","rabbit","bear","cat","wolf","lion"];
+    const idx=sp.kind==="fox"?(o.back?(o.keeper?1:0):(o.keeper?3:2)):4+kinds.indexOf(sp.kind)*2+(o.keeper?1:0);
+    const im=Art.cell("penalty-actors",idx,4,4,220,280);
+    if(im){
+      ctx.save();ctx.translate(x,y);ctx.fillStyle="rgba(0,0,0,0.22)";ctx.beginPath();ctx.ellipse(0,2,52*s,12*s,0,0,Math.PI*2);ctx.fill();
+      ctx.scale(s,s);ctx.translate(o.dx||0,-(o.lift||0));if(o.rot){ctx.translate(0,-90);ctx.rotate(o.rot);ctx.translate(0,90);}
+      ctx.drawImage(im,-110,-260,220,280);ctx.restore();return;
+    }
     ctx.save(); ctx.translate(x, y);
     ctx.fillStyle = "rgba(0,0,0,0.28)"; ctx.beginPath(); ctx.ellipse(0, 2, 52 * s * (1 - (o.lift || 0) / 400), 12 * s, 0, 0, 6.28); ctx.fill();
     ctx.scale(s, s); ctx.translate(o.dx || 0, -(o.lift || 0));
@@ -90,6 +98,7 @@
   /* ---------- pilota ---------- */
   function ballSprite() {
     return Sprites.get("g22ball", 60, 60, (x) => {
+      const im=Art.cell("penalty-ball",0,1,1,60,60);if(im){x.drawImage(im,0,0,60,60);return;}
       const g = x.createRadialGradient(22, 20, 3, 30, 30, 30); g.addColorStop(0, "#FFFFFF"); g.addColorStop(0.7, "#E8ECEF"); g.addColorStop(1, "#A8B0B6");
       x.fillStyle = g; x.beginPath(); x.arc(30, 30, 28, 0, 6.28); x.fill();
       x.fillStyle = "#24282C"; const pent = (cx, cy, r, a0) => { x.beginPath(); for (let i = 0; i < 5; i++) { const a = a0 + i * 1.2566; x.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); } x.closePath(); x.fill(); };
@@ -131,6 +140,7 @@
   }
   function bgShoot(team) {
     return Sprites.get("g22shoot" + team.name, W, H, (x) => {
+      if(Art.get("penalty-bg")){x.drawImage(Art.get("penalty-bg"),0,0,W,H);return;}
       const R = mulberry32(7);
       const sky = x.createLinearGradient(0, 0, 0, 240); sky.addColorStop(0, "#081028"); sky.addColorStop(1, "#1C2752"); x.fillStyle = sky; x.fillRect(0, 0, W, 360);
       x.fillStyle = "#121A36"; x.beginPath(); x.moveTo(0, 150); x.lineTo(W, 150); x.lineTo(W, 330); x.lineTo(0, 330); x.fill();
@@ -161,6 +171,7 @@
     });
   }
   function posts(ctx) {
+    if(Art.get("penalty-bg"))return;
     const pg = (x0) => { const g = ctx.createLinearGradient(x0 - 11, 0, x0 + 11, 0); g.addColorStop(0, "#B8C0C8"); g.addColorStop(0.4, "#FFFFFF"); g.addColorStop(1, "#9AA2AA"); return g; };
     ctx.fillStyle = pg(GOAL.l); ctx.fillRect(GOAL.l - 11, GOAL.top - 10, 22, GOAL.bot - GOAL.top + 10);
     ctx.fillStyle = pg(GOAL.r); ctx.fillRect(GOAL.r - 11, GOAL.top - 10, 22, GOAL.bot - GOAL.top + 10);
@@ -168,6 +179,7 @@
   }
   function bgSave(team) {
     return Sprites.get("g22save" + team.name, W, H, (x) => {
+      if(Art.get("penalty-save-bg")){x.drawImage(Art.get("penalty-save-bg"),0,0,W,H);return;}
       const R = mulberry32(9);
       const sky = x.createLinearGradient(0, 0, 0, 150); sky.addColorStop(0, "#081028"); sky.addColorStop(1, "#1C2752"); x.fillStyle = sky; x.fillRect(0, 0, W, 330);
       x.fillStyle = "#121A36"; x.fillRect(0, 120, W, 200);
@@ -363,7 +375,7 @@
           const up = kp.up;
           const arms = dv > 0 ? [dir < 0 ? 2.9 : 2.0, dir < 0 ? -2.0 : -2.9] : up ? [2.5 + Math.sin(t * 3) * 0.08, -2.5 - Math.sin(t * 3) * 0.08] : [1.2 + Math.sin(t * 3) * 0.1, -1.2 - Math.sin(t * 3) * 0.1];
           const sad = phase === "result" && shot && shot.res === "goal";
-          drawAnimal(ctx, team, kx + dir * dv * 190, 528 - (up ? 0 : -6), 1.12, { keeper: true, arms, legs: dv > 0 ? [-0.5 * dir, 0.6 * dir] : [-0.35, 0.35], rot: dir * dv * 1.15, lift: dv * (kp.up ? 80 : 20) + (phase === "aim" ? Math.abs(Math.sin(t * 4)) * 4 : 0), sad, look: dir * dv, blink: Math.sin(t * 1.3) > 0.97 });
+          drawAnimal(ctx, team, kx + dir * dv * 190, 570 - (up ? 0 : -6), 1.12, { keeper: true, arms, legs: dv > 0 ? [-0.5 * dir, 0.6 * dir] : [-0.35, 0.35], rot: dir * dv * 1.15, lift: dv * (kp.up ? 80 : 20) + (phase === "aim" ? Math.abs(Math.sin(t * 4)) * 4 : 0), sad, look: dir * dv, blink: Math.sin(t * 1.3) > 0.97 });
           posts(ctx);
           // pilota
           let bx = 800, by = 790, br = 26, brot = 0;
@@ -374,7 +386,7 @@
           drawBall(ctx, bx, by, br, brot, shot && shot.kicked && !shot.hit ? lerp(805, GOAL.bot, Ease.outQuad(shot.f || 0)) : by + br * 0.9);
           // el nostre xutador (d'esquena)
           const sk = sh.k, kickLeg = sk > 0.7 ? -1.1 : sk * 0.6;
-          drawAnimal(ctx, ME, lerp(660, 742, Ease.inOutQuad(sk)), lerp(980, 950, sk), 1.6, { back: true, arms: [0.5 + sk * 0.6, -0.5 - sk * 0.3], legs: [0.1, kickLeg], lift: phase === "result" && shot && shot.res === "goal" ? Math.abs(Math.sin(pt * 9)) * 18 : 0 });
+          drawAnimal(ctx, ME, lerp(660, 742, Ease.inOutQuad(sk)), lerp(850, 835, sk), 1.6, { back: true, arms: [0.5 + sk * 0.6, -0.5 - sk * 0.3], legs: [0.1, kickLeg], lift: phase === "result" && shot && shot.res === "goal" ? Math.abs(Math.sin(pt * 9)) * 18 : 0 });
           // plaques de les cantonades
           if (phase === "aim" || phase === "intro" || (phase === "kick" && pt < 0.45)) {
             const a = phase === "intro" ? clamp(pt * 3, 0, 1) : phase === "kick" ? 1 - pt / 0.45 : 1;

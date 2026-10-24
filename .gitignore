@@ -13,3 +13,7 @@ dist/pwa/sw.js
 qa/game-*-l*.png
 qa/tower-finale-l*.png
 qa/bakery-all-ingredients.png
+
+# Tanda 5: fulls de contacte regenerables
+qa/*-contact.png
+qa/*-verified.png

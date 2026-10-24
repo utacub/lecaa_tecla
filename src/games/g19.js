@@ -16,7 +16,7 @@
     if (!front) {
       // vora de felpa (anell) i forat fosc amb profunditat
       x.save(); x.shadowColor = "rgba(20,50,10,0.35)"; x.shadowBlur = 8; x.shadowOffsetY = 3;
-      x.fillStyle = "#86C462"; x.beginPath(); x.ellipse(hx, hy, rx + 10 * s, ry + 7 * s, 0, 0, 6.283); x.fill(); x.restore();
+      x.fillStyle = (Art.get("moles-bg")?"#895A3C":"#86C462"); x.beginPath(); x.ellipse(hx, hy, rx + 10 * s, ry + 7 * s, 0, 0, 6.283); x.fill(); x.restore();
       x.save(); x.beginPath(); x.ellipse(hx, hy, rx + 10 * s, ry + 7 * s, 0, 0, 6.283); x.clip();
       x.globalCompositeOperation = "multiply"; x.fillStyle = x.createPattern(Tex.felt(128, 128, "#cfcfcf", { seed: 21, plush: true }), "repeat"); x.fillRect(hx - 90, hy - 50, 180, 100); x.restore();
       const g = x.createRadialGradient(hx, hy + ry * 0.6, 2, hx, hy, rx * 1.1); g.addColorStop(0, "#2A1A12"); g.addColorStop(0.7, "#3E2A1C"); g.addColorStop(1, "#5A3E28");
@@ -25,7 +25,7 @@
     } else {
       // llavi davanter (per sobre del talp)
       x.save(); x.beginPath(); x.ellipse(hx, hy, rx + 10 * s, ry + 7 * s, 0, 0, Math.PI); x.ellipse(hx, hy, rx, ry, 0, Math.PI, 0, true); x.closePath();
-      x.fillStyle = "#86C462"; x.fill(); x.clip();
+      x.fillStyle = (Art.get("moles-bg")?"#895A3C":"#86C462"); x.fill(); x.clip();
       x.globalCompositeOperation = "multiply"; x.fillStyle = x.createPattern(Tex.felt(128, 128, "#cfcfcf", { seed: 21, plush: true }), "repeat"); x.fillRect(hx - 90, hy - 50, 180, 100);
       x.globalCompositeOperation = "source-over"; x.fillStyle = "rgba(255,255,255,0.12)"; x.fillRect(hx - 90, hy, 180, 6);
       x.restore();
@@ -41,6 +41,10 @@
     for (let i = 0; i < 10; i++) { const a = i / 10 * 6.283, cx = hx + Math.cos(a) * (rx - 6), cy = hy + Math.sin(a) * (ry - 4); x.beginPath(); x.moveTo(cx - 3, cy - 3); x.lineTo(cx + 3, cy + 3); x.moveTo(cx + 3, cy - 3); x.lineTo(cx - 3, cy + 3); x.stroke(); }
   }
   function meadow(x, open, w = W, h = H) {
+    if(Art.get("moles-bg")){
+      x.drawImage(Art.get("moles-bg"),0,0,w,h);
+      for(const k of LETTERKEYS){const p=holePos(k);if(open.has(k))holeRim(x,p.x,p.y,p.s,false);else patch(x,p.x,p.y,p.s);}return;
+    }
     // cel de feltre i turons llunyans
     const g = x.createLinearGradient(0, 0, 0, 260); g.addColorStop(0, "#9ED6EE"); g.addColorStop(1, "#D9F0EC"); x.fillStyle = g; x.fillRect(0, 0, w, 270);
     x.save(); x.globalCompositeOperation = "multiply"; x.globalAlpha = 0.35; x.fillStyle = x.createPattern(Tex.felt(128, 128, "#dddddd", { seed: 5 }), "repeat"); x.fillRect(0, 0, w, 270); x.restore();
@@ -76,6 +80,7 @@
 
   /* ---------- talp de peluix amb casc i ulleres ---------- */
   const moleSprite = pose => Sprites.get("g19mole" + pose, 160, 240, (x) => {
+    const im=Art.cell("moles-actors",pose==="laugh"?1:pose==="caught"?2:0,3,1,160,240);if(im){x.drawImage(im,0,0,160,240);return;}
     const cx = 80;
     const body = c => { c.beginPath(); c.moveTo(cx - 58, 240); c.lineTo(cx - 60, 104); c.bezierCurveTo(cx - 62, 34, cx + 62, 34, cx + 60, 104); c.lineTo(cx + 58, 240); c.closePath(); };
     Mat.felt(x, body, "#8D6E5C", { plush: true, center: [cx, 140, 76], gap: 6, stitch: "rgba(255,240,220,0.55)" });

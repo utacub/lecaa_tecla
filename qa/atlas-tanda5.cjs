@@ -1,0 +1,11 @@
+const fs=require('fs'),vm=require('vm'),{createCanvas,loadImage,GlobalFonts}=require('@napi-rs/canvas');
+for(const [f,n] of [['Andika-400.woff2','Andika'],['Andika-700.woff2','Andika'],['Nunito-900.woff2','Nunito']])GlobalFonts.registerFromPath('assets/'+f,n);
+let clock=0,timers=[];const schedule=(fn,ms=0)=>{const q={fn,at:clock+ms};timers.push(q);return q;};const tick=()=>{clock+=1000/30;const due=timers.filter(q=>q.at<=clock);timers=timers.filter(q=>q.at>clock);due.forEach(q=>q.fn());};
+const nop=()=>{},stub=new Proxy({}, {get:()=>nop});
+const sandbox={console,Math,tick,NOTE:n=>440*Math.pow(2,(n-69)/12),setTimeout:schedule,clearTimeout:q=>{timers=timers.filter(t=>t!==q);},performance:{now:()=>0},document:{createElement:()=>createCanvas(1,1)},window:{},navigator:{},localStorage:{getItem:()=>null,setItem:nop},addEventListener:nop,requestAnimationFrame:nop,Image:require('@napi-rs/canvas').Image,Audio2:{ctx:null,now:()=>0},noise:nop,tone:nop,Sfx:stub,Music:stub,Voice:{say:nop,init:nop,stop:nop},PHON_ANNA:{},LOGO_UTAC:'',CREDIT_LOGOS:[]};
+const cx=vm.createContext(sandbox);
+for(const f of ['core','textures','critters','art','art-tanda3','art-fruit','art-tanda4','art-tanda5','content','ui','play','avatars','scenes','voyage'])vm.runInContext(fs.readFileSync('src/'+f+'.js','utf8'),cx,{filename:f+'.js'});
+for(const id of [18,19,20,21,22])vm.runInContext(fs.readFileSync('src/games/g'+String(id).padStart(2,'0')+'.js','utf8'),cx);
+(async()=>{sandbox.ims={};for(const f of fs.readdirSync('assets/art'))if(f.endsWith('.webp'))sandbox.ims[f.slice(0,-5)]=await loadImage('assets/art/'+f);
+vm.runInContext('Object.assign(Art.images,ims);Settings.voice=false;Settings.sfx=false;',cx);
+for(const [key,n,cols,rows] of [['farm-animals',20,5,4],['penalty-actors',16,4,4]]){sandbox.key=key;sandbox.n=n;sandbox.cols=cols;sandbox.rows=rows;sandbox.canvas=createCanvas(cols*220,rows*250);vm.runInContext(`(()=>{const x=canvas.getContext('2d');x.fillStyle='white';x.fillRect(0,0,canvas.width,canvas.height);for(let i=0;i<n;i++){x.drawImage(Art.cell(key,i,cols,rows,210,220),i%cols*220,Math.floor(i/cols)*250);x.fillStyle='#24324A';x.font='16px Andika';x.fillText(key+' '+i,i%cols*220+5,Math.floor(i/cols)*250+240);}})()`,cx);fs.writeFileSync('qa/'+key+'-verified.png',sandbox.canvas.toBuffer('image/png'));}})();
