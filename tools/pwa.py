@@ -27,7 +27,8 @@ manifest = {
     ],
 }
 json.dump(manifest, open(os.path.join(OUT, "manifest.webmanifest"), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-files = ["./", "index.html", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "icones/icona-maskable-512.png", "icones/icona-180.png"]
+# "./" i "index.html" són el mateix document: només es desa "./" perquè la instal·lació no baixi i desi dues vegades l'HTML.
+files = ["./", "manifest.webmanifest", "icones/icona-192.png", "icones/icona-512.png", "icones/icona-maskable-512.png", "icones/icona-180.png"]
 ver = hashlib.sha256(open(os.path.join(OUT, "index.html"), "rb").read()).hexdigest()[:10]
 sw = f"""// Service worker de LECAA Tecla: tot el joc queda desat per funcionar sense connexió.
 // La memòria cau (CacheStorage) és compartida per tot l'origen utacub.github.io: aquest service worker
@@ -40,8 +41,10 @@ self.addEventListener("activate", e => {{ e.waitUntil(caches.keys().then(ks => P
 // primer la còpia desada (funciona sense xarxa); una versió nova s'instal·la en segon pla i entra la propera vegada
 self.addEventListener("fetch", e => {{
   if (e.request.method !== "GET") return;
-  if (new URL(e.request.url).origin !== location.origin) return; // les veus Piper es baixen directament (i es desen a IndexedDB)
-  e.respondWith(caches.match(e.request, {{ cacheName: CACHE, ignoreSearch: true }}).then(r => r || fetch(e.request)));
+  const url = new URL(e.request.url);
+  if (url.origin !== location.origin) return; // les veus Piper es baixen directament (i es desen a IndexedDB)
+  const req = url.pathname === new URL("index.html", self.registration.scope).pathname ? "./" : e.request; // index.html es respon amb la còpia de "./"
+  e.respondWith(caches.match(req, {{ cacheName: CACHE, ignoreSearch: true }}).then(r => r || fetch(e.request)));
 }});
 """
 open(os.path.join(OUT, "sw.js"), "w", encoding="utf-8").write(sw)

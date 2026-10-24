@@ -16,7 +16,7 @@ Els menús i l'illa es fan servir amb el ratolí; dins dels jocs només es juga 
 
 - `src/`: codi (Canvas 2D, sense llibreries). `src/games/gNN.js` és cada minijoc.
 - `src/tts.js` i `src/piper-worker.js`: motors de veu (navegador i Piper), portats de LECAA Docs.
-- `assets/`: logos, crèdits i locucions dels fonemes (`assets/sons/anna/`).
+- `assets/`: logos, crèdits, il·lustracions (`assets/art/`) i locucions dels fonemes (`assets/sons/phonemes/`, vegeu `docs/phonemes.md`).
 - `tools/`: muntatge i captures.
 - `docs/`: disseny de les activitats (`SPEC.md`), direcció d'art (`ART.md`) i API del motor (`ENGINE.md`).
 
@@ -45,7 +45,7 @@ La llicència cobreix el codi. **No** cobreix els logotips de la UTAC, de LECAA 
 | espeak-ng | dins del fonemitzador que es baixa | GPL-3.0-or-later | `LICENSE` |
 | Veu Piper Ona (UPC, Festcat) | no s'inclou: es baixa des de Hugging Face quan l'usuari ho demana | CC BY-SA 3.0 ES | [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices/tree/main/ca/ca_ES) |
 | Freqüència de les lletres: corpus AnCora (Taulé, Martí i Recasens, 2008), versió Universal Dependencies | taula a `src/voyage.js` | CC BY 4.0 | [UD Catalan AnCora](https://github.com/UniversalDependencies/UD_Catalan-AnCora) |
-| Locucions dels sons de les lletres (veu de l'Anna) | `assets/sons/anna/` | creades per a LECAA (procedeixen de LECAA Docs) | |
+| Locucions dels sons de les lletres (veus de l'Anna i en Jordi; veu femenina de LECAA CAST) | `assets/sons/phonemes/` | creades per a LECAA (procedeixen de LECAA i LECAA CAST; vegeu `docs/phonemes.md`) | |
 
 Com que el fonemitzador de les veus Piper inclou espeak-ng (GPL-3.0), les versions que el distribueixen s'han de publicar sota una llicència compatible amb la GPL-3.0; per això LECAA Tecla fa servir la GPL-3.0-or-later, igual que LECAA Docs.
 

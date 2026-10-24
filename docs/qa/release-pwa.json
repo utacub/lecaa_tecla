@@ -1,14 +1,14 @@
 {
   "upgrade": {
     "sentinel": "preserved",
-    "scope": "http://127.0.0.1:61752/lecaa_tecla/sw.js"
+    "scope": "http://127.0.0.1:33509/lecaa_tecla/sw.js"
   },
   "offline": {
-    "resources": 34,
+    "resources": 189,
     "missing": [],
     "caches": [
       "lecaa-docs-release-sentinel",
-      "lecaa-tecla-7da6d5444c"
+      "lecaa-tecla-d2db4edd44"
     ],
     "games": [
       {
@@ -303,7 +303,7 @@
       }
     ]
   },
-  "browser": "155.0.8059.85",
+  "browser": "153.0.8010.12",
   "errors": [],
   "passed": true
 }

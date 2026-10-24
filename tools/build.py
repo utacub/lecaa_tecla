@@ -32,7 +32,8 @@ phon_root = os.path.join(ROOT, "assets", "sons", "phonemes")
 phon = json.load(open(os.path.join(phon_root, "manifest.json"), encoding="utf-8"))
 phon_audio = {name: "data:" + meta["mime"] + ";base64," + base64.b64encode(open(os.path.join(phon_root, name), "rb").read()).decode()
               for name, meta in phon["files"].items()}
-js = f"const PHON_BANK = {json.dumps(phon['languages'])};\nconst PHON_AUDIO = {json.dumps(phon_audio)};\n" + f"const CREDIT_LOGOS = {json.dumps(credit_logos)};\n" + f"const LOGO_UTAC = {json.dumps(utac)};\nconst LOGO_SVG_P = {json.dumps(logoP)};\nconst LOGO_SVG_W = {json.dumps(logoW)};\n" + "\n".join(parts)
+# El logo de la UTAC és el mateix fitxer que el primer dels crèdits: si coincideix, no s'incrusta dues vegades.
+js = f"const PHON_BANK = {json.dumps(phon['languages'])};\nconst PHON_AUDIO = {json.dumps(phon_audio)};\n" + f"const CREDIT_LOGOS = {json.dumps(credit_logos)};\n" + (f"const LOGO_UTAC = CREDIT_LOGOS[{credit_logos.index(utac)}];\n" if utac in credit_logos else f"const LOGO_UTAC = {json.dumps(utac)};\n") + f"const LOGO_SVG_P = {json.dumps(logoP)};\nconst LOGO_SVG_W = {json.dumps(logoW)};\n" + "\n".join(parts)
 # Només recursos optimitzats: les imatges font de references/ no entren a l'app.
 # Un recurs buit no ha de produir una compilació aparentment correcta.
 for asset_path in sorted(glob.glob(os.path.join(ROOT, "assets", "art", "*.webp"))):
