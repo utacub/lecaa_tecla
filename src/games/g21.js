@@ -12,10 +12,10 @@
   const STYLE = { porc: "slide", gallina: "fly", anec: "fly", pollet: "fly", mussol: "fly", abella: "fly", conill: "hop", granota: "hop", esquirol: "hop", cargol: "slow", marieta: "fly" };
   // portes: x, y (centre), w, h, color, fulles (1 o 2)
   const DOORS = [
-    { x: 280, y: 622, w: 124, h: 156, col: "#3E7CC0", leaves: 1 },
-    { x: 800, y: 586, w: 224, h: 228, col: "#F2E6C8", leaves: 2, main: true },
-    { x: 800, y: 270, w: 120, h: 108, col: "#F2E6C8", leaves: 1 },
-    { x: 1296, y: 640, w: 108, h: 120, col: "#E8963A", leaves: 1 },
+    { x: 251, y: 474, w: 178, h: 286, col: "#3E7CC0", leaves: 1 },
+    { x: 800, y: 439, w: 310, h: 253, col: "#F2E6C8", leaves: 2, main: true },
+    { x: 801, y: 211, w: 190, h: 148, col: "#F2E6C8", leaves: 1 },
+    { x: 1351, y: 480, w: 126, h: 244, col: "#E8963A", leaves: 1 },
   ];
   const GROUND = 714, NB = [110, 742, 1380, 148];
 
@@ -96,6 +96,7 @@
       const Rg = mulberry32(900); for (let k = 0; k < 70; k++) { const gx = Rg() * W, gy = 560 + Rg() * 140; if ((gx > 520 && gx < 1080) || (gx > 110 && gx < 450 && gy > 460) || (gx > 1150 && gx < 1440 && gy > 520)) continue; crayonLine(x, [[gx, gy], [gx + (Rg() - 0.5) * 8, gy - 12 - Rg() * 10]], "#4E8F2E", 3, Rv, false); }
       // composició sobre el paper: els porus de la cera deixen veure el paper
       const c = makeCanvas(W, H), y = c.getContext("2d"); y.drawImage(paper, 0, 0); y.drawImage(L, 0, 0);
+      if(Art.get("farm-bg"))y.drawImage(Art.get("farm-bg"),0,0,W,H);
       // quadern de l'excursió
       const [nx, ny, nw, nh] = NB;
       y.save(); y.shadowColor = "rgba(60,40,20,0.35)"; y.shadowBlur = 16; y.shadowOffsetY = 6; rr(y, nx, ny, nw, nh, 14); y.fillStyle = "#A8743F"; y.fill(); y.restore();
@@ -109,6 +110,8 @@
   /* fulla de porta prerenderitzada */
   function leafSprite(d, w, h, flipBrace) {
     return Sprites.get(`v21leaf${d.col}${w}x${h}${flipBrace ? 1 : 0}`, w + 12, h + 12, (x) => {
+      const i=d.col==="#3E7CC0"?0:d.main?1:d.col==="#E8963A"?3:2;
+      const im=Art.get("farm-doors"),box=Art.rects["farm-doors"]?.[i];if(im&&box){x.drawImage(im,...box,0,0,w+12,h+12);return;}
       x.translate(6, 6); const R = mulberry32(w * 7 + h);
       Mat.crayon(x, polyPath(rect(0, 0, w, h)), d.col, { bbox: [0, 0, w, h], seed: w + h, strokes: Math.round(w * h / 300), pores: Math.round(w * h / 60), outline: false });
       const dark = shade(d.col, -0.4);
@@ -125,7 +128,7 @@
       const R = mulberry32(id.length * 13 + id.charCodeAt(0));
       Mat.crayon(x, c => { blobPath(c, 52, 50, 42, id.charCodeAt(1) || 3, 0.12, 9); }, "#FFE9A8", { bbox: [0, 0, 104, 96], seed: 5, strokes: 30, pores: 200, outline: false });
       const p = []; for (let i = 0; i < 24; i++) { const a = i / 24 * 6.283; p.push([52 + Math.cos(a) * 44, 50 + Math.sin(a) * 42]); } crayonLine(x, p, "#E0904A", 3.5, R, true);
-      if (HAS()) Critters.draw(x, id, 52, 48, 74, { t: 0 });
+      if (HAS()) Art.farmAnimal(x, id, 52, 48, 74, { t: 0 });
     });
   }
   /* ratolí de ceres que diu "no, no" amb el cap */
@@ -168,6 +171,7 @@
     goal: l => l <= 3 ? "Escriu la lletra d'una porta per obrir-la i descobrir l'animal." : l === 4 ? "Escriu la síl·laba d'una porta per obrir-la i descobrir l'animal." : "Escolta el nom de l'animal i escriu-lo per cridar-lo.",
     thumb(ctx, x, y, w, h, t) {
       const sp = Sprites.get("v21thumb", 300, 220, (c) => {
+        if(Art.get("farm-bg")){const im=Art.get("farm-bg");c.drawImage(im,im.width*.22,0,im.width*.56,im.height,0,0,300,220);return;}
         c.drawImage(Tex.paper(300, 220, "#FBF7EC", { seed: 21 }), 0, 0);
         const R = mulberry32(5); c.lineCap = "round"; for (let k = 0; k < 120; k++) { c.strokeStyle = "#8EC3EC"; c.globalAlpha = 0.3; c.lineWidth = 4; const px = R() * 300, py = R() * 120; c.beginPath(); c.moveTo(px, py); c.lineTo(px + 30, py - 10); c.stroke(); } c.globalAlpha = 1;
         fill(c, [[0, 220], [0, 150], [300, 140], [300, 220]], "#7DBA4F", 3);
@@ -179,7 +183,7 @@
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
       const sc = Math.max(w / 300, h / 220); ctx.drawImage(sp.c, x + w / 2 - 150 * sc, y + h / 2 - 110 * sc, 300 * sc, 220 * sc);
       const cx = x + w / 2, by = y + h / 2 + 100 * sc;
-      if (HAS()) Critters.draw(ctx, "vaca", cx, by - 38 * sc - Math.abs(Math.sin(t * 2.5)) * 6 * sc, 84 * sc, { t, pose: "happy" });
+      if (HAS()) Art.farmAnimal(ctx, "vaca", cx, by - 38 * sc - Math.abs(Math.sin(t * 2.5)) * 6 * sc, 84 * sc, { t, pose: "happy" });
       // porta mig oberta
       const lw = leafSprite(DOORS[3], 40, 80, false); ctx.save(); ctx.translate(cx - 40 * sc, y + h / 2 + 20 * sc); ctx.scale(0.35 * sc, sc); ctx.drawImage(lw.c, 0, 0, 52, 92); ctx.restore();
       drawPlate(ctx, "v", cx + 58 * sc, y + h / 2 - 34 * sc, { size: 30 * sc, shadowBlur: 4 });
@@ -199,7 +203,8 @@
       function assign(d) {
         if (L >= 5) {
           const id = order[nextA % order.length]; d.text = L === 6 ? phrase(id) : nameOf(id); d.aid = id; d.typed = 0; d.done = false; d.dead = false;
-          setTimeout(() => api.sayItem(d.text, "{x}"), api.demo ? 50 : 300);
+          const spokenText = d.text;
+          setTimeout(() => { if (d.text === spokenText && !d.done) api.sayItem(spokenText, "{x}"); }, api.demo ? 50 : 300);
         } else {
           const others = usable.filter(o => o !== d && o.text).map(o => o.text);
           d.text = pool.next(others); d.typed = 0; d.done = false; d.dead = false; d.rank = rand(0, 1);
@@ -231,11 +236,11 @@
           if (animal) {
             const a = animal; a.t += dt;
             if (a.phase === "out" && a.t > 0.35 && !a.said) { a.said = true; animalSound(a.id); setTimeout(() => void 0, 350); api.particles.emit(a.d.x, GROUND - 40, { count: 12, color: ["#F2B630", "#E8603A", "#7DBA4F", "#fff"], shape: "confetti", speed: 280, gravity: 500, size: 10, life: 0.9 }); }
-            if (a.phase === "out" && a.t > 1.9) { a.phase = "fly"; a.t = 0; a.d.opening = 0; Sfx.play("whoosh"); st.busy = false; a.d.text = null; }
+            if (a.phase === "out" && a.t > 1.9) { a.phase = "fly"; a.t = 0; a.d.opening = 0; Sfx.play("whoosh"); a.d.text = null; }
             if (a.phase === "fly" && a.t > 0.75) {
               found.push(a.id); Sfx.play("plof");
               const [sx, sy] = slotPos(a.slot); api.particles.emit(sx, sy, { count: 14, color: ["#FFD23F", "#E0904A", "#fff"], shape: "star", speed: 200, gravity: 200, size: 9, life: 0.6 });
-              const d = a.d; animal = null;
+              const d = a.d; animal = null; st.busy = false;
               if (found.length >= GOAL) { st.endT = 0; Sfx.play("win"); }
               else setTimeout(() => { if (st.endT < 0) assign(d); }, 350);
             }
@@ -291,7 +296,7 @@
               else { y = lerp(startY, GROUND, k) - Math.sin(clamp(a.t / 0.9, 0, 1) * 3.14) * 130; const land = clamp((a.t - 0.9) / 0.25, 0, 1); if (land > 0 && land < 1) { sx = 1 + Math.sin(land * 3.14) * 0.18; sy = 1 - Math.sin(land * 3.14) * 0.15; } }
               const sh = shadowBlob(), hgt = clamp((GROUND - y) / 200, 0, 1);
               ctx.save(); ctx.globalAlpha = 1 - hgt * 0.6; ctx.drawImage(sh.c, x - 80 * (1 - hgt * 0.4), GROUND - 14, 160 * (1 - hgt * 0.4), 40); ctx.restore();
-              ctx.save(); ctx.translate(x, y); ctx.scale(sx, sy); Critters.draw(ctx, a.id, 0, -size * 0.45, size * Ease.outBack(Math.min(1, 0.3 + k)), { t, pose }); ctx.restore();
+              ctx.save(); ctx.translate(x, y); ctx.scale(sx, sy); Art.farmAnimal(ctx, a.id, 0, -size * 0.45, size * Ease.outBack(Math.min(1, 0.3 + k)), { t, pose }); ctx.restore();
               // bafarada amb el nom
               if (a.t > 0.6) {
                 const n = nameOf(a.id), bw = measure(ctx, n, 34) + 44, bx = clamp(x + 70, 80, W - bw - 20), by = y - size - 20, al = clamp((a.t - 0.6) * 5, 0, 1);
@@ -303,7 +308,7 @@
             } else {
               const k = Ease.inOutCubic(clamp(a.t / 0.75, 0, 1)), [tx, ty] = slotPos(a.slot), fx = a.lastX, fy = a.lastY - 60;
               const x = lerp(fx, tx, k), y = lerp(fy, ty, k) - Math.sin(k * 3.14) * 160, s = lerp(d.main ? 150 : 120, 62, k);
-              Critters.draw(ctx, a.id, x, y, s, { t, pose: "jump" });
+              Art.farmAnimal(ctx, a.id, x, y, s, { t, pose: "jump" });
             }
           }
           if (st.endT >= 0) { const a = clamp(st.endT * 2, 0, 1); ctx.save(); ctx.globalAlpha = a; text(ctx, "Quadern complet!", 800, 120, { size: 52, weight: 900, font: FONT_T, color: "#D9443A", stroke: "#FFFFFF", lw: 10 }); ctx.restore(); }

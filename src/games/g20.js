@@ -9,8 +9,8 @@
   const colOf = item => PAL[(idxOf(item) * 3) % PAL.length];
   const noteOf = item => PENTA[(idxOf(item) * 7) % PENTA.length];
   // racons de la cova on hi ha els cristalls (base a la paret, apunten cap al centre)
-  const SLOTS = [[64, 712, 1.0], [48, 438, 0.92], [236, 168, 0.9], [566, 78, 0.85], [1034, 78, 0.85], [1364, 168, 0.9], [1552, 438, 0.92], [1536, 712, 1.0]];
-  const SLOT_ROT = SLOTS.map(([x, y]) => Math.atan2(470 - y, 800 - x) + Math.PI / 2);
+  const SLOTS = [[110, 725, 1.0], [110, 490, 0.85], [225, 275, 0.85], [560, 245, 0.75], [1040, 245, 0.75], [1375, 275, 0.85], [1490, 490, 0.85], [1490, 725, 1.0]];
+  const SLOT_ROT = SLOTS.map(() => 0);
   const START = { 1: 2, 2: 3, 3: 3, 4: 2, 5: 1, 6: 1 }, GOAL = { 1: 8, 2: 8, 3: 8, 4: 5, 5: 4, 6: 3 };
   const STONE = [800, 652, 480, 92];
 
@@ -19,6 +19,12 @@
   function crystal(col) {
     const key = col || "neutre"; if (CR[key]) return CR[key];
     const w = 220, h = 270, S = 1.5, c = makeCanvas(w * S, h * S), x = c.getContext("2d"); x.scale(S, S);
+    const art=Art.cell("echo-crystal",0,1,1,w,h);
+    if(art){
+      x.drawImage(art,0,0,w,h);
+      if(col){x.globalCompositeOperation="source-atop";x.globalAlpha=0.52;x.fillStyle=col;x.fillRect(0,0,w,h);x.globalAlpha=1;x.globalCompositeOperation="source-over";}
+      return (CR[key]={c,w,h,ax:0.5,ay:0.9});
+    }
     const base = col || "#9AA6E0", bx = w / 2, by = h - 30, lit = !!col;
     // roca de la base
     x.fillStyle = "#1E1A2E"; blobPath(x, bx, by + 8, 74, 5, 0.25, 9); x.fill();
@@ -110,6 +116,7 @@
     g = x.createRadialGradient(sx, sy - 40, 20, sx, sy, rx); g.addColorStop(0, "rgba(160,150,220,0.25)"); g.addColorStop(1, "rgba(10,8,25,0.55)"); x.fillStyle = g; x.fillRect(sx - rx, sy - ry, rx * 2, ry * 2);
     x.restore();
     x.strokeStyle = "rgba(190,180,255,0.35)"; x.lineWidth = 2; x.beginPath(); x.ellipse(sx, sy, rx - 2, ry - 2, 0, Math.PI * 1.05, Math.PI * 1.95); x.stroke();
+    if(Art.get("echo-bg"))x.drawImage(Art.get("echo-bg"),0,0,W,H);
     BG = c;
     // brillantor humida de les parets (es mostra quan un cristall s'encén)
     SHEEN = makeCanvas(W, H); const s = SHEEN.getContext("2d"), R2 = mulberry32(7);
