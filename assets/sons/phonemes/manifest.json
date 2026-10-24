@@ -1,0 +1,1673 @@
+{
+  "schema": 1,
+  "sources": {
+    "ca": {
+      "repository": "utacub/lecaa",
+      "commit": "65280eb2aac3eefd232dec331d6415ac150dac69",
+      "path": "index.html"
+    },
+    "es": {
+      "repository": "utacub/lecaa_cast",
+      "commit": "0bab868b54639c1ceecb36c985c96d691678ca4e",
+      "path": "index.html"
+    }
+  },
+  "languages": {
+    "ca": {
+      "defaultVoice": "anna",
+      "voices": {
+        "anna": {
+          "a": {
+            "file": "eb5d11961933ed10b401094f44aca7b961651571b25fdace345dfc5e558da619.mp3",
+            "start": 0,
+            "end": 0.449,
+            "origin": {
+              "block": "isolated-15",
+              "voice": "anna",
+              "source": "recursos/eb5d11961933ed10b401.mp3"
+            }
+          },
+          "e": {
+            "file": "6ab21b511794a228f07aeffa7050f4814b46893748432373d72610d4e0e1be72.mp3",
+            "start": 0,
+            "end": 0.428,
+            "origin": {
+              "block": "isolated-16",
+              "voice": "anna",
+              "source": "recursos/6ab21b511794a228f07a.mp3"
+            }
+          },
+          "ɛ": {
+            "file": "6c7e8407b171f90aa23e534e4aef461edf22c895c62041ca636d652ea85f541b.mp3",
+            "start": 0,
+            "end": 0.526,
+            "origin": {
+              "block": "isolated-17",
+              "voice": "anna",
+              "source": "recursos/6c7e8407b171f90aa23e.mp3"
+            }
+          },
+          "i": {
+            "file": "896baed6303d6064eab2b086c746c5a11298a5b8174534bf2cc14c6a03174a2e.mp3",
+            "start": 0,
+            "end": 0.507,
+            "origin": {
+              "block": "isolated-18",
+              "voice": "anna",
+              "source": "recursos/896baed6303d6064eab2.mp3"
+            }
+          },
+          "o": {
+            "file": "4cc618b3ea8cc7b877a81cc338e6a5a3274fdfb602b84d02800289f365656de3.mp3",
+            "start": 0,
+            "end": 0.441,
+            "origin": {
+              "block": "isolated-19",
+              "voice": "anna",
+              "source": "recursos/4cc618b3ea8cc7b877a8.mp3"
+            }
+          },
+          "ɔ": {
+            "file": "02d2c6bf8b3448806a53226948b119dfd81b201d57a095a092bfb2eebfcdcc6f.mp3",
+            "start": 0,
+            "end": 0.5389583333333333,
+            "origin": {
+              "block": "isolated-20",
+              "voice": "anna",
+              "source": "recursos/02d2c6bf8b3448806a53.mp3"
+            }
+          },
+          "u": {
+            "file": "78bd1d3edd18ece61f5bcf00450503477fdb606b77f919c08ff4c908e5173b04.mp3",
+            "start": 0,
+            "end": 0.52,
+            "origin": {
+              "block": "isolated-21",
+              "voice": "anna",
+              "source": "recursos/78bd1d3edd18ece61f5b.mp3"
+            }
+          },
+          "ə": {
+            "file": "2de8bef12dd5fdf71e0f0f187dbcd648bcccaf8fc9a8b520a5892fbe078ab934.mp3",
+            "start": 0,
+            "end": 0.49,
+            "origin": {
+              "block": "isolated-22",
+              "voice": "anna",
+              "source": "recursos/2de8bef12dd5fdf71e0f.mp3"
+            }
+          },
+          "s": {
+            "file": "5a4c8cb8ebd659d65b660143a8399d84c76d6d000be37039f37f568eddf87464.mp3",
+            "start": 0,
+            "end": 0.643,
+            "origin": {
+              "block": "isolated-23",
+              "voice": "anna",
+              "source": "recursos/5a4c8cb8ebd659d65b66.mp3"
+            }
+          },
+          "z": {
+            "file": "6ba1ca1c1e4abefec339ab0b54737fe6aa92b225ac00f39084933182d0d77d80.mp3",
+            "start": 0,
+            "end": 0.75,
+            "origin": {
+              "block": "isolated-24",
+              "voice": "anna",
+              "source": "recursos/6ba1ca1c1e4abefec339.mp3"
+            }
+          },
+          "l": {
+            "file": "e56ac32f6fadc15c7cce1f03c24430beb67e44a2209a86f81794593d60e86d9f.mp3",
+            "start": 0,
+            "end": 0.634,
+            "origin": {
+              "block": "isolated-25",
+              "voice": "anna",
+              "source": "recursos/e56ac32f6fadc15c7cce.mp3"
+            }
+          },
+          "m": {
+            "file": "c8f3409ff5b5e8c1eff86cc409d0d062928c64329eddab807d669f3320333d59.mp3",
+            "start": 0,
+            "end": 0.691,
+            "origin": {
+              "block": "isolated-26",
+              "voice": "anna",
+              "source": "recursos/c8f3409ff5b5e8c1eff8.mp3"
+            }
+          },
+          "r": {
+            "file": "04233b80424a0ee49dd58946e54f729dcb2ef717a03d7848720d2105c8c0c5bb.mp3",
+            "start": 0,
+            "end": 0.677,
+            "origin": {
+              "block": "isolated-27",
+              "voice": "anna",
+              "source": "recursos/04233b80424a0ee49dd5.mp3"
+            }
+          },
+          "ɾ": {
+            "file": "ecda95dac21511bba54e3a1b4ac751a39efd5b5311a837b89c4b490cc3cdccb4.mp3",
+            "start": 0,
+            "end": 0.599,
+            "origin": {
+              "block": "isolated-28",
+              "voice": "anna",
+              "source": "recursos/ecda95dac21511bba54e.mp3"
+            }
+          },
+          "p": {
+            "file": "8bfa4e633f08146708e104234f0d4aeff3c4fd1373c0bcac9103184c8f48868f.mp3",
+            "start": 0,
+            "end": 0.594,
+            "origin": {
+              "block": "isolated-29",
+              "voice": "anna",
+              "source": "recursos/8bfa4e633f08146708e1.mp3"
+            }
+          },
+          "t": {
+            "file": "17f5a170df7edf0cab49378bcbe0ade9cc8913b5f2d17ae3b3d611c7db42736c.mp3",
+            "start": 0,
+            "end": 0.57,
+            "origin": {
+              "block": "isolated-30",
+              "voice": "anna",
+              "source": "recursos/17f5a170df7edf0cab49.mp3"
+            }
+          },
+          "n": {
+            "file": "e1d30e0742a0792a2d5a09dc4222c0dbc09323fa67ff8493aabaa7f3550ef6f8.mp3",
+            "start": 0,
+            "end": 0.668,
+            "origin": {
+              "block": "isolated-31",
+              "voice": "anna",
+              "source": "recursos/e1d30e0742a0792a2d5a.mp3"
+            }
+          },
+          "k": {
+            "file": "963730d82225f6e1996ad73f4b81706aa20c5141388aa38a7ca7a041b9b838a2.mp3",
+            "start": 0,
+            "end": 0.5389583333333333,
+            "origin": {
+              "block": "isolated-32",
+              "voice": "anna",
+              "source": "recursos/963730d82225f6e1996a.mp3"
+            }
+          },
+          "ɡ": {
+            "file": "60ded9aad272dea7c71c12dfa4f5964be3d05e45778ff67cc49578d526e810ad.mp3",
+            "start": 0,
+            "end": 0.561,
+            "origin": {
+              "block": "isolated-33",
+              "voice": "anna",
+              "source": "recursos/60ded9aad272dea7c71c.mp3"
+            }
+          },
+          "d": {
+            "file": "25a05de26e711114419024d6d570bd7b283f5a93a502106c67265ce8ba91910f.mp3",
+            "start": 0,
+            "end": 0.589,
+            "origin": {
+              "block": "isolated-34",
+              "voice": "anna",
+              "source": "recursos/25a05de26e7111144190.mp3"
+            }
+          },
+          "f": {
+            "file": "9ac2a0f641807727f4f093c3deefa2d2668278c4f9931b4fa16cb8e08a63bfec.mp3",
+            "start": 0,
+            "end": 0.557,
+            "origin": {
+              "block": "isolated-35",
+              "voice": "anna",
+              "source": "recursos/9ac2a0f641807727f4f0.mp3"
+            }
+          },
+          "b": {
+            "file": "cf45626f14cecd4be6691ee43661a2ad2eec7882de6c453e6c7f893b8610c226.mp3",
+            "start": 0,
+            "end": 0.5779583333333334,
+            "origin": {
+              "block": "isolated-36",
+              "voice": "anna",
+              "source": "recursos/cf45626f14cecd4be669.mp3"
+            }
+          },
+          "ʒ": {
+            "file": "3ede1fd2659fbfa1efd2d37986f4f2071909bd34dba06e09dc54f49d64bdd226.mp3",
+            "start": 0,
+            "end": 0.593,
+            "origin": {
+              "block": "isolated-37",
+              "voice": "anna",
+              "source": "recursos/3ede1fd2659fbfa1efd2.mp3"
+            }
+          },
+          "ʎ": {
+            "file": "f7e6cd94a62900f8c663286dd55f123d067612de9a609942831ebe7feec4387a.mp3",
+            "start": 0,
+            "end": 0.557,
+            "origin": {
+              "block": "isolated-38",
+              "voice": "anna",
+              "source": "recursos/f7e6cd94a62900f8c663.mp3"
+            }
+          },
+          "ɲ": {
+            "file": "feeae8cbe8828c6fc940bb01e72712a61e2b9df8f08011008b1197372c60cdc2.mp3",
+            "start": 0,
+            "end": 0.5959583333333334,
+            "origin": {
+              "block": "isolated-39",
+              "voice": "anna",
+              "source": "recursos/feeae8cbe8828c6fc940.mp3"
+            }
+          },
+          "ʃ": {
+            "file": "e5fa758a54d08e16a625eccb6faa7526f3e715b35a360d11b8bda48af82a393b.mp3",
+            "start": 0,
+            "end": 0.6119583333333334,
+            "origin": {
+              "block": "isolated-40",
+              "voice": "anna",
+              "source": "recursos/e5fa758a54d08e16a625.mp3"
+            }
+          },
+          "t͡ʃ": {
+            "file": "539a110acd6d555ca36dae0a43e7f8ea7340c0a72362653090241228aaf209e1.mp3",
+            "start": 0,
+            "end": 0.515,
+            "origin": {
+              "block": "isolated-41",
+              "voice": "anna",
+              "source": "recursos/539a110acd6d555ca36d.mp3"
+            }
+          },
+          "d͡ʒ": {
+            "file": "9c857d2c75c39f5aa5b1056ae03a71e4163b3e1f241aa05e0ba65f2a4f346f7b.mp3",
+            "start": 0,
+            "end": 0.58,
+            "origin": {
+              "block": "isolated-42",
+              "voice": "anna",
+              "source": "recursos/9c857d2c75c39f5aa5b1.mp3"
+            }
+          },
+          "j": {
+            "file": "315fbf0281a4fe932f240fd322cb9dd513e2f8cf99c0d6c62db692fdc0f4684d.mp3",
+            "start": 0,
+            "end": 0.566,
+            "origin": {
+              "block": "isolated-43",
+              "voice": "anna",
+              "source": "recursos/315fbf0281a4fe932f24.mp3"
+            }
+          },
+          "w": {
+            "file": "dfce8601b5abcc451acc4735716d6344559d4e7da30978e1b0d4d938ae28e237.mp3",
+            "start": 0,
+            "end": 0.566,
+            "origin": {
+              "block": "isolated-44",
+              "voice": "anna",
+              "source": "recursos/dfce8601b5abcc451acc.mp3"
+            }
+          },
+          "lː": {
+            "file": "85213161fbb62c1445d583bcbbcf3f77c3f0cc958fb7669dcefb73b8bb801872.mp3",
+            "start": 0,
+            "end": 0.579,
+            "origin": {
+              "block": "isolated-45",
+              "voice": "anna",
+              "source": "recursos/85213161fbb62c1445d5.mp3"
+            }
+          },
+          "v": {
+            "file": "5e0cad578b02e0012c7236ab1c0082454840d007d42381d01826da64c1edaa5e.mp3",
+            "start": 0,
+            "end": 0.568,
+            "origin": {
+              "block": "isolated-47",
+              "voice": "anna",
+              "source": "recursos/5e0cad578b02e0012c72.mp3"
+            }
+          }
+        },
+        "jordi": {
+          "a": {
+            "file": "8d50b77dcaa124df091d3842d822853d66df8ad977afe813dab2126cdaa65939.mp3",
+            "start": 0,
+            "end": 0.454,
+            "origin": {
+              "block": "isolated-15",
+              "voice": "jordi",
+              "source": "recursos/8d50b77dcaa124df091d.mp3"
+            }
+          },
+          "e": {
+            "file": "4b7cdac0e2e007940c9993d583913a4c217e99b090122f770b10677fa0f4c0d2.mp3",
+            "start": 0,
+            "end": 0.455,
+            "origin": {
+              "block": "isolated-16",
+              "voice": "jordi",
+              "source": "recursos/4b7cdac0e2e007940c99.mp3"
+            }
+          },
+          "ɛ": {
+            "file": "cc02c6f457acca2229337c9531fd74502b3403b788af41394dd9a3c38ce89d3f.mp3",
+            "start": 0,
+            "end": 0.516,
+            "origin": {
+              "block": "isolated-17",
+              "voice": "jordi",
+              "source": "recursos/cc02c6f457acca222933.mp3"
+            }
+          },
+          "i": {
+            "file": "516af1aa53bf822b43a3a18e4b13a927d4312942720fba870a38299fde9bb4eb.mp3",
+            "start": 0,
+            "end": 0.595,
+            "origin": {
+              "block": "isolated-18",
+              "voice": "jordi",
+              "source": "recursos/516af1aa53bf822b43a3.mp3"
+            }
+          },
+          "o": {
+            "file": "eb338f802029ee56dd27149a78a8b4aaa7cf803be71f751938f24c8ec2f015b4.mp3",
+            "start": 0,
+            "end": 0.466,
+            "origin": {
+              "block": "isolated-19",
+              "voice": "jordi",
+              "source": "recursos/eb338f802029ee56dd27.mp3"
+            }
+          },
+          "ɔ": {
+            "file": "632a7fc106756b0516267751cb7072aaec76889eba519532a1d0e54425028d90.mp3",
+            "start": 0,
+            "end": 0.551,
+            "origin": {
+              "block": "isolated-20",
+              "voice": "jordi",
+              "source": "recursos/632a7fc106756b051626.mp3"
+            }
+          },
+          "u": {
+            "file": "611a21bbefcee11c9cd93d17ebbcc47a8432ad0add469fec7572d5dd0924a7c9.mp3",
+            "start": 0,
+            "end": 0.5319583333333333,
+            "origin": {
+              "block": "isolated-21",
+              "voice": "jordi",
+              "source": "recursos/611a21bbefcee11c9cd9.mp3"
+            }
+          },
+          "ə": {
+            "file": "3dc16b523b98707de69e7440cb1d9ad12d82fb125b3006f327f13df7a01d5919.mp3",
+            "start": 0,
+            "end": 0.489,
+            "origin": {
+              "block": "isolated-22",
+              "voice": "jordi",
+              "source": "recursos/3dc16b523b98707de69e.mp3"
+            }
+          },
+          "s": {
+            "file": "fb284ed8f1153e9e3b222ecf3ab4902ab3c9aed37a8836a00ead062c93ed8b52.mp3",
+            "start": 0,
+            "end": 0.593,
+            "origin": {
+              "block": "isolated-23",
+              "voice": "jordi",
+              "source": "recursos/fb284ed8f1153e9e3b22.mp3"
+            }
+          },
+          "z": {
+            "file": "c873beff9d7b084809bd086a86d7086eeafa2c5bd26e30d783fa8b9e62f41593.mp3",
+            "start": 0,
+            "end": 0.5959583333333334,
+            "origin": {
+              "block": "isolated-24",
+              "voice": "jordi",
+              "source": "recursos/c873beff9d7b084809bd.mp3"
+            }
+          },
+          "l": {
+            "file": "ca2cd34a68ce97119fd9c6fa7bf9c6fa11d50a51704f4727fb299114d1880a47.mp3",
+            "start": 0,
+            "end": 0.6709583333333333,
+            "origin": {
+              "block": "isolated-25",
+              "voice": "jordi",
+              "source": "recursos/ca2cd34a68ce97119fd9.mp3"
+            }
+          },
+          "m": {
+            "file": "8563bfdf5204f1f3c7735986e8fa5c5a9b9c58a8b58b3fa6fd6c58163f862b8a.mp3",
+            "start": 0,
+            "end": 0.587,
+            "origin": {
+              "block": "isolated-26",
+              "voice": "jordi",
+              "source": "recursos/8563bfdf5204f1f3c773.mp3"
+            }
+          },
+          "r": {
+            "file": "c38c6247ed890b31fc7722a47608945e82a5c4527e82f8198d79e28cece6093b.mp3",
+            "start": 0,
+            "end": 0.605,
+            "origin": {
+              "block": "isolated-27",
+              "voice": "jordi",
+              "source": "recursos/c38c6247ed890b31fc77.mp3"
+            }
+          },
+          "ɾ": {
+            "file": "9c4e3033e38983283a70d25d0bd288e147d18612d6ea2983323ceb0a6dec1346.mp3",
+            "start": 0,
+            "end": 0.573,
+            "origin": {
+              "block": "isolated-28",
+              "voice": "jordi",
+              "source": "recursos/9c4e3033e38983283a70.mp3"
+            }
+          },
+          "p": {
+            "file": "ac463866ea408587d3834d4997d210d66c9d73359cff607fd8fe5b3874a884d1.mp3",
+            "start": 0,
+            "end": 0.537,
+            "origin": {
+              "block": "isolated-29",
+              "voice": "jordi",
+              "source": "recursos/ac463866ea408587d383.mp3"
+            }
+          },
+          "t": {
+            "file": "f580776cfbb91c20ba26e901d6a65b53f765791a47ae922e51988402889b2dc4.mp3",
+            "start": 0,
+            "end": 0.569,
+            "origin": {
+              "block": "isolated-30",
+              "voice": "jordi",
+              "source": "recursos/f580776cfbb91c20ba26.mp3"
+            }
+          },
+          "n": {
+            "file": "02f4d28555468ec89830b678c13f8846c2b4505311908e16788cfcb8fd3d05f2.mp3",
+            "start": 0,
+            "end": 0.55,
+            "origin": {
+              "block": "isolated-31",
+              "voice": "jordi",
+              "source": "recursos/02f4d28555468ec89830.mp3"
+            }
+          },
+          "k": {
+            "file": "6df8782d1ad0f4339e17795dced8e285c437474e3d87a471f9ad36c124f5f9f9.mp3",
+            "start": 0,
+            "end": 0.571,
+            "origin": {
+              "block": "isolated-32",
+              "voice": "jordi",
+              "source": "recursos/6df8782d1ad0f4339e17.mp3"
+            }
+          },
+          "ɡ": {
+            "file": "2aacacc5f07df281a75fd6fc9eb34eedba30b7ec75efe3484a16a0504944249d.mp3",
+            "start": 0,
+            "end": 0.446,
+            "origin": {
+              "block": "isolated-33",
+              "voice": "jordi",
+              "source": "recursos/2aacacc5f07df281a75f.mp3"
+            }
+          },
+          "d": {
+            "file": "86a043e9bbdfee527ac7a9665a538a786957affe20a6ea30405e09ebdad7fecc.mp3",
+            "start": 0,
+            "end": 0.567,
+            "origin": {
+              "block": "isolated-34",
+              "voice": "jordi",
+              "source": "recursos/86a043e9bbdfee527ac7.mp3"
+            }
+          },
+          "f": {
+            "file": "96273eb81e4ea07ad351bff949d47297a074935edc038270c80ea68a80a488b6.mp3",
+            "start": 0,
+            "end": 0.536,
+            "origin": {
+              "block": "isolated-35",
+              "voice": "jordi",
+              "source": "recursos/96273eb81e4ea07ad351.mp3"
+            }
+          },
+          "b": {
+            "file": "2500ec849c603615cc58f30c1d1bf7592b9ae63c82bc77cc5441a75db8bb39fe.mp3",
+            "start": 0,
+            "end": 0.57,
+            "origin": {
+              "block": "isolated-36",
+              "voice": "jordi",
+              "source": "recursos/2500ec849c603615cc58.mp3"
+            }
+          },
+          "ʒ": {
+            "file": "1672844885a9039e0a3dd5e5137ee4bdde9ccee0db4b12e5ff3921281394111b.mp3",
+            "start": 0,
+            "end": 0.6799583333333333,
+            "origin": {
+              "block": "isolated-37",
+              "voice": "jordi",
+              "source": "recursos/1672844885a9039e0a3d.mp3"
+            }
+          },
+          "ʎ": {
+            "file": "35e5fbe6a6991ebfc69a85ef57c86638c9a87b1ee7d7164b5a117d1eda8b0197.mp3",
+            "start": 0,
+            "end": 0.5789583333333334,
+            "origin": {
+              "block": "isolated-38",
+              "voice": "jordi",
+              "source": "recursos/35e5fbe6a6991ebfc69a.mp3"
+            }
+          },
+          "ɲ": {
+            "file": "e7ac01da23441850f96f2cec03491c2672bfd0d9962d68df43ddd3b54df18fee.mp3",
+            "start": 0,
+            "end": 0.5849583333333334,
+            "origin": {
+              "block": "isolated-39",
+              "voice": "jordi",
+              "source": "recursos/e7ac01da23441850f96f.mp3"
+            }
+          },
+          "ʃ": {
+            "file": "29dd915170242c54240aaffc8fd275e660b500b3327b34eef3586282ffd93b5a.mp3",
+            "start": 0,
+            "end": 0.592,
+            "origin": {
+              "block": "isolated-40",
+              "voice": "jordi",
+              "source": "recursos/29dd915170242c54240a.mp3"
+            }
+          },
+          "t͡ʃ": {
+            "file": "8b0a02649a33d40cbe1983f51e1b71766879141fe4a4a6dbdb9026fc5a209e42.mp3",
+            "start": 0,
+            "end": 0.36895833333333333,
+            "origin": {
+              "block": "isolated-41",
+              "voice": "jordi",
+              "source": "recursos/8b0a02649a33d40cbe19.mp3"
+            }
+          },
+          "d͡ʒ": {
+            "file": "6807fea588189a40154cda59dcd1bc608af1310e0ae2c23c61c679bd5bc40b0b.mp3",
+            "start": 0,
+            "end": 0.413,
+            "origin": {
+              "block": "isolated-42",
+              "voice": "jordi",
+              "source": "recursos/6807fea588189a40154c.mp3"
+            }
+          },
+          "j": {
+            "file": "34e5c9d23c9a4c9d1cecc33e9039fbebef02fc22d85a00a13f8a2bc07ba0fb40.mp3",
+            "start": 0,
+            "end": 0.612,
+            "origin": {
+              "block": "isolated-43",
+              "voice": "jordi",
+              "source": "recursos/34e5c9d23c9a4c9d1cec.mp3"
+            }
+          },
+          "w": {
+            "file": "c3b498b6dfa3149b32453d74f22a685e3aed890d1742cff8a3138e6317b3c0d0.mp3",
+            "start": 0,
+            "end": 0.592,
+            "origin": {
+              "block": "isolated-44",
+              "voice": "jordi",
+              "source": "recursos/c3b498b6dfa3149b3245.mp3"
+            }
+          },
+          "lː": {
+            "file": "ca2cd34a68ce97119fd9c6fa7bf9c6fa11d50a51704f4727fb299114d1880a47.mp3",
+            "start": 0,
+            "end": 0.6709583333333333,
+            "origin": {
+              "block": "isolated-45",
+              "voice": "jordi",
+              "source": "recursos/ca2cd34a68ce97119fd9.mp3"
+            }
+          },
+          "v": {
+            "file": "ed59c3a44c7fae482b37c0e82240d9669673cb4d4f115071535b999eedf973ba.mp3",
+            "start": 0,
+            "end": 0.564,
+            "origin": {
+              "block": "isolated-47",
+              "voice": "jordi",
+              "source": "recursos/ed59c3a44c7fae482b37.mp3"
+            }
+          }
+        }
+      },
+      "graphemes": {
+        "a": "a",
+        "e": "e",
+        "è": "ɛ",
+        "i": "i",
+        "o": "o",
+        "ò": "ɔ",
+        "u": "u",
+        "ə": "ə",
+        "s": "s",
+        "ss": "s",
+        "z": "z",
+        "l": "l",
+        "m": "m",
+        "r": "r",
+        "rr": "r",
+        "ɾ": "ɾ",
+        "p": "p",
+        "t": "t",
+        "n": "n",
+        "c": "k",
+        "k": "k",
+        "qu": "k",
+        "g": "ɡ",
+        "gu": "ɡ",
+        "d": "d",
+        "f": "f",
+        "b": "b",
+        "v": "b",
+        "c·": "s",
+        "g·": "ʒ",
+        "j": "ʒ",
+        "ll": "ʎ",
+        "ny": "ɲ",
+        "x": "ʃ",
+        "ix": "ʃ",
+        "tx": "t͡ʃ",
+        "ig": "t͡ʃ",
+        "tg": "d͡ʒ",
+        "i-semivocal": "j",
+        "u-semivocal": "w",
+        "l·l": "lː",
+        "v-labiodental": "v"
+      }
+    },
+    "es": {
+      "defaultVoice": "female",
+      "voices": {
+        "female": {
+          "a": {
+            "file": "eb5d11961933ed10b401094f44aca7b961651571b25fdace345dfc5e558da619.mp3",
+            "start": 0,
+            "end": 0.449,
+            "origin": {
+              "id": "phoneme.a",
+              "version": "cat45.1-anna-eb5d11961933ed10",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-15",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "eb5d11961933ed10b401094f44aca7b961651571b25fdace345dfc5e558da619",
+                "extraction": {
+                  "sourceBlock": "15",
+                  "sourceAttempt": 0,
+                  "sourceStart": 3.892,
+                  "sourceEnd": 4.341,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "s": {
+            "file": "5a4c8cb8ebd659d65b660143a8399d84c76d6d000be37039f37f568eddf87464.mp3",
+            "start": 0,
+            "end": 0.643,
+            "origin": {
+              "id": "phoneme.s",
+              "version": "cat45.1-anna-5a4c8cb8ebd659d6",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-23",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "5a4c8cb8ebd659d65b660143a8399d84c76d6d000be37039f37f568eddf87464",
+                "extraction": {
+                  "sourceBlock": "23",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.438,
+                  "sourceEnd": 5.081,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "l": {
+            "file": "e56ac32f6fadc15c7cce1f03c24430beb67e44a2209a86f81794593d60e86d9f.mp3",
+            "start": 0,
+            "end": 0.634,
+            "origin": {
+              "id": "phoneme.l",
+              "version": "cast-0.5-user-l-de13d712498f",
+              "status": "available_user_selected",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-25",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "e56ac32f6fadc15c7cce1f03c24430beb67e44a2209a86f81794593d60e86d9f",
+                "extraction": {
+                  "sourceBlock": "25",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.444,
+                  "sourceEnd": 5.078,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "o": {
+            "file": "4cc618b3ea8cc7b877a81cc338e6a5a3274fdfb602b84d02800289f365656de3.mp3",
+            "start": 0,
+            "end": 0.441,
+            "origin": {
+              "id": "phoneme.o",
+              "version": "cat45.1-anna-4cc618b3ea8cc7b8",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-19",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "4cc618b3ea8cc7b877a81cc338e6a5a3274fdfb602b84d02800289f365656de3",
+                "extraction": {
+                  "sourceBlock": "19",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.304,
+                  "sourceEnd": 4.745,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "m": {
+            "file": "c8f3409ff5b5e8c1eff86cc409d0d062928c64329eddab807d669f3320333d59.mp3",
+            "start": 0,
+            "end": 0.691,
+            "origin": {
+              "id": "phoneme.m",
+              "version": "cat45.1-anna-c8f3409ff5b5e8c1",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-26",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "c8f3409ff5b5e8c1eff86cc409d0d062928c64329eddab807d669f3320333d59",
+                "extraction": {
+                  "sourceBlock": "26",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.048,
+                  "sourceEnd": 4.739,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "e": {
+            "file": "6ab21b511794a228f07aeffa7050f4814b46893748432373d72610d4e0e1be72.mp3",
+            "start": 0,
+            "end": 0.428,
+            "origin": {
+              "id": "phoneme.e",
+              "version": "cat45.1-anna-6ab21b511794a228",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-16",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "6ab21b511794a228f07aeffa7050f4814b46893748432373d72610d4e0e1be72",
+                "extraction": {
+                  "sourceBlock": "16",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.203,
+                  "sourceEnd": 4.631,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "r": {
+            "file": "04233b80424a0ee49dd58946e54f729dcb2ef717a03d7848720d2105c8c0c5bb.mp3",
+            "start": 0,
+            "end": 0.677,
+            "origin": {
+              "id": "phoneme.r",
+              "version": "cat45.1-anna-04233b80424a0ee4",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-27",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "04233b80424a0ee49dd58946e54f729dcb2ef717a03d7848720d2105c8c0c5bb",
+                "extraction": {
+                  "sourceBlock": "27",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.676,
+                  "sourceEnd": 5.353,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "p": {
+            "file": "8bfa4e633f08146708e104234f0d4aeff3c4fd1373c0bcac9103184c8f48868f.mp3",
+            "start": 0,
+            "end": 0.594,
+            "origin": {
+              "id": "phoneme.p",
+              "version": "cat45.1-anna-8bfa4e633f081467",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-29",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "8bfa4e633f08146708e104234f0d4aeff3c4fd1373c0bcac9103184c8f48868f",
+                "extraction": {
+                  "sourceBlock": "29",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.46,
+                  "sourceEnd": 5.054,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "i": {
+            "file": "896baed6303d6064eab2b086c746c5a11298a5b8174534bf2cc14c6a03174a2e.mp3",
+            "start": 0,
+            "end": 0.507,
+            "origin": {
+              "id": "phoneme.i",
+              "version": "cat45.1-anna-896baed6303d6064",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-18",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "896baed6303d6064eab2b086c746c5a11298a5b8174534bf2cc14c6a03174a2e",
+                "extraction": {
+                  "sourceBlock": "18",
+                  "sourceAttempt": 0,
+                  "sourceStart": 3.971,
+                  "sourceEnd": 4.478,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "t": {
+            "file": "17f5a170df7edf0cab49378bcbe0ade9cc8913b5f2d17ae3b3d611c7db42736c.mp3",
+            "start": 0,
+            "end": 0.57,
+            "origin": {
+              "id": "phoneme.t",
+              "version": "cat45.1-anna-17f5a170df7edf0c",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-30",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "17f5a170df7edf0cab49378bcbe0ade9cc8913b5f2d17ae3b3d611c7db42736c",
+                "extraction": {
+                  "sourceBlock": "30",
+                  "sourceAttempt": 0,
+                  "sourceStart": 3.798,
+                  "sourceEnd": 4.368,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "n": {
+            "file": "e1d30e0742a0792a2d5a09dc4222c0dbc09323fa67ff8493aabaa7f3550ef6f8.mp3",
+            "start": 0,
+            "end": 0.668,
+            "origin": {
+              "id": "phoneme.n",
+              "version": "cat45.1-anna-e1d30e0742a0792a",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-31",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "e1d30e0742a0792a2d5a09dc4222c0dbc09323fa67ff8493aabaa7f3550ef6f8",
+                "extraction": {
+                  "sourceBlock": "31",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.04,
+                  "sourceEnd": 4.708,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "u": {
+            "file": "78bd1d3edd18ece61f5bcf00450503477fdb606b77f919c08ff4c908e5173b04.mp3",
+            "start": 0,
+            "end": 0.52,
+            "origin": {
+              "id": "phoneme.u",
+              "version": "cat45.1-anna-78bd1d3edd18ece6",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-21",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "78bd1d3edd18ece61f5bcf00450503477fdb606b77f919c08ff4c908e5173b04",
+                "extraction": {
+                  "sourceBlock": "21",
+                  "sourceAttempt": 0,
+                  "sourceStart": 3.707,
+                  "sourceEnd": 4.227,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "k": {
+            "file": "963730d82225f6e1996ad73f4b81706aa20c5141388aa38a7ca7a041b9b838a2.mp3",
+            "start": 0,
+            "end": 0.5389583333333333,
+            "origin": {
+              "id": "phoneme.k",
+              "version": "cat45.1-anna-963730d82225f6e1",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-32",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "963730d82225f6e1996ad73f4b81706aa20c5141388aa38a7ca7a041b9b838a2",
+                "extraction": {
+                  "sourceBlock": "32",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.279,
+                  "sourceEnd": 4.818,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "g": {
+            "file": "60ded9aad272dea7c71c12dfa4f5964be3d05e45778ff67cc49578d526e810ad.mp3",
+            "start": 0,
+            "end": 0.561,
+            "origin": {
+              "id": "phoneme.g",
+              "version": "cat45.1-anna-60ded9aad272dea7",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-33",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "60ded9aad272dea7c71c12dfa4f5964be3d05e45778ff67cc49578d526e810ad",
+                "extraction": {
+                  "sourceBlock": "33",
+                  "sourceAttempt": 0,
+                  "sourceStart": 3.892,
+                  "sourceEnd": 4.453,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "d": {
+            "file": "25a05de26e711114419024d6d570bd7b283f5a93a502106c67265ce8ba91910f.mp3",
+            "start": 0,
+            "end": 0.589,
+            "origin": {
+              "id": "phoneme.d",
+              "version": "cat45.1-anna-25a05de26e711114",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-34",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "25a05de26e711114419024d6d570bd7b283f5a93a502106c67265ce8ba91910f",
+                "extraction": {
+                  "sourceBlock": "34",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.359,
+                  "sourceEnd": 4.948,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "f": {
+            "file": "9ac2a0f641807727f4f093c3deefa2d2668278c4f9931b4fa16cb8e08a63bfec.mp3",
+            "start": 0,
+            "end": 0.557,
+            "origin": {
+              "id": "phoneme.f",
+              "version": "cat45.1-anna-9ac2a0f641807727",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-35",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "9ac2a0f641807727f4f093c3deefa2d2668278c4f9931b4fa16cb8e08a63bfec",
+                "extraction": {
+                  "sourceBlock": "35",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.127,
+                  "sourceEnd": 4.684,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "ɾ": {
+            "file": "da475d5384072d03bd506e34ae40ddb6593a44e4cfc61bbd6280ead833e24a72.wav",
+            "start": 0,
+            "end": 0.63,
+            "origin": {
+              "id": "phoneme.ɾ",
+              "version": "cast-0.5-ɾ-da475d538407",
+              "status": "available_user_supplied",
+              "source": {
+                "basis": "new_user_recording_supplied_for_integration",
+                "source": "ElevenLabs_Locuciones_fonemas_faltantes.mp3",
+                "sourceSHA256": "df37538684d6633f8dcb19f4c6fedf7192d5edb0e155d18c5774872856328dc3",
+                "reference": "ElevenLabs_Locuciones_fonemas_faltantes.txt",
+                "referenceOrder": 4,
+                "referenceLabel": "ɾɾ",
+                "sourceStart": 3.31,
+                "sourceEnd": 3.94,
+                "method": "segmentation_at_silent_gaps",
+                "gain": 1,
+                "speed": 1,
+                "independentPhoneticValidation": false
+              }
+            }
+          },
+          "b": {
+            "file": "cf45626f14cecd4be6691ee43661a2ad2eec7882de6c453e6c7f893b8610c226.mp3",
+            "start": 0,
+            "end": 0.5779583333333334,
+            "origin": {
+              "id": "phoneme.b",
+              "version": "cat45.1-anna-cf45626f14cecd4b",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-36",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "cf45626f14cecd4be6691ee43661a2ad2eec7882de6c453e6c7f893b8610c226",
+                "extraction": {
+                  "sourceBlock": "36",
+                  "sourceAttempt": 0,
+                  "sourceStart": 3.886,
+                  "sourceEnd": 4.463,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "θ": {
+            "file": "7d21226b59155d71eabbba233a047308cc74505a10093a8bc7eb53de5156c2db.wav",
+            "start": 0,
+            "end": 0.47,
+            "origin": {
+              "id": "phoneme.θ",
+              "version": "cast-0.5-θ-7d21226b5915",
+              "status": "available_user_supplied",
+              "source": {
+                "basis": "new_user_recording_supplied_for_integration",
+                "source": "ElevenLabs_Locuciones_fonemas_faltantes.mp3",
+                "sourceSHA256": "df37538684d6633f8dcb19f4c6fedf7192d5edb0e155d18c5774872856328dc3",
+                "reference": "ElevenLabs_Locuciones_fonemas_faltantes.txt",
+                "referenceOrder": 3,
+                "referenceLabel": "θθ",
+                "sourceStart": 2.12,
+                "sourceEnd": 2.59,
+                "method": "segmentation_at_silent_gaps",
+                "gain": 1,
+                "speed": 1,
+                "independentPhoneticValidation": false
+              }
+            }
+          },
+          "x": {
+            "file": "3a1350eba192b73acd8ce8f92e472c771b9c9fb63b52fa0ee2cb9c7b6251910a.wav",
+            "start": 0,
+            "end": 0.57,
+            "origin": {
+              "id": "phoneme.x",
+              "version": "cast-0.5-x-3a1350eba192",
+              "status": "available_user_supplied",
+              "source": {
+                "basis": "new_user_recording_supplied_for_integration",
+                "source": "ElevenLabs_Locuciones_fonemas_faltantes.mp3",
+                "sourceSHA256": "df37538684d6633f8dcb19f4c6fedf7192d5edb0e155d18c5774872856328dc3",
+                "reference": "ElevenLabs_Locuciones_fonemas_faltantes.txt",
+                "referenceOrder": 2,
+                "referenceLabel": "xx",
+                "sourceStart": 0.98,
+                "sourceEnd": 1.55,
+                "method": "segmentation_at_silent_gaps",
+                "gain": 1,
+                "speed": 1,
+                "independentPhoneticValidation": false
+              }
+            }
+          },
+          "ʝ": {
+            "file": "eae35d153d1eede0d1f23f247f05898a97c60b35e06282c2574175520717615e.wav",
+            "start": 0,
+            "end": 0.42,
+            "origin": {
+              "id": "phoneme.ʝ",
+              "version": "cast-0.5-ʝ-eae35d153d1e",
+              "status": "available_user_supplied",
+              "source": {
+                "basis": "new_user_recording_supplied_for_integration",
+                "source": "ElevenLabs_Locuciones_fonemas_faltantes.mp3",
+                "sourceSHA256": "df37538684d6633f8dcb19f4c6fedf7192d5edb0e155d18c5774872856328dc3",
+                "reference": "ElevenLabs_Locuciones_fonemas_faltantes.txt",
+                "referenceOrder": 1,
+                "referenceLabel": "ʝ",
+                "sourceStart": 0.0,
+                "sourceEnd": 0.42,
+                "method": "segmentation_at_silent_gaps",
+                "gain": 1,
+                "speed": 1,
+                "independentPhoneticValidation": false
+              }
+            }
+          },
+          "tʃ": {
+            "file": "539a110acd6d555ca36dae0a43e7f8ea7340c0a72362653090241228aaf209e1.mp3",
+            "start": 0,
+            "end": 0.515,
+            "origin": {
+              "id": "phoneme.tʃ",
+              "version": "cat45.1-anna-539a110acd6d555c",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-41",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "539a110acd6d555ca36dae0a43e7f8ea7340c0a72362653090241228aaf209e1",
+                "extraction": {
+                  "sourceBlock": "41",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.128,
+                  "sourceEnd": 4.643,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          },
+          "ɲ": {
+            "file": "feeae8cbe8828c6fc940bb01e72712a61e2b9df8f08011008b1197372c60cdc2.mp3",
+            "start": 0,
+            "end": 0.5959583333333334,
+            "origin": {
+              "id": "phoneme.ɲ",
+              "version": "cat45.1-anna-feeae8cbe8828c6f",
+              "status": "available_reused",
+              "source": {
+                "programme": "LECAA català",
+                "appVersion": "45.1",
+                "voice": "female",
+                "block": "isolated-39",
+                "sourceSHA256": "c08a0303fe5928f24d835d8b981c063579ed14e1c0496310287bc0abadf92682",
+                "audioSHA256": "feeae8cbe8828c6fc940bb01e72712a61e2b9df8f08011008b1197372c60cdc2",
+                "extraction": {
+                  "sourceBlock": "39",
+                  "sourceAttempt": 0,
+                  "sourceStart": 4.307,
+                  "sourceEnd": 4.903,
+                  "method": "pausa"
+                },
+                "note": "Exact existing isolated clip; no new synthesis, cutting, stretching or retiming."
+              }
+            }
+          }
+        }
+      },
+      "graphemes": {
+        "a": "a",
+        "s": "s",
+        "l": "l",
+        "o": "o",
+        "m": "m",
+        "e": "e",
+        "r": "ɾ",
+        "p": "p",
+        "i": "i",
+        "t": "t",
+        "n": "n",
+        "u": "u",
+        "c": "θ",
+        "g": "x",
+        "d": "d",
+        "f": "f",
+        "rr": "r",
+        "b": "b",
+        "v": "b",
+        "z": "θ",
+        "qu": "k",
+        "j": "x",
+        "gu": "g",
+        "ll": "ʝ",
+        "ch": "tʃ",
+        "ñ": "ɲ",
+        "y": "ʝ"
+      }
+    }
+  },
+  "files": {
+    "eb5d11961933ed10b401094f44aca7b961651571b25fdace345dfc5e558da619.mp3": {
+      "sha256": "eb5d11961933ed10b401094f44aca7b961651571b25fdace345dfc5e558da619",
+      "bytes": 4269,
+      "mime": "audio/mpeg"
+    },
+    "6ab21b511794a228f07aeffa7050f4814b46893748432373d72610d4e0e1be72.mp3": {
+      "sha256": "6ab21b511794a228f07aeffa7050f4814b46893748432373d72610d4e0e1be72",
+      "bytes": 4077,
+      "mime": "audio/mpeg"
+    },
+    "6c7e8407b171f90aa23e534e4aef461edf22c895c62041ca636d652ea85f541b.mp3": {
+      "sha256": "6c7e8407b171f90aa23e534e4aef461edf22c895c62041ca636d652ea85f541b",
+      "bytes": 4845,
+      "mime": "audio/mpeg"
+    },
+    "896baed6303d6064eab2b086c746c5a11298a5b8174534bf2cc14c6a03174a2e.mp3": {
+      "sha256": "896baed6303d6064eab2b086c746c5a11298a5b8174534bf2cc14c6a03174a2e",
+      "bytes": 4845,
+      "mime": "audio/mpeg"
+    },
+    "4cc618b3ea8cc7b877a81cc338e6a5a3274fdfb602b84d02800289f365656de3.mp3": {
+      "sha256": "4cc618b3ea8cc7b877a81cc338e6a5a3274fdfb602b84d02800289f365656de3",
+      "bytes": 4269,
+      "mime": "audio/mpeg"
+    },
+    "02d2c6bf8b3448806a53226948b119dfd81b201d57a095a092bfb2eebfcdcc6f.mp3": {
+      "sha256": "02d2c6bf8b3448806a53226948b119dfd81b201d57a095a092bfb2eebfcdcc6f",
+      "bytes": 5037,
+      "mime": "audio/mpeg"
+    },
+    "78bd1d3edd18ece61f5bcf00450503477fdb606b77f919c08ff4c908e5173b04.mp3": {
+      "sha256": "78bd1d3edd18ece61f5bcf00450503477fdb606b77f919c08ff4c908e5173b04",
+      "bytes": 4845,
+      "mime": "audio/mpeg"
+    },
+    "2de8bef12dd5fdf71e0f0f187dbcd648bcccaf8fc9a8b520a5892fbe078ab934.mp3": {
+      "sha256": "2de8bef12dd5fdf71e0f0f187dbcd648bcccaf8fc9a8b520a5892fbe078ab934",
+      "bytes": 4653,
+      "mime": "audio/mpeg"
+    },
+    "5a4c8cb8ebd659d65b660143a8399d84c76d6d000be37039f37f568eddf87464.mp3": {
+      "sha256": "5a4c8cb8ebd659d65b660143a8399d84c76d6d000be37039f37f568eddf87464",
+      "bytes": 5805,
+      "mime": "audio/mpeg"
+    },
+    "6ba1ca1c1e4abefec339ab0b54737fe6aa92b225ac00f39084933182d0d77d80.mp3": {
+      "sha256": "6ba1ca1c1e4abefec339ab0b54737fe6aa92b225ac00f39084933182d0d77d80",
+      "bytes": 6765,
+      "mime": "audio/mpeg"
+    },
+    "e56ac32f6fadc15c7cce1f03c24430beb67e44a2209a86f81794593d60e86d9f.mp3": {
+      "sha256": "e56ac32f6fadc15c7cce1f03c24430beb67e44a2209a86f81794593d60e86d9f",
+      "bytes": 5805,
+      "mime": "audio/mpeg"
+    },
+    "c8f3409ff5b5e8c1eff86cc409d0d062928c64329eddab807d669f3320333d59.mp3": {
+      "sha256": "c8f3409ff5b5e8c1eff86cc409d0d062928c64329eddab807d669f3320333d59",
+      "bytes": 6189,
+      "mime": "audio/mpeg"
+    },
+    "04233b80424a0ee49dd58946e54f729dcb2ef717a03d7848720d2105c8c0c5bb.mp3": {
+      "sha256": "04233b80424a0ee49dd58946e54f729dcb2ef717a03d7848720d2105c8c0c5bb",
+      "bytes": 6189,
+      "mime": "audio/mpeg"
+    },
+    "ecda95dac21511bba54e3a1b4ac751a39efd5b5311a837b89c4b490cc3cdccb4.mp3": {
+      "sha256": "ecda95dac21511bba54e3a1b4ac751a39efd5b5311a837b89c4b490cc3cdccb4",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "8bfa4e633f08146708e104234f0d4aeff3c4fd1373c0bcac9103184c8f48868f.mp3": {
+      "sha256": "8bfa4e633f08146708e104234f0d4aeff3c4fd1373c0bcac9103184c8f48868f",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "17f5a170df7edf0cab49378bcbe0ade9cc8913b5f2d17ae3b3d611c7db42736c.mp3": {
+      "sha256": "17f5a170df7edf0cab49378bcbe0ade9cc8913b5f2d17ae3b3d611c7db42736c",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "e1d30e0742a0792a2d5a09dc4222c0dbc09323fa67ff8493aabaa7f3550ef6f8.mp3": {
+      "sha256": "e1d30e0742a0792a2d5a09dc4222c0dbc09323fa67ff8493aabaa7f3550ef6f8",
+      "bytes": 5997,
+      "mime": "audio/mpeg"
+    },
+    "963730d82225f6e1996ad73f4b81706aa20c5141388aa38a7ca7a041b9b838a2.mp3": {
+      "sha256": "963730d82225f6e1996ad73f4b81706aa20c5141388aa38a7ca7a041b9b838a2",
+      "bytes": 5037,
+      "mime": "audio/mpeg"
+    },
+    "60ded9aad272dea7c71c12dfa4f5964be3d05e45778ff67cc49578d526e810ad.mp3": {
+      "sha256": "60ded9aad272dea7c71c12dfa4f5964be3d05e45778ff67cc49578d526e810ad",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "25a05de26e711114419024d6d570bd7b283f5a93a502106c67265ce8ba91910f.mp3": {
+      "sha256": "25a05de26e711114419024d6d570bd7b283f5a93a502106c67265ce8ba91910f",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "9ac2a0f641807727f4f093c3deefa2d2668278c4f9931b4fa16cb8e08a63bfec.mp3": {
+      "sha256": "9ac2a0f641807727f4f093c3deefa2d2668278c4f9931b4fa16cb8e08a63bfec",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "cf45626f14cecd4be6691ee43661a2ad2eec7882de6c453e6c7f893b8610c226.mp3": {
+      "sha256": "cf45626f14cecd4be6691ee43661a2ad2eec7882de6c453e6c7f893b8610c226",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "3ede1fd2659fbfa1efd2d37986f4f2071909bd34dba06e09dc54f49d64bdd226.mp3": {
+      "sha256": "3ede1fd2659fbfa1efd2d37986f4f2071909bd34dba06e09dc54f49d64bdd226",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "f7e6cd94a62900f8c663286dd55f123d067612de9a609942831ebe7feec4387a.mp3": {
+      "sha256": "f7e6cd94a62900f8c663286dd55f123d067612de9a609942831ebe7feec4387a",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "feeae8cbe8828c6fc940bb01e72712a61e2b9df8f08011008b1197372c60cdc2.mp3": {
+      "sha256": "feeae8cbe8828c6fc940bb01e72712a61e2b9df8f08011008b1197372c60cdc2",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "e5fa758a54d08e16a625eccb6faa7526f3e715b35a360d11b8bda48af82a393b.mp3": {
+      "sha256": "e5fa758a54d08e16a625eccb6faa7526f3e715b35a360d11b8bda48af82a393b",
+      "bytes": 5613,
+      "mime": "audio/mpeg"
+    },
+    "539a110acd6d555ca36dae0a43e7f8ea7340c0a72362653090241228aaf209e1.mp3": {
+      "sha256": "539a110acd6d555ca36dae0a43e7f8ea7340c0a72362653090241228aaf209e1",
+      "bytes": 4845,
+      "mime": "audio/mpeg"
+    },
+    "9c857d2c75c39f5aa5b1056ae03a71e4163b3e1f241aa05e0ba65f2a4f346f7b.mp3": {
+      "sha256": "9c857d2c75c39f5aa5b1056ae03a71e4163b3e1f241aa05e0ba65f2a4f346f7b",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "315fbf0281a4fe932f240fd322cb9dd513e2f8cf99c0d6c62db692fdc0f4684d.mp3": {
+      "sha256": "315fbf0281a4fe932f240fd322cb9dd513e2f8cf99c0d6c62db692fdc0f4684d",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "dfce8601b5abcc451acc4735716d6344559d4e7da30978e1b0d4d938ae28e237.mp3": {
+      "sha256": "dfce8601b5abcc451acc4735716d6344559d4e7da30978e1b0d4d938ae28e237",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "85213161fbb62c1445d583bcbbcf3f77c3f0cc958fb7669dcefb73b8bb801872.mp3": {
+      "sha256": "85213161fbb62c1445d583bcbbcf3f77c3f0cc958fb7669dcefb73b8bb801872",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "5e0cad578b02e0012c7236ab1c0082454840d007d42381d01826da64c1edaa5e.mp3": {
+      "sha256": "5e0cad578b02e0012c7236ab1c0082454840d007d42381d01826da64c1edaa5e",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "8d50b77dcaa124df091d3842d822853d66df8ad977afe813dab2126cdaa65939.mp3": {
+      "sha256": "8d50b77dcaa124df091d3842d822853d66df8ad977afe813dab2126cdaa65939",
+      "bytes": 4269,
+      "mime": "audio/mpeg"
+    },
+    "4b7cdac0e2e007940c9993d583913a4c217e99b090122f770b10677fa0f4c0d2.mp3": {
+      "sha256": "4b7cdac0e2e007940c9993d583913a4c217e99b090122f770b10677fa0f4c0d2",
+      "bytes": 4269,
+      "mime": "audio/mpeg"
+    },
+    "cc02c6f457acca2229337c9531fd74502b3403b788af41394dd9a3c38ce89d3f.mp3": {
+      "sha256": "cc02c6f457acca2229337c9531fd74502b3403b788af41394dd9a3c38ce89d3f",
+      "bytes": 4845,
+      "mime": "audio/mpeg"
+    },
+    "516af1aa53bf822b43a3a18e4b13a927d4312942720fba870a38299fde9bb4eb.mp3": {
+      "sha256": "516af1aa53bf822b43a3a18e4b13a927d4312942720fba870a38299fde9bb4eb",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "eb338f802029ee56dd27149a78a8b4aaa7cf803be71f751938f24c8ec2f015b4.mp3": {
+      "sha256": "eb338f802029ee56dd27149a78a8b4aaa7cf803be71f751938f24c8ec2f015b4",
+      "bytes": 4461,
+      "mime": "audio/mpeg"
+    },
+    "632a7fc106756b0516267751cb7072aaec76889eba519532a1d0e54425028d90.mp3": {
+      "sha256": "632a7fc106756b0516267751cb7072aaec76889eba519532a1d0e54425028d90",
+      "bytes": 5037,
+      "mime": "audio/mpeg"
+    },
+    "611a21bbefcee11c9cd93d17ebbcc47a8432ad0add469fec7572d5dd0924a7c9.mp3": {
+      "sha256": "611a21bbefcee11c9cd93d17ebbcc47a8432ad0add469fec7572d5dd0924a7c9",
+      "bytes": 5037,
+      "mime": "audio/mpeg"
+    },
+    "3dc16b523b98707de69e7440cb1d9ad12d82fb125b3006f327f13df7a01d5919.mp3": {
+      "sha256": "3dc16b523b98707de69e7440cb1d9ad12d82fb125b3006f327f13df7a01d5919",
+      "bytes": 4653,
+      "mime": "audio/mpeg"
+    },
+    "fb284ed8f1153e9e3b222ecf3ab4902ab3c9aed37a8836a00ead062c93ed8b52.mp3": {
+      "sha256": "fb284ed8f1153e9e3b222ecf3ab4902ab3c9aed37a8836a00ead062c93ed8b52",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "c873beff9d7b084809bd086a86d7086eeafa2c5bd26e30d783fa8b9e62f41593.mp3": {
+      "sha256": "c873beff9d7b084809bd086a86d7086eeafa2c5bd26e30d783fa8b9e62f41593",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "ca2cd34a68ce97119fd9c6fa7bf9c6fa11d50a51704f4727fb299114d1880a47.mp3": {
+      "sha256": "ca2cd34a68ce97119fd9c6fa7bf9c6fa11d50a51704f4727fb299114d1880a47",
+      "bytes": 5997,
+      "mime": "audio/mpeg"
+    },
+    "8563bfdf5204f1f3c7735986e8fa5c5a9b9c58a8b58b3fa6fd6c58163f862b8a.mp3": {
+      "sha256": "8563bfdf5204f1f3c7735986e8fa5c5a9b9c58a8b58b3fa6fd6c58163f862b8a",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "c38c6247ed890b31fc7722a47608945e82a5c4527e82f8198d79e28cece6093b.mp3": {
+      "sha256": "c38c6247ed890b31fc7722a47608945e82a5c4527e82f8198d79e28cece6093b",
+      "bytes": 5613,
+      "mime": "audio/mpeg"
+    },
+    "9c4e3033e38983283a70d25d0bd288e147d18612d6ea2983323ceb0a6dec1346.mp3": {
+      "sha256": "9c4e3033e38983283a70d25d0bd288e147d18612d6ea2983323ceb0a6dec1346",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "ac463866ea408587d3834d4997d210d66c9d73359cff607fd8fe5b3874a884d1.mp3": {
+      "sha256": "ac463866ea408587d3834d4997d210d66c9d73359cff607fd8fe5b3874a884d1",
+      "bytes": 5037,
+      "mime": "audio/mpeg"
+    },
+    "f580776cfbb91c20ba26e901d6a65b53f765791a47ae922e51988402889b2dc4.mp3": {
+      "sha256": "f580776cfbb91c20ba26e901d6a65b53f765791a47ae922e51988402889b2dc4",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "02f4d28555468ec89830b678c13f8846c2b4505311908e16788cfcb8fd3d05f2.mp3": {
+      "sha256": "02f4d28555468ec89830b678c13f8846c2b4505311908e16788cfcb8fd3d05f2",
+      "bytes": 5037,
+      "mime": "audio/mpeg"
+    },
+    "6df8782d1ad0f4339e17795dced8e285c437474e3d87a471f9ad36c124f5f9f9.mp3": {
+      "sha256": "6df8782d1ad0f4339e17795dced8e285c437474e3d87a471f9ad36c124f5f9f9",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "2aacacc5f07df281a75fd6fc9eb34eedba30b7ec75efe3484a16a0504944249d.mp3": {
+      "sha256": "2aacacc5f07df281a75fd6fc9eb34eedba30b7ec75efe3484a16a0504944249d",
+      "bytes": 4269,
+      "mime": "audio/mpeg"
+    },
+    "86a043e9bbdfee527ac7a9665a538a786957affe20a6ea30405e09ebdad7fecc.mp3": {
+      "sha256": "86a043e9bbdfee527ac7a9665a538a786957affe20a6ea30405e09ebdad7fecc",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "96273eb81e4ea07ad351bff949d47297a074935edc038270c80ea68a80a488b6.mp3": {
+      "sha256": "96273eb81e4ea07ad351bff949d47297a074935edc038270c80ea68a80a488b6",
+      "bytes": 5037,
+      "mime": "audio/mpeg"
+    },
+    "2500ec849c603615cc58f30c1d1bf7592b9ae63c82bc77cc5441a75db8bb39fe.mp3": {
+      "sha256": "2500ec849c603615cc58f30c1d1bf7592b9ae63c82bc77cc5441a75db8bb39fe",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "1672844885a9039e0a3dd5e5137ee4bdde9ccee0db4b12e5ff3921281394111b.mp3": {
+      "sha256": "1672844885a9039e0a3dd5e5137ee4bdde9ccee0db4b12e5ff3921281394111b",
+      "bytes": 6189,
+      "mime": "audio/mpeg"
+    },
+    "35e5fbe6a6991ebfc69a85ef57c86638c9a87b1ee7d7164b5a117d1eda8b0197.mp3": {
+      "sha256": "35e5fbe6a6991ebfc69a85ef57c86638c9a87b1ee7d7164b5a117d1eda8b0197",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "e7ac01da23441850f96f2cec03491c2672bfd0d9962d68df43ddd3b54df18fee.mp3": {
+      "sha256": "e7ac01da23441850f96f2cec03491c2672bfd0d9962d68df43ddd3b54df18fee",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "29dd915170242c54240aaffc8fd275e660b500b3327b34eef3586282ffd93b5a.mp3": {
+      "sha256": "29dd915170242c54240aaffc8fd275e660b500b3327b34eef3586282ffd93b5a",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "8b0a02649a33d40cbe1983f51e1b71766879141fe4a4a6dbdb9026fc5a209e42.mp3": {
+      "sha256": "8b0a02649a33d40cbe1983f51e1b71766879141fe4a4a6dbdb9026fc5a209e42",
+      "bytes": 3693,
+      "mime": "audio/mpeg"
+    },
+    "6807fea588189a40154cda59dcd1bc608af1310e0ae2c23c61c679bd5bc40b0b.mp3": {
+      "sha256": "6807fea588189a40154cda59dcd1bc608af1310e0ae2c23c61c679bd5bc40b0b",
+      "bytes": 4077,
+      "mime": "audio/mpeg"
+    },
+    "34e5c9d23c9a4c9d1cecc33e9039fbebef02fc22d85a00a13f8a2bc07ba0fb40.mp3": {
+      "sha256": "34e5c9d23c9a4c9d1cecc33e9039fbebef02fc22d85a00a13f8a2bc07ba0fb40",
+      "bytes": 5613,
+      "mime": "audio/mpeg"
+    },
+    "c3b498b6dfa3149b32453d74f22a685e3aed890d1742cff8a3138e6317b3c0d0.mp3": {
+      "sha256": "c3b498b6dfa3149b32453d74f22a685e3aed890d1742cff8a3138e6317b3c0d0",
+      "bytes": 5421,
+      "mime": "audio/mpeg"
+    },
+    "ed59c3a44c7fae482b37c0e82240d9669673cb4d4f115071535b999eedf973ba.mp3": {
+      "sha256": "ed59c3a44c7fae482b37c0e82240d9669673cb4d4f115071535b999eedf973ba",
+      "bytes": 5229,
+      "mime": "audio/mpeg"
+    },
+    "da475d5384072d03bd506e34ae40ddb6593a44e4cfc61bbd6280ead833e24a72.wav": {
+      "sha256": "da475d5384072d03bd506e34ae40ddb6593a44e4cfc61bbd6280ead833e24a72",
+      "bytes": 55610,
+      "mime": "audio/wav"
+    },
+    "7d21226b59155d71eabbba233a047308cc74505a10093a8bc7eb53de5156c2db.wav": {
+      "sha256": "7d21226b59155d71eabbba233a047308cc74505a10093a8bc7eb53de5156c2db",
+      "bytes": 41498,
+      "mime": "audio/wav"
+    },
+    "3a1350eba192b73acd8ce8f92e472c771b9c9fb63b52fa0ee2cb9c7b6251910a.wav": {
+      "sha256": "3a1350eba192b73acd8ce8f92e472c771b9c9fb63b52fa0ee2cb9c7b6251910a",
+      "bytes": 50318,
+      "mime": "audio/wav"
+    },
+    "eae35d153d1eede0d1f23f247f05898a97c60b35e06282c2574175520717615e.wav": {
+      "sha256": "eae35d153d1eede0d1f23f247f05898a97c60b35e06282c2574175520717615e",
+      "bytes": 37088,
+      "mime": "audio/wav"
+    }
+  }
+}

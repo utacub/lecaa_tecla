@@ -16,7 +16,7 @@ function bsnNext(prev) {
 /* resum curt de la contrasenya (no és seguretat forta: només evita que un infant surti de l'activitat) */
 function bsnHash(s) { let h = 5381; for (const c of "tecla|" + s) h = (h * 33 + c.charCodeAt(0)) | 0; return "h" + (h >>> 0).toString(36); }
 const BSN_DEF = { so: "veure", upper: null, err: false, hint: "cap", hintS: 5, stars: false, starN: 0, pass: null, locked: false };
-/* so de la lletra: locucions enregistrades dels fonemes (veu de l'Anna, LECAA Docs) */
+/* so de la lletra: banc de fonemes de LECAA; castellà importat per a la futura adaptació */
 const BSN_SO = [["cap", "No"], ["veure", "Sí"]]; // sona quan apareix la lletra (Marc, 20-10-2026)
 const BSN_HINTS = [["cap", "No"], ["error", "Després d'un error"], ["temps", "Després d'uns segons"], ["sempre", "Sempre"]];
 function bsnFullscreen() {
@@ -50,7 +50,7 @@ class BlackWhiteScene {
     if (this.panel || this.prompt) return;
     this.lt += dt;
     if (this.ok > 0) { this.ok += dt; if (this.ok > 0.45) { this.ok = 0; this.l = bsnNext(this.l); this.lt = 0; this.wrong = 0; this.saidL = false; } }
-    if (this.o.so === "veure" && !this.saidL && this.ok === 0 && this.lt > 0.25) { this.saidL = true; Phon.play(this.l); }
+    if (this.o.so === "veure" && !this.saidL && this.ok === 0 && this.lt > 0.25) { this.saidL = true; Phon.play(this.l, "ca"); }
   }
   showHint() {
     const h = this.o.hint; if (this.ok > 0) return false;
@@ -115,7 +115,7 @@ class BlackWhiteScene {
     const up = this.o.upper != null ? this.o.upper : !!Settings.upper;
     bsnChips(ctx, px + 400, y, [["min", "minúscules"], ["maj", "MAJÚSCULES"]], up ? "maj" : "min", v => { this.o.upper = v === "maj"; this.save(); });
     y += 78; T("So de la lletra", px + 44, y);
-    bsnChips(ctx, px + 400, y, BSN_SO, this.o.so || "cap", v => { this.o.so = v; this.save(); if (v !== "cap") Phon.play(this.l); });
+    bsnChips(ctx, px + 400, y, BSN_SO, this.o.so || "cap", v => { this.o.so = v; this.save(); if (v !== "cap") Phon.play(this.l, "ca"); });
     T("Sona quan apareix cada lletra (locució enregistrada, veu de l'Anna).", px + 44, y + 36, { size: 17, weight: 700, color: "#8C8C8C", font: FONT_L });
     y += 92; T("Pistes de la tecla", px + 44, y);
     bsnChips(ctx, px + 44, y + 52, BSN_HINTS, this.o.hint, v => { this.o.hint = v; this.save(); });

@@ -209,21 +209,47 @@ const TTS = {
 /* ---------- so de les lletres: locucions enregistrades (veu de l'Anna, LECAA Docs) ---------- */
 // lletra → fonema → fitxer, igual que a LECAA Docs (català central)
 const LETTER_PHON = { a: "a", "à": "a", e: "e", "é": "e", "è": "ɛ", i: "i", "í": "i", "ï": "i", o: "o", "ó": "o", "ò": "ɔ", u: "u", "ú": "u", "ü": "u", b: "b", v: "b", c: "k", k: "k", q: "k", "ç": "s", d: "d", f: "f", g: "ɡ", j: "ʒ", l: "l", m: "m", n: "n", "ñ": "ɲ", p: "p", r: "r", s: "s", t: "t", x: "ʃ", z: "z", w: "w", y: "j", h: null };
-const PHON_FILE = { a: "a", e: "e", "ɛ": "eo", i: "i", o: "o", "ɔ": "oo", u: "u", "ə": "schwa", s: "s", z: "z", l: "l", m: "m", r: "rr", "ɾ": "r", p: "p", t: "t", n: "n", k: "k", "ɡ": "g", d: "d", f: "f", b: "b", "ʒ": "zh", "ʎ": "ll", "ɲ": "ny", "ʃ": "sh", "t͡ʃ": "tsh", "d͡ʒ": "dzh", j: "j", w: "w", "lː": "lgem", v: "v" };
+// Keep grapheme lookup distinct from IPA lookup (e.g. Catalan j versus /j/).
 const Phon = {
-  audio: null,
-  url(letter) { const ph = LETTER_PHON[String(letter).toLowerCase()]; const f = ph && PHON_FILE[ph]; return f && typeof PHON_ANNA !== "undefined" ? PHON_ANNA[f] || null : null; },
-  has(letter) { return !!this.url(letter); },
-  play(letter) {
-    const u = this.url(letter); if (!u) return false;
-    this.stop(); try { const a = new Audio(u); a.volume = voiceCfg().volume; this.audio = a;
-      Audio2.duck("phoneme", true);
-      const finish = () => { if (this.audio === a) { this.audio = null; Audio2.duck("phoneme", false); } };
-      a.onended = finish; a.onerror = finish; a.play().catch(finish);
-    } catch (e) { Audio2.duck("phoneme", false); return false; }
+  audio: null, timer: null,
+  phonemeClip(phoneme, language = "ca", voice = null) {
+    const bank = PHON_BANK[language];
+    return bank?.voices[voice || bank.defaultVoice]?.[String(phoneme).normalize("NFC")] || null;
+  },
+  clip(letter, language = "ca", voice = null) {
+    const key = String(letter).normalize("NFC").toLowerCase(), bank = PHON_BANK[language];
+    if (!bank || key === "h") return null;
+    const ph = language === "ca" ? (LETTER_PHON[key] ?? bank.graphemes[key]) : bank.graphemes[key];
+    return ph ? this.phonemeClip(ph, language, voice) : null;
+  },
+  url(letter, language = "ca", voice = null) { const c = this.clip(letter, language, voice); return c ? PHON_AUDIO[c.file] || null : null; },
+  has(letter, language = "ca", voice = null) { return !!this.url(letter, language, voice); },
+  play(letter, language = "ca", voice = null) { return this.playClip(this.clip(letter, language, voice)); },
+  playPhoneme(phoneme, language = "ca", voice = null) { return this.playClip(this.phonemeClip(phoneme, language, voice)); },
+  playClip(clip) {
+    this.stop();
+    const u = clip && PHON_AUDIO[clip.file]; if (!u) return false;
+    try {
+      const a = new Audio(u); a.volume = voiceCfg().volume; this.audio = a;
+      const finish = () => { if (this.audio === a) this.stop(); };
+      a.onended = finish; a.onerror = finish;
+      a.onloadedmetadata = () => {
+        if (this.audio !== a) return;
+        a.currentTime = clip.start;
+        Audio2.duck("phoneme", true);
+        this.timer = setInterval(() => { if (a.currentTime >= clip.end) finish(); }, 20);
+        a.play().catch(finish);
+      };
+      a.load();
+    } catch (e) { this.stop(); return false; }
     return true;
   },
-  stop() { if (this.audio) { try { this.audio.pause(); } catch (e) { } this.audio = null; } Audio2.duck("phoneme", false); },
+  stop() {
+    clearInterval(this.timer); this.timer = null;
+    const a = this.audio; this.audio = null;
+    if (a) { a.onloadedmetadata = a.onended = a.onerror = null; try { a.pause(); } catch (e) {} }
+    Audio2.duck("phoneme", false);
+  },
 };
 
 /* ---------- finestra d'ajustos de la veu (HTML per sobre del llenç) ---------- */
