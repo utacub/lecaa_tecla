@@ -135,7 +135,7 @@
               if (flyer.cid && typeof Critters !== "undefined") setTimeout(() => void 0, 200);
               count++; api.hud.progress = [count, GOAL];
             }
-            if (flyer.t > 1.9) { flyer = null; if (count >= GOAL) { st.phase = "done"; api.finish(true, { collectName: `${GOAL} cromos nous` }); } else newRound(); }
+            if (flyer.t > 1.9) { flyer = null; if (count >= GOAL) { st.phase = "done"; api.finish(true, { collectName: L_("{n} cromos nous", { n: GOAL }) }); } else newRound(); }
           }
           filled.forEach(f => { if (f && f.poseT > 0) f.poseT -= dt; });
           api.hud.progress = [count, GOAL];

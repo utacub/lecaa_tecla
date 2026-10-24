@@ -237,7 +237,7 @@ IslandScene.prototype.draw=function(ctx) {
     if (tint) { ctx.fillStyle = tint[0] + tint[1] + ")"; ctx.fillRect(0, 0, W, H); }
     drawVignette(ctx, 0.3, "10,40,50");
     // nom del joc en passar-hi el ratolí
-    if (this.hoverVoy && !this.hoverId) { const [hx, hy] = this.worldToScreen(VOYAGE_POS[0], VOYAGE_POS[1] - 150); drawChip(ctx, hx, hy - 40, "El viatge a l'illa", { align: "center", fs: 24, h: 46, fill: "rgba(23,103,107,0.95)" }); }
+    if (this.hoverVoy && !this.hoverId) { const [hx, hy] = this.worldToScreen(VOYAGE_POS[0], VOYAGE_POS[1] - 150); drawChip(ctx, hx, hy - 40, L_("El viatge a l'illa"), { align: "center", fs: 24, h: 46, fill: "rgba(23,103,107,0.95)" }); }
     if (this.hoverId && !this.walk) { const g = Games.byId[this.hoverId], [hx, hy] = this.worldToScreen(PLACES[this.hoverId][0], PLACES[this.hoverId][1] - 66); drawChip(ctx, hx, hy - 58, g.name, { align: "center", fs: 24, h: 46, fill: "rgba(23,103,107,0.95)" }); }
     this.drawHUD(ctx);
     if (this.cardOpen && this.cardT > 0 && !this.walk) { if (this.cardVoy) this.drawVoyageCard(ctx); else this.drawCard(ctx); }

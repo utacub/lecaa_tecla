@@ -21,6 +21,7 @@
     pinya: { shape: "pine", skin: "#D49826", skin2: "#F4C850", flesh: "#FCE27A", juice: "#FFEA8A", det: "pine" },
     "meló": { shape: "oval", skin: "#CFD24A", skin2: "#F1EE90", pith: "#E6EFAE", flesh: "#F7E7A4", juice: "#F4EBB0", det: "melon" },
   };
+  const KIND = LK("kind");
   const ANY = ["síndria", "taronja", "poma", "pera", "kiwi", "llimona", "préssec", "mango", "pinya", "coco", "figa", "llima"];
   const BIG = ["síndria", "taronja", "meló", "coco", "pinya"];
   const EXOTIC = ["un litxi", "una carambola", "una fruita del drac", "un maracujà", "una guaiaba", "un rambutan", "una papaia", "un caqui"];
@@ -222,7 +223,7 @@
         { goal: 20, time: 75, maxN: 2, gap: 2.5, T: 7.0, r: 98, bomb: 0.12 },
         { goal: 12, time: 90, maxN: 2, gap: 3.4, T: 9.5, r: 104, bomb: 0.1 },
         { goal: 8, time: 90, maxN: 1, gap: 2.0, T: 13, r: 150, bomb: 0.08 }][L];
-      const pool = L === 5 ? api.pool({ theme: "fruita", filter: w => !!FR[w] }) : L === 6 ? api.pool({ theme: "fruita", filter: w => !w.includes(" ") }) : api.pool({});
+      const pool = L === 5 ? api.pool({ theme: "fruita", filter: w => !!FR[KIND(w)] }) : L === 6 ? api.pool({ theme: "fruita", filter: w => !w.includes(" ") }) : api.pool({});
       const fruits = [], halves = [], splats = [], pops = [];
       const st = { cuts: 0, time: P.time, combo: 0, spawnT: 0.2, done: false, endT: 0, slash: [] };
       api.hud.progress = [0, P.goal]; api.hud.timer = P.time;
@@ -243,7 +244,7 @@
           const [a, b] = pool.many(2, ex); const f = launch({ name: pick(BIG), r: P.r, big: true, vr: rand(-0.08, 0.08), rot: rand(-0.05, 0.05) });
           f.parts.push({ text: a, fruit: f, side: 0 }, { text: b, fruit: f, side: 1 }); fruits.push(f); return;
         }
-        const item = pool.next(ex), name = L === 5 && FR[item] ? item : pick(ANY);
+        const item = pool.next(ex), name = L === 5 && FR[KIND(item)] ? KIND(item) : pick(ANY);
         const f = launch({ name, r: P.r * (FR[name].s || 1) }); f.parts.push({ text: item, fruit: f, side: -1 }); fruits.push(f);
       }
       /* temps fins que la fruita torna a amagar-se sota la taula */
@@ -264,7 +265,7 @@
         st.slash.push({ x: px, y: py, a: ang, len: f.r * 2.9, t: 0 });
         Sfx.play("cut"); setTimeout(() => Sfx.play("splash"), 60);
         st.combo++; st.cuts++; api.hud.progress = [st.cuts, P.goal];
-        if (st.combo >= 3) { pops.push({ x: px, y: py - f.r - 20, txt: `Combo ×${st.combo}!`, t: 0 }); Sfx.play("note", { note: 72 + Math.min(12, st.combo * 2), d: 0.25, type: "triangle", v: 0.16 }); }
+        if (st.combo >= 3) { pops.push({ x: px, y: py - f.r - 20, txt: L_("Combo ×{n}!", { n: st.combo }), t: 0 }); Sfx.play("note", { note: 72 + Math.min(12, st.combo * 2), d: 0.25, type: "triangle", v: 0.16 }); }
         const nx = -Math.sin(ang), ny = Math.cos(ang);
         if (!f.big) {
           for (const w of [0, 1]) { const sgn = w === 0 ? -1 : 1; halves.push({ name: f.name, which: w, x: f.x + nx * sgn * 8, y: f.y + ny * sgn * 8, vx: f.vx * 0.4 + nx * sgn * 170 + rand(-30, 30), vy: Math.min(f.vy, 0) * 0.3 + ny * sgn * 170 - 180, rot: ang, vr: sgn * rand(1.5, 3), r: f.r }); }

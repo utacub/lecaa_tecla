@@ -116,7 +116,7 @@
       function newWord() {
         st.word = pool.next(); st.typed = 0; st.eaten = 0; queue = [];
         const chars = st.word.split("");
-        const src = (L <= 3 ? LETTERS[L] : "abcdefgilmnoprstuv".split("")).filter(ch => !chars.includes(ch));
+        const src = (L <= 3 ? LETTERS[L] : LANG === "ca" ? "abcdefgilmnoprstuv".split("") : Object.keys(LD.freq).filter(c => /^[a-z]$/.test(c) && LD.freq[c] > 0.5)).filter(ch => !chars.includes(ch));
         const baits = shuffle(src).slice(0, BAITS);
         buttons = place(shuffle(chars.concat(baits)));
         st.phase = "sew"; st.t = 0; Sfx.play("page");

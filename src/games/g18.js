@@ -121,7 +121,7 @@
     const a = P.pts[i - 1], b = P.pts[i], k = (d - P.L[i - 1]) / Math.max(1e-6, P.L[i] - P.L[i - 1]);
     return [lerp(a[0], b[0], k), lerp(a[1], b[1], k), Math.atan2(b[1] - a[1], b[0] - a[0])];
   }
-  const cap = s => s.charAt(0).toLocaleUpperCase("ca") + s.slice(1);
+  const cap = capFirst;
   const RADIO = ["Autoritzat!", "Autoritzat a aterrar!", "Pista lliure. Autoritzat!", "Molt bé, autoritzat!"];
   function sfx(fn) { if (Settings.sfx && Audio2.ctx && Audio2.unlocked) try { fn(); } catch (e) { } }
   const radioClick = () => sfx(() => { noise({ f: 2200, q: 0.8, d: 0.12, v: 0.12 }); tone({ f: 1400, d: 0.06, type: "square", v: 0.04, lp: 2500, delay: 0.1 }); });
@@ -198,7 +198,7 @@
         return randi(0, GATES.length - 1);
       }
       function emergency(p) {
-        p.state = "emerg"; p.emergency = true; p.t = 0; st.emerg++; api.hud.label = `Emergències: ${st.emerg}`;
+        p.state = "emerg"; p.emergency = true; p.t = 0; st.emerg++; api.hud.label = L_("Emergències: {n}", { n: st.emerg });
         const E = [rand(200, 560), rand(720, 830)];
         p.legs = [{ P: poly(bez([p.x, p.y], [p.x + Math.cos(p.h) * 200, p.y + Math.sin(p.h) * 200], [E[0] - 180, E[1] - 60], E, 50)), v0: 120, v1: 90, a0: 1, a1: 0, wobble: true }, { P: poly(line(E, [E[0] + 130, E[1] + 10], 20)), v0: 120, v1: 0, a0: 0, a1: 0, bounce: true, last: true }];
         p.leg = 0; p.d = 0;
@@ -264,7 +264,7 @@
             st.endT += dt;
             if (st.endT > 2.5 && !st.fin) {
               st.fin = true; const last = planes.filter(p => p.cleared).map(p => p.city).pop() || pick(cityList);
-              api.finish(st.emerg === 0, { collectName: `el segell de ${cap(last)}` });
+              api.finish(st.emerg === 0, { collectName: L_("el segell de {lloc}", { lloc: cap(last) }) });
             }
           }
         },
@@ -309,7 +309,7 @@
             ctx.save(); ctx.translate(800, 360); ctx.scale(k, k);
             rr(ctx, -360, -70, 720, 140, 20); ctx.fillStyle = PAPER; ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = INK; ctx.stroke();
             text(ctx, st.emerg ? "Tots a terra!" : "20 avions a terra!", 0, -14, { size: 54, weight: 900, font: FONT_T, color: INK });
-            text(ctx, st.emerg ? `Hi ha hagut ${st.emerg} ${st.emerg === 1 ? "emergència" : "emergències"}` : "Cap emergència. Bona feina, torre!", 0, 40, { size: 28, weight: 800, font: FONT_T, color: st.emerg ? ORANGE : TEAL });
+            text(ctx, st.emerg ? (st.emerg === 1 ? L_("Hi ha hagut 1 emergència") : L_("Hi ha hagut {n} emergències", { n: st.emerg })) : "Cap emergència. Bona feina, torre!", 0, 40, { size: 28, weight: 800, font: FONT_T, color: st.emerg ? ORANGE : TEAL });
             ctx.restore();
           }
         },

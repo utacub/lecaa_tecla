@@ -1,7 +1,7 @@
 "use strict";
 /* ============================================================
    So: efectes sintetitzats amb WebAudio, música generativa
-   senzilla per joc i veu amb speechSynthesis (ca-ES).
+   senzilla per joc i veu amb speechSynthesis (en l'idioma triat).
    ============================================================ */
 const Audio2 = {
   ctx: null, master: null, sfxBus: null, musBus: null, unlocked: false, verb: null,
@@ -274,15 +274,18 @@ const Voice = {
   say(txt, o = {}) {
     txt = String(txt);
     if (this.isShort(txt)) return this.sayItem(txt, o);
+    txt = L_(txt); // les frases dels jocs, en català, es diuen en l'idioma triat
     return this.sequence([{ text: txt }], { ...o, caption: o.caption || txt });
   },
   sayItem(item, o = {}) {
-    const raw = String(item).normalize("NFC").trim(), chars = Array.from(raw.toLocaleLowerCase("ca"));
-    const parts = this.isShort(raw) ? chars.map(letter => voiceCfg().shortMode === "names"
+    const raw = String(item).normalize("NFC").trim(), chars = Array.from(lower(raw));
+    // sense locucions enregistrades en aquest idioma (basc, gallec, anglès, francès), sempre el nom de la lletra
+    const names = voiceCfg().shortMode === "names" || !Phon.hasBank();
+    const parts = this.isShort(raw) ? chars.map(letter => names
       // Naming a letter is explicit prose, never a bare two-letter synthesis request.
-      ? { text: "La lletra " + (LETTER_NAME[letter] || letter) + "." }
+      ? { text: L_("La lletra {x}.", { x: LETTER_NAME[letter] || letter }) }
       : { letter }) : [{ text: raw }];
-    const tpl = o.template || "{x}", index = tpl.indexOf("{x}");
+    const tpl = L_(o.template || "{x}"), index = tpl.indexOf("{x}");
     if (index >= 0) {
       const before = tpl.slice(0, index).trim(), after = tpl.slice(index + 3).trim();
       if (before) parts.unshift({ text: before }); if (after) parts.push({ text: after });

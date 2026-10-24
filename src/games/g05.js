@@ -384,7 +384,7 @@
           if (st.phase === "sweep") {
             st.sweep = st.t / 1.7;
             if (Math.random() < 0.5) { const tl = pick(tiles); api.particles.emit(tl.x + rand(-s / 3, s / 3), tl.y + rand(-s / 3, s / 3), { count: 2, color: ["#fff", "#FFF3C4"], shape: "star", size: 12, speed: 40, gravity: 0, life: 0.8 }); }
-            if (st.t > 2.2) { st.phase = "done"; api.finish(true, { collectName: "el mosaic " + pic.de }); }
+            if (st.t > 2.2) { st.phase = "done"; api.finish(true, { collectName: L_("el mosaic {de}", { de: L_(pic.de) }) }); }
           }
         },
         draw(ctx) {
@@ -434,7 +434,7 @@
             if (curT >= 0) { const tl = tiles[curT], up = 4 + tl.pop * 6; ctx.lineWidth = 5; ctx.strokeStyle = BRAND.petroli; rr(ctx, tl.x - s / 2 + 2.5, tl.y - s / 2 - up + 2.5, s - 5, s - 5, s * 0.1); ctx.stroke(); }
           }
           // plafó: què cal escriure i la miniatura
-          text(ctx, pic.name[0] === "l" && pic.name[1] === "'" ? "L" + pic.name.slice(1) : pic.name[0].toUpperCase() + pic.name.slice(1), PCX, PY0 + 58, { size: 28, weight: 900, font: FONT_T, color: BRAND.tinta });
+          text(ctx, capFirst(L_(pic.name)), PCX, PY0 + 58, { size: 28, weight: 900, font: FONT_T, color: BRAND.tinta });
           if (st.phase === "play" && G) {
             const base = L <= 3 ? 112 : L === 4 ? 84 : 56; let size = base;
             while (size > 40 && plateSize(ctx, G.text, size).w > PX1 - PX0 - 60) size -= 2;

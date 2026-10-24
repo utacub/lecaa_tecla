@@ -4,7 +4,9 @@
   const INK = "#2E3A3A";
   /* ---------- espècies (pintades a mà amb paràmetres) ----------
      forma: fish | eel | horse ; mida relativa ; esquena, panxa ; dibuix: plain spots bands stripes wavy scales mottled dotrow ; aletes */
-  const F = (name, o) => Object.assign({ name, shape: "fish", size: 1, h: 0.36, back: "#7A8A8A", belly: "#E8E8E0", pat: "plain", pc: "#3A3A3A", fin: "#8A9A9A", tail: "fork" }, o);
+  // name: clau del dibuix (en català); word: el nom que es veu i s'escriu, en l'idioma triat
+  const FISH_NAMES = LX("g10.names", {});
+  const F = (name, o) => Object.assign({ name, word: FISH_NAMES[name] || name, shape: "fish", size: 1, h: 0.36, back: "#7A8A8A", belly: "#E8E8E0", pat: "plain", pc: "#3A3A3A", fin: "#8A9A9A", tail: "fork" }, o);
   const PONDS = {
     estany: {
       name: "l'estany", water: "#3E9A86", deep: "#1E5A56", bottom: "#9A9468", sky: "#CFE6E8",
@@ -121,7 +123,7 @@
       const size=(w/1400)*(.78+.10*clamp(c.sp.size,.7,1.3));
       drawSide(ctx,c.sp,fx,fy,size,Settings.reduceMotion?0:Math.sin(phase)*.025,c.dir,false);
       if(expanded) {
-        ctx.save(); const nm=c.sp.name, fs=Math.max(13,w/63),lw=measure(ctx,nm,fs,700,FONT_T)+22;
+        ctx.save(); const nm=c.sp.word, fs=Math.max(13,w/63),lw=measure(ctx,nm,fs,700,FONT_T)+22;
         ctx.fillStyle="rgba(247,248,227,.88)";rr(ctx,fx-lw/2,fy+h*.10,lw,fs+10,12);ctx.fill();
         text(ctx,nm,fx,fy+h*.10+(fs+10)/2,{size:fs,weight:700,font:FONT_T,color:"#124f58"});ctx.restore();
       }
@@ -477,12 +479,12 @@
       }
       function textFor(sp) {
         if (!wordsMode) return pool.next(fishes.filter(f => f.text).map(f => f.text));
-        return sp.name;
+        return sp.word;
       }
       function nextSpecies() {
         if (!speciesQ.length) speciesQ = shuffle(P.species);
         const used = new Set(fishes.map(f => f.sp.name));
-        let i = speciesQ.findIndex(s => !used.has(s.name) && (!wordsMode || !fishes.some(f => f.text[0] === s.name[0])));
+        let i = speciesQ.findIndex(s => !used.has(s.name) && (!wordsMode || !fishes.some(f => f.text[0] === s.word[0])));
         if (i < 0) i = speciesQ.findIndex(s => !used.has(s.name));
         if (i < 0) i = 0;
         return speciesQ.splice(i, 1)[0];
@@ -510,7 +512,7 @@
           if (nCaught >= GOAL && !done) { done = true; endT = 0; }
         }
       }
-      function finishCollection(){if(done && endT>1.8 && !finished){finished=true;api.finish(true,{collectName:`${caught.length} peixos de ${P.name}`});}}
+      function finishCollection(){if(done && endT>1.8 && !finished){finished=true;api.finish(true,{collectName:L_("{n} peixos de {lloc}", { n: caught.length, lloc: L_(P.name) })});}}
       return {
         expected() { return done ? (endT > 1.8 ? "Enter" : null) : typer.expected(); },
         onKey(k) {
@@ -650,7 +652,7 @@
             ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 12; ctx.shadowOffsetY = 5; rr(ctx, -150, -42, 300, 84, 16); ctx.fillStyle = "#FBF6EA"; ctx.fill(); ctx.shadowColor = "transparent";
             ctx.strokeStyle = "#3E8E9A"; ctx.lineWidth = 3; ctx.stroke();
             drawSide(ctx, card.sp, -88, 2, card.sp.shape === "horse" ? 0.42 : 0.4, 0, 1, false);
-            const nm = card.sp.name[0].toLocaleUpperCase("ca") + card.sp.name.slice(1);
+            const nm = capFirst(card.sp.word);
             text(ctx, nm, 52, 2, { size: nm.length > 12 ? 24 : 30, weight: 900, font: FONT_T, color: BRAND.tinta });
             ctx.restore();
           }

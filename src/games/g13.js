@@ -141,7 +141,7 @@
       const tower = [], fallers = [], pops = [], fireworks = [];
       const st = { phase: "lower", t: 0, cam: 0, camT: 0, phi: 0, phiV: 0, H: 0, swingT: 0, amp: 0, cable: 30, done: false, endT: 0, ci: 0 };
       let cur = null;
-      api.hud.progress = [0, GOAL]; api.hud.label = record ? "Rècord: " + record : null;
+      api.hud.progress = [0, GOAL]; api.hud.label = record ? L_("Rècord: {n}", { n: record }) : null;
       const widthFor = txt => L <= 4 ? 230 : Math.max(330, Math.ceil(measure(MC, disp(txt), size) + size * 0.62 + 90));
       function next() {
         const text = pool.next();
@@ -225,7 +225,7 @@
             if (st.endT > (st.fail ? 1.6 : 5.0) && !st.fin) {
               st.fin = true; if (!api.demo && tower.length > record) Store.set(recKey, tower.length);
               const ok = !st.fail || tower.length >= Math.ceil(GOAL / 2);
-              api.finish(ok, { collectName: st.fail ? `una torre de ${tower.length} blocs` : "bloc nou: " + pick(SHAPES) });
+              api.finish(ok, { collectName: st.fail ? L_("una torre de {n} blocs", { n: tower.length }) : L_("bloc nou: {x}", { x: L_(pick(SHAPES)) }) });
             }
           }
         },

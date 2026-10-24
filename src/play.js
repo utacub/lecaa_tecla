@@ -6,7 +6,12 @@
    ============================================================ */
 const Games = {
   list: [], byId: {},
-  register(def) { def.collect = def.collect || { one: "premi", many: "premis" }; this.list.push(def); this.byId[def.id] = def; },
+  register(def) {
+    // nom, consigna i premis de cada joc s'escriuen en català i es tradueixen aquí
+    const c = def.collect || { one: "premi", many: "premis" }, goal = def.goal;
+    def.name = L_(def.name); def.collect = { one: L_(c.one), many: L_(c.many) }; if (goal) def.goal = l => L_(goal(l));
+    this.list.push(def); this.byId[def.id] = def;
+  },
   sorted() { return this.list.slice().sort((a, b) => a.id - b.id); },
 };
 
@@ -92,7 +97,7 @@ class GameScene {
       },
       say(txt, o) { if (!demo || o && o.demo) Voice.say(txt, o); },
       sayItem(item, tpl) { if (!demo) return Voice.sayItem(item, { template: tpl || "{x}" }); },
-      finish(success = true, extra = {}) { if (demo) { sc.demoDone = true; return; } sc.finish(success, extra); },
+      finish(success = true, extra = {}) { if (extra.collectName) extra = { ...extra, collectName: L_(extra.collectName) }; if (demo) { sc.demoDone = true; return; } sc.finish(success, extra); },
       clearCaption() { Voice.capT = 0; },
       shake(a = 8) { sc.shakeA = Math.max(sc.shakeA || 0, a); },
       particles: this.particles,
@@ -188,9 +193,9 @@ class GameScene {
   drawHUD(ctx) {
     const h = this.api.hud;
     let x = 24;
-    x += drawChip(ctx, x, 22, "❚❚  Pausa", { fs: 20, h: 42, fill: "rgba(32,62,66,0.7)", click: this.state === "play" ? () => this.onKey("Escape") : null }) + 10;
+    x += drawChip(ctx, x, 22, L_("❚❚  Pausa"), { fs: 20, h: 42, fill: "rgba(32,62,66,0.7)", click: this.state === "play" ? () => this.onKey("Escape") : null }) + 10;
     x += drawChip(ctx, x, 22, this.def.name, { fs: 22, h: 42, fill: "rgba(23,103,107,0.92)" }) + 10;
-    drawChip(ctx, x, 22, "Nivell " + this.level, { fs: 20, h: 42, fill: "rgba(255,255,255,0.92)", color: BRAND.tinta });
+    drawChip(ctx, x, 22, L_("Nivell {n}", { n: this.level }), { fs: 20, h: 42, fill: "rgba(255,255,255,0.92)", color: BRAND.tinta });
     let rx = W - 24;
     if (h.progress) {
       const [v, m] = h.progress, bw = 260;
@@ -228,16 +233,16 @@ class GameScene {
       const k = m.t < 0.25 ? Ease.outBack(m.t / 0.25) : m.t > 1.5 ? 1 - (m.t - 1.5) / 0.4 : 1;
       const [mx, my] = m.at || [W / 2, (this.def.kbPos ? this.def.kbPos[1] : H - 132) - 230];
       ctx.save(); ctx.globalAlpha = clamp(k, 0, 1);
-      const lab = v => v === " " ? "espai" : v === "Enter" ? "Retorn" : v;
+      const lab = v => v === " " ? L_("espai") : v === "Enter" ? L_("Retorn") : v;
       if (m.p == null) { // no s'ha premut res a temps: només la tecla que calia
         ctx.save(); rr(ctx, mx - 170, my - 98, 340, 196, 30); ctx.fillStyle = "rgba(255,255,255,0.93)"; ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 20; ctx.shadowOffsetY = 6; ctx.fill(); ctx.restore();
-        text(ctx, "Calia prémer", mx, my - 70, { size: 22, weight: 800, font: FONT_T, color: BRAND.petroli });
+        text(ctx, L_("Calia prémer"), mx, my - 70, { size: 22, weight: 800, font: FONT_T, color: BRAND.petroli });
         drawPlate(ctx, lab(m.e), mx, my + 18, { size: m.e.length > 1 ? 48 : 72, state: "ok" });
       } else {
         const sep = 120 * clamp(k, 0, 1.2);
         ctx.save(); rr(ctx, mx - 300, my - 98, 600, 196, 30); ctx.fillStyle = "rgba(255,255,255,0.93)"; ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 20; ctx.shadowOffsetY = 6; ctx.fill(); ctx.restore();
-        text(ctx, "Busques", mx - sep, my - 70, { size: 22, weight: 800, font: FONT_T, color: BRAND.petroli });
-        text(ctx, "Has premut", mx + sep, my - 70, { size: 22, weight: 800, font: FONT_T, color: UI.coralDark });
+        text(ctx, L_("Busques"), mx - sep, my - 70, { size: 22, weight: 800, font: FONT_T, color: BRAND.petroli });
+        text(ctx, L_("Has premut"), mx + sep, my - 70, { size: 22, weight: 800, font: FONT_T, color: UI.coralDark });
         drawPlate(ctx, lab(m.e), mx - sep, my + 18, { size: m.e.length > 1 ? 48 : 72, state: "ok" });
         drawPlate(ctx, lab(m.p), mx + sep, my + 18, { size: String(m.p).length > 1 ? 48 : 72, state: "wrong" });
         text(ctx, "≠", mx, my + 18, { size: 54, weight: 800, font: FONT_T, color: BRAND.tinta });
@@ -252,11 +257,11 @@ class GameScene {
     if (m && !this.def.ownCompare) { const at = m.at || [W / 2, (this.def.kbPos ? this.def.kbPos[1] : H - 132) - 230]; x = at[0]; y = at[1] + 136; if (y > H - 40) y = at[1] - 136; }
     const pulse = Settings.reduceMotion ? 1 : 1 + 0.04 * Math.sin(this.haltT * 5);
     ctx.save(); ctx.globalAlpha *= a;
-    ctx.font = `800 24px ${FONT_T}`; const l1 = "Prem", l2 = "per continuar", w1 = ctx.measureText(l1).width, w2 = ctx.measureText(l2).width, kw = 110, w = 30 + w1 + 14 + kw + 14 + w2 + 30;
+    ctx.font = `800 24px ${FONT_T}`; const l1 = L_("Prem"), l2 = L_("per continuar"), w1 = ctx.measureText(l1).width, w2 = ctx.measureText(l2).width, kw = 110, w = 30 + w1 + 14 + kw + 14 + w2 + 30;
     x = clamp(x, w / 2 + 16, W - w / 2 - 16); ctx.translate(x, y); ctx.scale(pulse, pulse); ctx.font = `800 24px ${FONT_T}`;
     ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 12; ctx.shadowOffsetY = 4; rr(ctx, -w / 2, -30, w, 60, 30); ctx.fillStyle = BRAND.tinta; ctx.fill(); ctx.shadowColor = "transparent";
     let xx = -w / 2 + 30; ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(l1, xx, 1); xx += w1 + 14;
-    drawKeycap(ctx, xx, -21, kw, 40, "espai", { theme: "menta", size: 20, weight: 800 }); xx += kw + 14;
+    drawKeycap(ctx, xx, -21, kw, 40, L_("espai"), { theme: "menta", size: 20, weight: 800 }); xx += kw + 14;
     ctx.fillStyle = "#fff"; ctx.fillText(l2, xx, 1);
     ctx.restore();
   }
@@ -267,16 +272,16 @@ class GameScene {
     const y = H - 116;
     ctx.fillStyle = "rgba(32,62,66,0.9)"; ctx.fillRect(0, y - 10, W, 126);
     ctx.fillStyle = BRAND.petroli; ctx.fillRect(0, y - 10, W, 6);
-    text(ctx, "Demostració", 40, y + 26, { size: 22, weight: 800, font: FONT_T, color: "#9FE3CC", align: "left" });
+    text(ctx, L_("Demostració"), 40, y + 26, { size: 22, weight: 800, font: FONT_T, color: "#9FE3CC", align: "left" });
     text(ctx, this.def.name, 40, y + 66, { size: 40, weight: 900, font: FONT_T, color: "#fff", align: "left" });
     const gl = this.def.goal(this.level); ctx.font = `700 24px ${FONT_L}`;
     wrapText(ctx, gl, 470, ctx.measureText(gl).width > 760 ? y + 34 : y + 50, 760, 32, { size: 24, weight: 700, color: "#E3EFEB" });
-    drawButton(ctx, W - 40, y + 50, "Jugar", { align: "right", fs: 30, style: "primary", click: () => this.startPlay() });
+    drawButton(ctx, W - 40, y + 50, L_("Jugar"), { align: "right", fs: 30, style: "primary", click: () => this.startPlay() });
     // indicador de la tecla que la demo acaba de prémer
     if (this.demoKey && this.demoKey.t < 0.8) {
       const k = this.demoKey, s = Ease.outBack(clamp(k.t / 0.2, 0, 1));
       ctx.globalAlpha = a * clamp((0.8 - k.t) * 3, 0, 1);
-      const kl = k.k === " " ? "␣" : k.k === "Enter" ? "Retorn" : disp(k.k), kw = kl.length > 1 ? Math.max(84, measure(ctx, kl, 34, 800, FONT_T) + 40) : 84;
+      const kl = k.k === " " ? "␣" : k.k === "Enter" ? L_("Retorn") : disp(k.k), kw = kl.length > 1 ? Math.max(84, measure(ctx, kl, 34, 800, FONT_T) + 40) : 84;
       drawKeycap(ctx, W - 118 - kw / 2, y - 110, kw * s, 84 * s, kl, { theme: "white", font: kl.length > 1 ? FONT_T : FONT_L, weight: kl.length > 1 ? 800 : 700, size: (kl.length > 1 ? 34 : 46) * s, pressed: k.t < 0.15 });
     }
     ctx.restore();
@@ -284,7 +289,7 @@ class GameScene {
   drawCount(ctx) {
     const c = this.countdown, n = Math.floor(c / 0.75), f = (c % 0.75) / 0.75;
     if (n > 3) return;
-    const label = n < 3 ? String(3 - n) : "Som-hi!";
+    const label = n < 3 ? String(3 - n) : L_("Som-hi!");
     ctx.save();
     ctx.fillStyle = `rgba(32,62,66,${n < 3 ? 0.35 : 0.35 * (1 - f)})`; ctx.fillRect(0, 0, W, H);
     const s = Ease.outBack(clamp(f * 2.2, 0, 1)) * (n < 3 ? 1 : 1.1), alpha = f > 0.75 ? 1 - (f - 0.75) * 4 : 1;
@@ -315,7 +320,7 @@ class GameScene {
     if (this.g.onKey) this.g.onKey(k, e);
   }
   onKeyUp(k, e) { if (this.state === "play" && this.g.onKeyUp) this.g.onKeyUp(k, e); }
-  pauseItems() { return [["Continuar", () => { this.state = "play"; }], ["Tornar a començar", () => { this.startPlay(); }], ["Música: " + (Settings.music ? "sí" : "no"), () => { Settings.music = !Settings.music; saveSettings(); if (Settings.music) Music.refresh(); else { const n = Music.styleName; Music.stop(); Music.styleName = null; Music.wanted = n; } }], ["Tornar a l'illa", () => this.quit()]]; }
+  pauseItems() { return [[L_("Continuar"), () => { this.state = "play"; }], [L_("Tornar a començar"), () => { this.startPlay(); }], [L_("Música: {v}", { v: Settings.music ? L_("sí") : L_("no") }), () => { Settings.music = !Settings.music; saveSettings(); if (Settings.music) Music.refresh(); else { const n = Music.styleName; Music.stop(); Music.styleName = null; Music.wanted = n; } }], [L_("Tornar a l'illa"), () => this.quit()]]; }
   pauseKey(k) {
     const it = this.pauseItems();
     if (k === "Escape") { this.state = "play"; return; }
@@ -327,7 +332,7 @@ class GameScene {
     ctx.save(); ctx.fillStyle = "rgba(20,38,42,0.6)"; ctx.fillRect(0, 0, W, H);
     const it = this.pauseItems(), pw = 560, ph = 150 + it.length * 78, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
     drawPanel(ctx, px, py, pw, ph);
-    text(ctx, "Pausa", W / 2, py + 62, { size: 52, weight: 900, font: FONT_T, color: BRAND.tinta });
+    text(ctx, L_("Pausa"), W / 2, py + 62, { size: 52, weight: 900, font: FONT_T, color: BRAND.tinta });
     it.forEach(([label], i) => {
       const y = py + 130 + i * 78, sel = i === this.pauseSel;
       Mouse.add(px + 40, y - 30, pw - 80, 64, { hover: () => { if (this.pauseSel !== i) { this.pauseSel = i; Sfx.play("tick"); } }, click: () => { this.pauseSel = i; this.pauseKey("Enter"); } });
@@ -337,8 +342,8 @@ class GameScene {
     ctx.restore();
   }
   endItems() {
-    const items = [["Tornar a l'illa", () => this.quit(true), "light"], ["Tornar a jugar", () => this.restart(), "light"]];
-    if (this.level < 6 && this.result.success) items.push(["Nivell " + (this.level + 1), () => this.restart(this.level + 1), "primary"]);
+    const items = [[L_("Tornar a l'illa"), () => this.quit(true), "light"], [L_("Tornar a jugar"), () => this.restart(), "light"]];
+    if (this.level < 6 && this.result.success) items.push([L_("Nivell {n}", { n: this.level + 1 }), () => this.restart(this.level + 1), "primary"]);
     return items;
   }
   endKey(k) {
@@ -365,7 +370,7 @@ class GameScene {
     // capçalera petroli amb el logo
     ctx.save(); rr(ctx, px, py, pw, 120, 36); ctx.clip(); ctx.fillStyle = BRAND.petroli; ctx.fillRect(px, py, pw, 120); ctx.restore();
     ctx.fillStyle = BRAND.petroli; ctx.fillRect(px, py + 84, pw, 36);
-    text(ctx, R.success ? (this.profile ? `Molt bé, ${this.profile.name}!` : "Molt bé!") : "Gairebé!", W / 2, py + 64, { size: 50, weight: 900, font: FONT_T, color: "#fff" });
+    text(ctx, R.success ? (this.profile ? L_("Molt bé, {nom}!", { nom: this.profile.name }) : L_("Molt bé!")) : L_("Gairebé!"), W / 2, py + 64, { size: 50, weight: 900, font: FONT_T, color: "#fff" });
     // estrelles
     for (let i = 0; i < 3; i++) {
       const st = clamp((t - 0.5 - i * 0.35) / 0.35, 0, 1), on = i < R.stars && st > 0;
@@ -374,15 +379,15 @@ class GameScene {
       drawStar(ctx, W / 2 + (i - 1) * 150, py + 220 - (i === 1 ? 18 : 0), 58 * (on ? s : 0.9), on, { rot: on ? (1 - st) * 1.2 : 0 });
     }
     const pct = Math.round(R.acc * 100);
-    text(ctx, `${pct}% d'encerts`, W / 2, py + 318, { size: 34, weight: 800, font: FONT_T, color: BRAND.tinta });
-    text(ctx, R.success ? (R.stars === 3 ? "Perfecte: 3 estrelles amb més d'un 95%." : R.stars === 2 ? "Amb un 95% d'encerts tindràs 3 estrelles." : "Amb un 80% d'encerts tindràs 2 estrelles.") : "Aquesta vegada no has arribat a l'objectiu.", W / 2, py + 362, { size: 24, weight: 700, color: "#4B6366" });
+    text(ctx, L_("{n}% d'encerts", { n: pct }), W / 2, py + 318, { size: 34, weight: 800, font: FONT_T, color: BRAND.tinta });
+    text(ctx, R.success ? (R.stars === 3 ? L_("Perfecte: 3 estrelles amb més d'un 95%.") : R.stars === 2 ? L_("Amb un 95% d'encerts tindràs 3 estrelles.") : L_("Amb un 80% d'encerts tindràs 2 estrelles.")) : L_("Aquesta vegada no has arribat a l'objectiu."), W / 2, py + 362, { size: 24, weight: 700, color: "#4B6366" });
     // col·leccionable
     if (R.collect) {
       const cy = py + 430, ca = clamp((t - 1.6) / 0.4, 0, 1);
       ctx.save(); ctx.globalAlpha *= ca;
       rr(ctx, px + 120, cy - 34, pw - 240, 72, 20); ctx.fillStyle = BRAND.menta; ctx.fill();
       const tw = 92, th = 56; ctx.save(); rr(ctx, px + 136, cy - 28, tw, th, 12); ctx.clip(); try { this.def.thumb(ctx, px + 136, cy - 28, tw, th, App.t); } catch (e) { } ctx.restore();
-      const cl = `Nou per al museu: ${R.extra.collectName || "1 " + this.def.collect.one}`, cmax = pw - 400;
+      const cl = L_("Nou per al museu: {x}", { x: R.extra.collectName || "1 " + this.def.collect.one }), cmax = pw - 400;
       const cfs = Math.max(16, Math.min(26, 26 * cmax / Math.max(1, measure(ctx, cl, 26, 800, FONT_T))));
       text(ctx, cl, px + 250, cy + 2, { size: cfs, weight: 800, font: FONT_T, color: BRAND.tinta, align: "left" });
       ctx.restore();

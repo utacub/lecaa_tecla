@@ -297,7 +297,7 @@
           else { snd.groan(); void 0; }
         } else {
           const saved = res === "saved"; theirs.push(!saved); if (!saved) { flap.pb = flap.b; flap.b++; flap.kb = 0; snd.flap(); }
-          banner = saved ? { t: "Quina parada!", c: UI.ok } : { t: "Gol de " + team.art, c: BRAND.tinta };
+          banner = saved ? { t: "Quina parada!", c: UI.ok } : { t: L_("Gol de " + team.art), c: BRAND.tinta };
           if (saved) { Sfx.play("crowd"); cheer = 1.6; void 0; api.particles.emit(me.tx || 800, me.ty || 500, { count: 30, color: ["#17676B", "#FFFFFF", "#F08A3C"], speed: 420, gravity: 500, size: 13, life: 1.4, shape: "confetti" }); }
           else { snd.groan(); }
         }
@@ -357,13 +357,13 @@
           if (phase === "result" && pt > (api.demo ? 1.2 : 2.0) && !ended) {
             if (turn === "save") {
               const e = checkEnd();
-              if (e) { ended = true; phase = "final"; pt = 0; const win = e === "win"; banner = { t: win ? "Heu guanyat la tanda!" : "Han guanyat " + team.art, c: win ? UI.ok : BRAND.tinta }; if (win) { Sfx.play("crowd"); cheer = 3; } api.say(win ? "Heu guanyat el partit!" : "Aquesta vegada han guanyat " + team.art + "."); return; }
+              if (e) { ended = true; phase = "final"; pt = 0; const win = e === "win"; banner = { t: win ? "Heu guanyat la tanda!" : L_("Han guanyat " + team.art), c: win ? UI.ok : BRAND.tinta }; if (win) { Sfx.play("crowd"); cheer = 3; } api.say(win ? "Heu guanyat el partit!" : L_("Aquesta vegada han guanyat " + team.art + ".")); return; }
             }
             nextKick();
           }
           if (phase === "final") {
             if (banner.c === UI.ok && Math.random() < 0.5 && pt < 2.5) api.particles.emit(rand(100, 1500), -10, { count: 2, color: ["#17676B", "#FFFFFF", "#F2B630", "#E0553A"], speed: 120, gravity: 260, size: 14, life: 2.2, shape: "confetti", drag: 0.97 });
-            if (pt > 3 && !this.done) { this.done = true; const win = flap.a > flap.b || (flap.a === flap.b); api.finish(win, win ? { collectName: L === 6 ? "la copa de la lliga" : "el cromo de " + team.art } : {}); }
+            if (pt > 3 && !this.done) { this.done = true; const win = flap.a > flap.b || (flap.a === flap.b); api.finish(win, win ? { collectName: L === 6 ? "la copa de la lliga" : L_("el cromo de " + team.art) } : {}); }
           }
         },
         drawShoot(ctx) {
@@ -442,7 +442,7 @@
           // rètol de retransmissió (a baix a l'esquerra)
           const label = turn === "shoot" ? "Xutes tu" : "Ets el porter", n = Math.min(Math.floor(kick / 2) + 1, 99);
           ctx.save(); const ly = 836; rr(ctx, 24, ly - 30, 380, 60, 12); ctx.fillStyle = "rgba(20,30,40,0.88)"; ctx.fill(); ctx.fillStyle = turn === "shoot" ? "#17676B" : "#F08A3C"; rr(ctx, 24, ly - 30, 14, 60, 6); ctx.fill();
-          text(ctx, `Penal ${n}${n <= 5 ? " de 5" : ""}`, 56, ly - 9, { size: 18, weight: 800, font: FONT_T, color: "#B8C8CC", align: "left" });
+          text(ctx, n <= 5 ? L_("Penal {n} de 5", { n }) : L_("Penal {n}", { n }), 56, ly - 9, { size: 18, weight: 800, font: FONT_T, color: "#B8C8CC", align: "left" });
           text(ctx, label, 56, ly + 13, { size: 24, weight: 900, font: FONT_T, color: "#FFFFFF", align: "left" }); ctx.restore();
           ctx.save(); rr(ctx, W - 196, 30, 172, 40, 20); ctx.fillStyle = "rgba(20,30,40,0.8)"; ctx.fill(); ctx.fillStyle = "#E0553A"; ctx.beginPath(); ctx.arc(W - 172, 50, 7, 0, 6.28); ctx.fill(); text(ctx, "EN DIRECTE", W - 100, 51, { size: 18, weight: 900, font: FONT_T, color: "#FFFFFF" }); ctx.restore();
           // titular de la jugada

@@ -99,22 +99,45 @@ function drawLogo(ctx, cx, cy, h, o = {}) {
   });
 }
 
-/* ---------- teclat en pantalla (disposició catalana/espanyola) ---------- */
-const KB_ROWS = [
-  { off: 0, keys: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "`", "+"] },
-  { off: 0.28, keys: ["a", "s", "d", "f", "g", "h", "j", "k", "l", "ñ", "´", "ç"] },
-  { off: -0.22, keys: ["<", "z", "x", "c", "v", "b", "n", "m", ",", ".", "-"] },
-];
+/* ---------- teclat en pantalla: disposició espanyola (català, castellà, basc, gallec),
+   francesa (AZERTY) o britànica; es tria amb l'idioma i es pot canviar a Opcions ---------- */
+const KB_LAYOUTS = {
+  es: { label: "QWERTY ES", num: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "'", "¡"], rows: [
+    { off: 0, keys: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "`", "+"] },
+    { off: 0.28, keys: ["a", "s", "d", "f", "g", "h", "j", "k", "l", "ñ", "´", "ç"] },
+    { off: -0.22, keys: ["<", "z", "x", "c", "v", "b", "n", "m", ",", ".", "-"] }] },
+  fr: { label: "AZERTY", num: ["&", "é", "\"", "'", "(", "-", "è", "_", "ç", "à", ")", "="], rows: [
+    { off: 0, keys: ["a", "z", "e", "r", "t", "y", "u", "i", "o", "p", "^", "$"] },
+    { off: 0.28, keys: ["q", "s", "d", "f", "g", "h", "j", "k", "l", "m", "ù", "*"] },
+    { off: -0.22, keys: ["<", "w", "x", "c", "v", "b", "n", ",", ";", ":", "!"] }] },
+  uk: { label: "QWERTY UK", num: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], rows: [
+    { off: 0, keys: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"] },
+    { off: 0.28, keys: ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "#"] },
+    { off: -0.22, keys: ["\\", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/"] }] },
+};
+const KB_LAYOUT = KB_LAYOUTS[Settings.layout] ? Settings.layout : LANG_INFO.layout;
+const KB_ROWS = KB_LAYOUTS[KB_LAYOUT].rows, KB_NUM = KB_LAYOUTS[KB_LAYOUT].num;
 const KB_POS = {}; KB_ROWS.forEach((r, ri) => r.keys.forEach((k, ci) => KB_POS[k] = { row: ri, col: ci, x: r.off + ci }));
+// fila dels números: només es dibuixa la tecla que cal prémer (p. ex. 3 per al punt volat, é a l'AZERTY)
+KB_NUM.forEach((k, ci) => { if (!KB_POS[k]) KB_POS[k] = { row: -1, col: ci, x: ci - 0.6 }; });
 /* tecles físiques que cal prémer per a un caràcter (accents amb tecla morta) */
 function keysFor(ch) {
   if (!ch) return [];
-  if ("àèò".includes(ch)) return ["`", { "à": "a", "è": "e", "ò": "o" }[ch]];
-  if ("éíóú".includes(ch)) return ["´", { "é": "e", "í": "i", "ó": "o", "ú": "u" }[ch]];
-  if ("ïü".includes(ch)) return ["´", ch === "ï" ? "i" : "u"]; // dièresi: Maj + ´
-  if (ch === "·") return ["3"];
   if (ch === " ") return [" "];
-  return [ch];
+  if (KB_POS[ch]) return [ch];
+  const base = ch.normalize("NFD")[0], mark = ch.normalize("NFD").slice(1);
+  if (KB_LAYOUT === "fr") {
+    if (mark === "\u0302") return ["^", base];          // circumflex: â ê î ô û
+    if (mark === "\u0308") return ["^", base];          // dièresi: Maj + ^ (¨)
+    return [base];
+  }
+  if (KB_LAYOUT === "es") {
+    if (mark === "\u0300") return ["`", base];          // à è ò
+    if (mark === "\u0301") return ["´", base];          // á é í ó ú
+    if (mark === "\u0308") return ["´", base];          // ï ü: Maj + ´
+    if (ch === "·") return ["3"];
+  }
+  return [base];
 }
 const Kb = {
   /* marks: {tecla: "expected"|"wrong"|"hint"|"row"} */
@@ -136,14 +159,18 @@ const Kb = {
       else if (m === "hint") { theme = "gold"; glow = rgba(UI.gold, 0.5 + 0.4 * Math.sin(t * 6)); }
       else if (m === "row") theme = "gold";
       else if (o.dimOthers) theme = "soft";
-      const label = "`´".includes(k) ? k : disp(k);
+      const label = /^\p{L}$/u.test(k) ? disp(k) : k;
       drawKeycap(ctx, kx, ky, ks, ks, label, { theme, glow, pressed, font: FONT_L, weight: 700, size: ks * 0.52 });
     }));
     // barra d'espai
     const sx = x0 + pad + 3.25 * u, sy = y0 + pad + 3 * u, sw = 5.6 * u;
-    const ms = marks[" "]; drawKeycap(ctx, sx, sy, sw, ks * 0.8, "espai", { theme: ms === "expected" ? "petroli" : ms === "wrong" ? "coral" : o.dimOthers ? "soft" : "white", font: FONT_L, weight: 700, size: ks * 0.34, glow: ms === "expected" ? rgba("#3FD3A0", 0.8) : null });
-    // tecla 3 per al punt volat, si cal
-    if (marks["3"]) { drawKeycap(ctx, x0 + pad + 2.4 * u, y0 - u * 0.9, ks, ks, "3 ·", { theme: marks["3"] === "expected" ? "petroli" : "coral", font: FONT_L, size: ks * 0.36 }); }
+    const ms = marks[" "]; drawKeycap(ctx, sx, sy, sw, ks * 0.8, L_("espai"), { theme: ms === "expected" ? "petroli" : ms === "wrong" ? "coral" : o.dimOthers ? "soft" : "white", font: FONT_L, weight: 700, size: ks * 0.34, glow: ms === "expected" ? rgba("#3FD3A0", 0.8) : null });
+    // tecles de la fila dels números, només si cal prémer-ne alguna (3 per al punt volat, é è ç à a l'AZERTY)
+    KB_NUM.forEach(k => {
+      const p = KB_POS[k]; if (!marks[k] || !p || p.row !== -1) return;
+      const label = k === "3" && KB_LAYOUT === "es" ? "3 ·" : disp(k);
+      drawKeycap(ctx, x0 + pad + (p.x + 0.25) * u, y0 - u * 0.9, ks, ks, label, { theme: marks[k] === "expected" ? "petroli" : marks[k] === "hint" ? "gold" : "coral", font: FONT_L, size: ks * (label.length > 1 ? 0.36 : 0.52) });
+    });
     ctx.restore();
     return { x: x0, y: y0, w: wid, h: hei };
   },
@@ -165,6 +192,7 @@ function drawPanel(ctx, x, y, w, h, o = {}) {
 }
 /* indicació de tecla + acció, p. ex. [Retorn] Tornar a l'illa */
 function drawKeyHint(ctx, x, y, key, label, o = {}) {
+  key = L_(key); label = L_(label);
   const ks = o.ks || 40, fs = o.fs || 24;
   ctx.save(); ctx.font = `800 ${ks * 0.42}px ${FONT_T}`; const kw = Math.max(ks, ctx.measureText(key).width + ks * 0.6);
   ctx.font = `700 ${fs}px ${FONT_L}`; const lw = ctx.measureText(label).width;
@@ -179,8 +207,10 @@ function drawKeyHint(ctx, x, y, key, label, o = {}) {
 }
 /* botó de menú (ratolí): pastilla amb text; estils primary, light, ghost. Retorna l'amplada */
 function drawButton(ctx, x, y, label, o = {}) {
+  label = L_(label);
   const fs = o.fs || 26, h = o.h || Math.round(fs * 2.1);
   ctx.save(); ctx.font = `800 ${fs}px ${FONT_T}`; const w = o.w || ctx.measureText(label).width + fs * 1.6;
+  if (o.w) fitFont(ctx, label, 800, fs, FONT_T, w - fs * 0.9);
   const x0 = o.align === "left" ? x : o.align === "right" ? x - w : x - w / 2, y0 = y - h / 2;
   const hov = o.click ? Mouse.add(x0, y0, w, h, { click: o.click }) : false, st = o.style || "light";
   const fill = st === "dark" ? (hov ? "#2A2A2A" : "#0B0B0B") : st === "primary" ? (hov ? BRAND.tinta : BRAND.petroli) : st === "ghost" ? (hov ? BRAND.petroli : "rgba(227,239,235,0.16)") : (hov ? BRAND.petroli : BRAND.menta);
@@ -232,7 +262,9 @@ function drawCaption(ctx, txt, x, y, a = 1) {
 }
 /* xip de text petit amb fons fosc (HUD) */
 function drawChip(ctx, x, y, label, o = {}) {
+  label = L_(label);
   ctx.save(); ctx.font = `800 ${o.fs || 24}px ${FONT_T}`; const w = (o.w || ctx.measureText(label).width + 36), h = o.h || 46;
+  if (o.w) fitFont(ctx, label, 800, o.fs || 24, FONT_T, w - 24);
   const x0 = o.align === "right" ? x - w : o.align === "center" ? x - w / 2 : x;
   const hov = o.click ? Mouse.add(x0, y, w, h, { click: o.click }) : false;
   rr(ctx, x0, y, w, h, h / 2); ctx.fillStyle = hov ? BRAND.petroli : (o.fill || "rgba(32,62,66,0.82)"); ctx.fill();

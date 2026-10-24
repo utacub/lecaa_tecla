@@ -4,7 +4,7 @@
   const INK = "#3A2614", RED = "#C2302A";
   const COLS = 6, ROWS = 4, X0 = 330, DX = 186, Y0 = 250, DY = 150;
   /* llocs del mapa: paraula (nivell 5) i pistes (nivell 6, dues formes amb inicial diferent) */
-  const MARKS = {
+  const MARKS = LXM("g16.marks", {
     cova: { w: "cova", p: ["entra a la cova", "per la cova"] },
     pont: { w: "pont", p: ["passa pel pont", "creua el pont"] },
     far: { w: "far", p: ["cap al far", "fins al far"] },
@@ -15,7 +15,7 @@
     volcà: { w: "foc", p: ["mira el volcà", "puja al volcà"] },
     mina: { w: "mina", p: ["baixa a la mina", "dins la mina"] },
     roca: { w: "roca", p: ["rodeja la roca", "salta la roca"] },
-  };
+  });
   const MARK_IDS = Object.keys(MARKS);
   const TREASURES = [["corona", "una corona d'or"], ["moneda", "una moneda antiga"], ["bruixola", "una brúixola daurada"], ["calze", "un calze d'or"], ["collaret", "un collaret de perles"]];
 
@@ -303,7 +303,7 @@
       function arrive() {
         st.phase = "arrive"; st.t = 0;
         const k = keys.find(k => k.n === st.node && !k.got);
-        if (k) { k.got = true; k.fly = 0; st.keys++; api.hud.progress = [st.keys, 3]; Sfx.play("chime", { note: 79 + st.keys * 2 }); api.particles.emit(nodes[k.n].x, nodes[k.n].y - 40, { count: 18, color: ["#FFE48A", "#F2C230", "#FFFFFF"], shape: "star", size: 12, speed: 220, gravity: 200, life: 0.8 }); api.say(st.keys < 3 ? `Una clau! Te'n falten ${3 - st.keys}.` : "Ja tens les tres claus! Ara, al cofre!"); }
+        if (k) { k.got = true; k.fly = 0; st.keys++; api.hud.progress = [st.keys, 3]; Sfx.play("chime", { note: 79 + st.keys * 2 }); api.particles.emit(nodes[k.n].x, nodes[k.n].y - 40, { count: 18, color: ["#FFE48A", "#F2C230", "#FFFFFF"], shape: "star", size: 12, speed: 220, gravity: 200, life: 0.8 }); api.say(st.keys < 3 ? L_("Una clau! Te'n falten {n}.", { n: 3 - st.keys }) : "Ja tens les tres claus! Ara, al cofre!"); }
         if (st.node === M.chest) {
           if (st.keys >= 3) { st.phase = "open"; st.t = 0; Sfx.play("bell", { note: 72 }); setTimeout(() => Sfx.play("win"), 400); void 0; return; }
           else { api.say("El cofre està tancat. Busca les claus!"); Sfx.play("clack"); st.locked = 1; }

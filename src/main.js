@@ -15,7 +15,7 @@ async function boot() {
   if (q.voice === "0") Settings.voice = false;
   let prof = Profiles.list[0];
   const lastId = Store.get("lastProfile", null); if (lastId) prof = Profiles.list.find(p => p.id === lastId) || prof;
-  if ((q.play || q.scene) && !prof) prof = Profiles.add("Prova", 0, 1);
+  if ((q.play || q.scene) && !prof) prof = Profiles.add(L_("Prova"), 0, 1);
   Profiles.cur = prof;
   if (q.play && Games.byId[q.play]) App.setScene(new GameScene(Games.byId[q.play], +(q.lvl || 1), prof, { skipDemo: q.demo !== "1" }));
   else if (q.scene === "island") App.setScene(new IslandScene(prof, { focus: +(q.focus || 1), intro: q.intro === "1" }));

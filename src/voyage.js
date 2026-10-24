@@ -2,13 +2,11 @@
 /* ============================================================
    El viatge a l'illa: calibratge inicial de cada jugador
    Es mostren N lletres grans (per defecte 20) en ordre aleatori ponderat per la
-   freqüència de les lletres en català; no hi ha ajudes, només es registra el temps.
+   freqüència de les lletres de l'idioma; no hi ha ajudes, només es registra el temps.
    ============================================================ */
 
-/* Freqüència (%) de cada tecla de lletra en català. Calculada sobre els 454.098 mots del
-   corpus AnCora (Taulé, Martí i Recasens, 2008; versió Universal Dependencies, CC BY 4.0).
-   Les vocals accentuades compten com la seva tecla base (à → a). */
-const CALIB_FREQ = { e: 13.47, a: 13.04, s: 7.77, i: 7.48, r: 7.12, l: 6.62, n: 6.36, t: 6.35, o: 5.38, d: 4.3, c: 4.26, u: 4.0, p: 2.88, m: 2.8, v: 1.42, b: 1.28, g: 1.28, q: 1.15, f: 0.9, h: 0.68, x: 0.45, j: 0.39, y: 0.29, z: 0.17, "ç": 0.1, k: 0.04, w: 0.02 };
+/* Freqüència (%) de cada tecla de lletra en l'idioma actiu (src/lang/*.js; fonts i mètode al mateix fitxer). */
+const CALIB_FREQ = LD.freq;
 
 /* Mostra sense repetició ponderada per l'arrel de la freqüència: les lletres freqüents surten
    gairebé sempre i les rares (k, w, ç) també poden sortir. L'ordre és diferent cada vegada. */
@@ -44,7 +42,7 @@ class VoyageScene {
     this.prog = 0; this.progT = 0; this.wake = 0; this.particles = new Particles();
     this.gulls = Array.from({ length: 4 }, () => ({ x: rand(0, W), y: rand(90, 220), v: rand(30, 55), p: rand(0, 6) }));
   }
-  enter() { Music.play("adventure"); setTimeout(() => Voice.say("Troba cada lletra al teclat."), 400); }
+  enter() { Music.play("adventure"); setTimeout(() => Voice.say(L_("Troba cada lletra al teclat.")), 400); }
   get N() { return this.letters.length; }
   update(dt) {
     this.t += dt; this.st += dt; this.particles.update(dt);
@@ -115,7 +113,7 @@ class VoyageScene {
     this.particles.draw(ctx);
     if (this.state === "letter") this.drawLetter(ctx);
     // botó per a l'adult: ometre el viatge
-    if (this.state !== "done") drawButton(ctx, W - 30, 50, "Ometre el viatge", { align: "right", fs: 18, h: 40, style: "ghost", color: BRAND.tinta, click: () => this.goIsland() });
+    if (this.state !== "done") drawButton(ctx, W - 30, 50, L_("Ometre el viatge"), { align: "right", fs: 18, h: 40, style: "ghost", color: BRAND.tinta, click: () => this.goIsland() });
     if (this.state === "done") this.drawDone(ctx);
     drawGrainOverlay(ctx, 0.06); drawVignette(ctx, 0.22);
   }
@@ -209,10 +207,10 @@ class VoyageScene {
     const pw = 760, ph = 420, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
     drawPanel(ctx, px, py, pw, ph, { r: 36 });
     ctx.save(); rr(ctx, px, py, pw, 110, 36); ctx.clip(); ctx.fillStyle = BRAND.petroli; ctx.fillRect(px, py, pw, 110); ctx.restore(); ctx.fillStyle = BRAND.petroli; ctx.fillRect(px, py + 80, pw, 30);
-    text(ctx, "Hem arribat a l'illa!", W / 2, py + 60, { size: 48, weight: 900, font: FONT_T, color: "#fff" });
+    text(ctx, L_("Hem arribat a l'illa!"), W / 2, py + 60, { size: 48, weight: 900, font: FONT_T, color: "#fff" });
     text(ctx, `Has trobat ${s.found} lletres de ${s.n}.`, W / 2, py + 180, { size: 36, weight: 800, font: FONT_T, color: BRAND.tinta });
-    text(ctx, "Ara ja pots explorar l'illa i triar un joc.", W / 2, py + 236, { size: 26, weight: 700, color: "#4B6366" });
-    drawButton(ctx, W / 2, py + ph - 70, "Anar a l'illa", { fs: 32, w: 320, h: 76, style: "primary", click: this.st > 0.6 ? () => this.goIsland() : null });
+    text(ctx, L_("Ara ja pots explorar l'illa i triar un joc."), W / 2, py + 236, { size: 26, weight: 700, color: "#4B6366" });
+    drawButton(ctx, W / 2, py + ph - 70, L_("Anar a l'illa"), { fs: 32, w: 320, h: 76, style: "primary", click: this.st > 0.6 ? () => this.goIsland() : null });
     ctx.restore();
   }
 }

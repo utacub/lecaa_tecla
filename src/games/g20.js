@@ -232,13 +232,13 @@
               st.winK = -1; st.praised = 0;
               const reached = seq.length; st.best = Math.max(st.best, reached);
               if (reached > record) { record = reached; Store.set(rKey, record); st.newRec = 2.2; if (!api.demo) void 0; }
-              if (reached >= goalN) { st.phase = "done"; api.hud.progress = [st.best, goalN]; api.hud.label = "Rècord: " + record; api.finish(true, { collectName: "un cristall rar" }); return; }
+              if (reached >= goalN) { st.phase = "done"; api.hud.progress = [st.best, goalN]; api.hud.label = L_("Rècord: {n}", { n: record }); api.finish(true, { collectName: "un cristall rar" }); return; }
               extend(); st.phase = "intro"; st.t = 0.3;
             }
           }
           if (st.newRec > 0) st.newRec -= dt;
           api.hud.progress = [st.best, goalN];
-          api.hud.label = record ? "Rècord: " + record : null;
+          api.hud.label = record ? L_("Rècord: {n}", { n: record }) : null;
         },
         draw(ctx) {
           const t = api.t;
@@ -306,7 +306,7 @@
             const a = st.phase === "input" ? clamp(st.t * 3, 0, 1) : 1;
             ctx.save(); ctx.globalAlpha = a; text(ctx, msg, 800, st.phase === "input" && L >= 5 ? 360 : 524, { size: 44, weight: 900, font: FONT_T, color: "#F4F0FF", shadow: "rgba(120,90,255,0.8)", blur: 18, sy: 0 }); ctx.restore();
           }
-          if (st.newRec > 0) { ctx.save(); ctx.globalAlpha = clamp(st.newRec, 0, 1); drawChip(ctx, 800, 400, "Nou rècord: " + record, { align: "center", fs: 28, h: 52, fill: "rgba(242,182,48,0.95)", color: BRAND.tinta }); ctx.restore(); }
+          if (st.newRec > 0) { ctx.save(); ctx.globalAlpha = clamp(st.newRec, 0, 1); drawChip(ctx, 800, 400, L_("Nou rècord: {n}", { n: record }), { align: "center", fs: 28, h: 52, fill: "rgba(242,182,48,0.95)", color: BRAND.tinta }); ctx.restore(); }
           drawVignette(ctx, 0.5, "5,4,15");
         },
       };

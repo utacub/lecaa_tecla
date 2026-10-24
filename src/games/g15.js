@@ -41,6 +41,7 @@
   };
   const STARS_N = { 1: [5, 6], 2: [6, 7], 3: [7, 8], 4: [6, 7] };
   const PER_ROUND = 3;
+  const WORD15 = LX("g15.words", {});
   const AREA = [390, 250, 820, 430];
 
   /* ---------- geometria: Catmull-Rom suau i mostreig per longitud ---------- */
@@ -159,7 +160,7 @@
       const lit = [];
       function newConstellation() {
         ci++; const id = order[ci];
-        const names = L >= 5 ? id.split("") : null;
+        const names = L >= 5 ? Array.from(WORD15[id] || id) : null; // el nom de l'animal en l'idioma triat
         const n = names ? names.length : randi(STARS_N[L][0], STARS_N[L][1]);
         const lay = layout(id, n);
         const texts = names || (L <= 3 ? pool.many(Math.min(n, pool.items.length)) : pool.many(n));
@@ -199,7 +200,7 @@
           if (con.phase === "draw" && con.t > 2.0) { con.phase = "walk"; con.t = 0; void 0; }
           if (con.phase === "walk" && con.t > 3.6) {
             done++; lit.push(con.lay.id); api.hud.progress = [done, PER_ROUND];
-            if (done >= PER_ROUND) { if (!finished) { finished = true; Sfx.play("win"); api.finish(true, { collectName: `${PER_ROUND} constel·lacions noves` }); } con.phase = "end"; }
+            if (done >= PER_ROUND) { if (!finished) { finished = true; Sfx.play("win"); api.finish(true, { collectName: L_("{n} constel·lacions noves", { n: PER_ROUND }) }); } con.phase = "end"; }
             else newConstellation();
           }
           // estel guia
@@ -240,7 +241,7 @@
             ctx.save(); ctx.translate(lay.cx + wx, lay.cy + wy); ctx.rotate(wr); ctx.translate(-lay.cx, -lay.cy);
             drawFigure(ctx, lay, k);
             ctx.restore();
-            if (con.phase === "draw" && con.t > 1.2 || con.phase === "walk") { const a = con.phase === "draw" ? clamp((con.t - 1.2) / 0.4, 0, 1) : fade; text(ctx, lay.F.name[0].toLocaleUpperCase("ca") + lay.F.name.slice(1), lay.cx + wx, Math.min(H - 60, AREA[1] + AREA[3] + 40) + wy, { size: 40, weight: 900, font: FONT_T, color: `rgba(255,236,180,${a})` }); }
+            if (con.phase === "draw" && con.t > 1.2 || con.phase === "walk") { const a = con.phase === "draw" ? clamp((con.t - 1.2) / 0.4, 0, 1) : fade; text(ctx, capFirst(L_(lay.F.name)), lay.cx + wx, Math.min(H - 60, AREA[1] + AREA[3] + 40) + wy, { size: 40, weight: 900, font: FONT_T, color: `rgba(255,236,180,${a})` }); }
           }
           // estrelles
           st.forEach((s, i) => {

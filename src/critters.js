@@ -1125,6 +1125,6 @@ const Critters = (() => {
     list,
     byTheme: th => (themes[th] || []).slice(),
     draw,
-    name: id => (byId[id] ? byId[id].name : ""),
+    name: id => (byId[id] ? L_(byId[id].name) : ""),
   };
 })();

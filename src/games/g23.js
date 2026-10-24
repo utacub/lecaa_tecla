@@ -2,14 +2,14 @@
 /* 23. El robot ballarí — robots de llauna de joguina en una pista de rajoles lluminoses amb bola de miralls */
 (() => {
   // passos per nivell: [text que s'escriu, nom del pas, animació]
-  const SETS = {
+  const SETS = LX("g23.sets", {
     1: [["a", "Braços amunt", "armsUp"], ["e", "Estrella", "star"], ["i", "Inclina't", "bow"], ["o", "Onada", "wave"], ["u", "Uep!", "hop"]],
     2: [["s", "Salt", "jump"], ["p", "Picar de mans", "clap"], ["c", "Cop de cap", "nod"], ["r", "Robot", "robot"], ["t", "Tomb", "spin"], ["m", "Molinet", "windmill"], ["d", "Disco", "disco"]],
     3: [["b", "Braços amunt", "armsUp"], ["g", "Gir", "spin"], ["s", "Salt", "jump"], ["p", "Picar de mans", "clap"], ["c", "Cop de cap", "nod"], ["r", "Robot", "robot"]],
     4: [["sa", "Salt", "jump"], ["gi", "Gir", "spin"], ["pi", "Picar de mans", "clap"], ["ca", "Cop de cap", "nod"], ["ro", "Robot", "robot"], ["bra", "Braços amunt", "armsUp"]],
     5: [["salta", "Salt", "jump"], ["gira", "Gir", "spin"], ["pica", "Picar de mans", "clap"], ["cap", "Cop de cap", "nod"], ["robot", "Robot", "robot"], ["braços", "Braços amunt", "armsUp"]],
     6: [["salta alt", "Salt", "jump"], ["gira rodó", "Gir", "spin"], ["pica de mans", "Picar de mans", "clap"], ["cop de cap", "Cop de cap", "nod"], ["fes el robot", "Robot", "robot"], ["braços amunt", "Braços amunt", "armsUp"]],
-  };
+  });
   const LENS = { 1: [2, 3, 3, 4, 4], 2: [2, 3, 3, 4, 4], 3: [2, 3, 3, 4, 4], 4: [2, 3, 3, 4], 5: [2, 2, 3, 3], 6: [2, 2, 3] };
   const MODEL_X = 360, MODEL_Y = 578, MY_X = 1180, MY_Y = 602, TAPE_Y = 704;
   const NEON = ["#FF4FA0", "#4FD1FF", "#FFD84F", "#7CFF7A", "#B57CFF"];
@@ -374,7 +374,7 @@
           if (phase === "freeIntro" || phase === "free" || phase === "end") {
             const k = phase === "freeIntro" ? Ease.outBack(clamp(pt / 0.5, 0, 1)) : 1;
             ctx.save(); ctx.translate(800, 384); ctx.scale(k, k);
-            const label = phase === "end" ? "Coreografia guardada!" : `Ball lliure  ${Math.min(free.n, 6)} / 6`;
+            const label = phase === "end" ? "Coreografia guardada!" : L_("Ball lliure  {n} / 6", { n: Math.min(free.n, 6) });
             ctx.font = `900 34px ${FONT_T}`; const w = ctx.measureText(label).width + 70;
             drawPanel(ctx, -w / 2, -34, w, 68, { r: 34, blur: 16, border: "#FF4FA0" }); text(ctx, label, 0, 2, { size: 34, weight: 900, font: FONT_T, color: "#3A2A5A" });
             ctx.restore();

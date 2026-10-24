@@ -157,7 +157,7 @@
       // convidats: dos a cada costat, darrere la taula
       const ids = shuffle(GUESTS).slice(0, 4), hats = shuffle(COLS);
       const guests = ids.map((id, i) => ({ id, x: [118, 262, 1338, 1482][i], y: TABLE_Y - 30 - (i % 2 ? 0 : 16), size: i % 2 ? 190 : 210, flip: i >= 2, ph: i * 1.3, clap: 0, sad: 0, hat: hats[i], hand: "#FFE3C8" }));
-      api.hud.timer = TIME; api.hud.lives = [MAXESC, MAXESC]; api.hud.label = "Rebentats: 0";
+      api.hud.timer = TIME; api.hud.lives = [MAXESC, MAXESC]; api.hud.label = L_("Rebentats: {n}", { n: 0 });
       const plateSize = L <= 4 ? 64 : 46;
       /* forma del ram segons el nivell */
       function make(text, x, y) {
@@ -198,7 +198,7 @@
       function clap() { guests.forEach(g => g.clap = 1.3); for (let i = 0; i < 4; i++) noise({ f: 1600, q: 0.7, d: 0.05, v: 0.12, delay: 0.15 + i * 0.13 }); }
       function finishBunch(b) {
         b.balloons.forEach(q => popBalloon(b, q));
-        b.done = true; st.popped++; api.hud.label = "Rebentats: " + st.popped;
+        b.done = true; st.popped++; api.hud.label = L_("Rebentats: {n}", { n: st.popped });
         if (L !== 4) { const [px, py] = plateCenter(b, 0); falling.push({ text: b.text, x: px, y: py, vy: -120, t: 0 }); }
       }
       spawn(true); st.spawnT = 1.4;

@@ -4,11 +4,11 @@
    panell del docent.
    ============================================================ */
 const ZONES = {
-  poble:    { name: "El Poble", color: "#E8D6B0", label: [1230, 640] },
-  camp:     { name: "El Camp", color: "#CFE08A", label: [560, 520] },
-  costa:    { name: "La Costa", color: "#F1DDA6", label: [1330, 1360] },
-  muntanya: { name: "La Muntanya", color: "#B9C4B4", label: [1640, 380] },
-  espai:    { name: "L'Espai", color: "#2B2F5E", label: [900, 170] },
+  poble:    { name: L_("El Poble"), color: "#E8D6B0", label: [1230, 640] },
+  camp:     { name: L_("El Camp"), color: "#CFE08A", label: [560, 520] },
+  costa:    { name: L_("La Costa"), color: "#F1DDA6", label: [1330, 1360] },
+  muntanya: { name: L_("La Muntanya"), color: "#B9C4B4", label: [1640, 380] },
+  espai:    { name: L_("L'Espai"), color: "#2B2F5E", label: [900, 170] },
 };
 const PLACES = {
   1: [1150, 770], 25: [1360, 730], 17: [990, 860], 22: [1480, 880], 18: [1270, 930], 4: [1100, 1020],
@@ -238,27 +238,27 @@ class TitleScene {
     ctx.strokeStyle = "#C9B28A"; ctx.lineWidth = 5; for (const s of [-1, 1]) { ctx.beginPath(); ctx.moveTo(bx + s * 360, 84); ctx.lineTo(bx + s * 340, by - 110); ctx.stroke(); }
     drawPanel(ctx, bx - 430, by - 120, 860, 240, { r: 36, border: BRAND.petroli, blur: 40 });
     drawLogo(ctx, bx, by - 22, 124, { t, sway: !Settings.reduceMotion });
-    text(ctx, "Juga i descobreix on viu cada lletra", bx, by + 74, { size: 28, weight: 700, color: BRAND.petroli });
+    text(ctx, L_("Juga i descobreix on viu cada lletra"), bx, by + 74, { size: 28, weight: 700, color: BRAND.petroli });
     ctx.restore();
     // crida a començar
     const pa = 0.65 + 0.35 * Math.sin(t * 3);
     ctx.save(); ctx.globalAlpha = clamp(t - 0.6, 0, 1);
     // dues entrades: l'activitat Blanc sobre negre i l'illa dels jocs
-    drawButton(ctx, W / 2 - 210, 686, "Blanc sobre negre", { fs: 34, h: 92, w: 390, style: "dark", click: () => this.start("bsn") });
-    drawButton(ctx, W / 2 + 210, 686, "Anar a l'illa", { fs: 34, h: 92, w: 390, style: "primary", click: () => this.start("illa") });
+    drawButton(ctx, W / 2 - 210, 686, L_("Blanc sobre negre"), { fs: 34, h: 92, w: 390, style: "dark", click: () => this.start("bsn") });
+    drawButton(ctx, W / 2 + 210, 686, L_("Anar a l'illa"), { fs: 34, h: 92, w: 390, style: "primary", click: () => this.start("illa") });
     ctx.restore();
     // casella de pantalla completa (s'activa en clicar Començar, que és un gest de l'usuari)
-    { const on = !!Settings.fullscreen, lw = measure(ctx, "Pantalla completa", 24, 800, FONT_T), bw = 44 + 14 + lw + 36, bx = W / 2 - bw / 2, by = 760;
+    { const on = !!Settings.fullscreen, lw = measure(ctx, L_("Pantalla completa"), 24, 800, FONT_T), bw = 44 + 14 + lw + 36, bx = W / 2 - bw / 2, by = 760;
       const ov = Mouse.add(bx, by, bw, 52, { click: () => { Settings.fullscreen = !Settings.fullscreen; saveSettings(); Sfx.play("tick"); } });
       ctx.save(); rr(ctx, bx, by, bw, 52, 26); ctx.fillStyle = ov ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.8)"; ctx.fill();
       rr(ctx, bx + 16, by + 12, 28, 28, 7); ctx.fillStyle = on ? BRAND.petroli : "#fff"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = BRAND.petroli; ctx.stroke();
       if (on) { ctx.strokeStyle = "#fff"; ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.beginPath(); ctx.moveTo(bx + 23, by + 26); ctx.lineTo(bx + 28, by + 32); ctx.lineTo(bx + 38, by + 19); ctx.stroke(); }
-      text(ctx, "Pantalla completa", bx + 58, by + 27, { size: 24, weight: 800, font: FONT_T, color: BRAND.tinta, align: "left" }); ctx.restore(); }
+      text(ctx, L_("Pantalla completa"), bx + 58, by + 27, { size: 24, weight: 800, font: FONT_T, color: BRAND.tinta, align: "left" }); ctx.restore(); }
     // rodeta d'opcions (l'accés docent és a dins)
     drawGearButton(ctx, W - 50, 44, this, 0.78);
-    if (this.escHeld > 0.2) { ctx.save(); ctx.fillStyle = "rgba(255,255,255,0.9)"; rr(ctx, W - 300, H - 70, 270, 40, 20); ctx.fill(); ctx.fillStyle = BRAND.petroli; rr(ctx, W - 296, H - 66, 262 * clamp(this.escHeld / 3, 0, 1), 32, 16); ctx.fill(); text(ctx, "Accés docent…", W - 165, H - 50, { size: 20, weight: 800, font: FONT_T, color: BRAND.tinta }); ctx.restore(); }
+    if (this.escHeld > 0.2) { ctx.save(); ctx.fillStyle = "rgba(255,255,255,0.9)"; rr(ctx, W - 300, H - 70, 270, 40, 20); ctx.fill(); ctx.fillStyle = BRAND.petroli; rr(ctx, W - 296, H - 66, 262 * clamp(this.escHeld / 3, 0, 1), 32, 16); ctx.fill(); text(ctx, L_("Accés docent…"), W - 165, H - 50, { size: 20, weight: 800, font: FONT_T, color: BRAND.tinta }); ctx.restore(); }
     // crèdits (a l'esquerra) i logos de les entitats (a baix a la dreta, sobre pastilla blanca)
-    drawButton(ctx, 24, 37, "Crèdits", { fs: 20, h: 44, align: "left", click: () => { this.credits = true; Sfx.play("whoosh"); } });
+    drawButton(ctx, 24, 37, L_("Crèdits"), { fs: 20, h: 44, align: "left", click: () => { this.credits = true; Sfx.play("whoosh"); } });
     { const lh = 54, uw = drawUTACMeasure(lh); ctx.save(); drawPanel(ctx, W - uw - 76, H - 96, uw + 56, 74, { r: 37, border: false, blur: 14 }); drawUTAC(ctx, W - uw - 48, H - 59, lh); ctx.restore(); } // només la UTAC; la resta, a Crèdits
     drawGrainOverlay(ctx, 0.07);
     drawVignette(ctx, 0.25);
@@ -289,7 +289,7 @@ class ProfileScene {
     ctx.fillStyle = ctx.createPattern(Tex.paper(512, 512, "#EFE8D8", { seed: 71, fiber: 1.2 }), "repeat"); ctx.fillRect(0, 0, W, H);
     ctx.save(); ctx.globalAlpha = 0.12; ctx.strokeStyle = BRAND.petroli; ctx.lineWidth = 2; for (let xx = 0; xx < W; xx += 46) { ctx.beginPath(); ctx.moveTo(xx, 0); ctx.lineTo(xx, H); ctx.stroke(); } ctx.restore();
     ctx.fillStyle = BRAND.petroli; ctx.fillRect(0, 700, W, 124); ctx.fillStyle = "rgba(255,255,255,0.12)"; ctx.fillRect(0, 700, W, 6);
-    text(ctx, "Qui juga?", W / 2, 66, { size: 56, weight: 900, font: FONT_T, color: BRAND.tinta });
+    text(ctx, L_("Qui juga?"), W / 2, 66, { size: 56, weight: 900, font: FONT_T, color: BRAND.tinta });
     const S = this.slots(), cols = 6, cw = 200, chh = 190, x0 = W / 2 - cols * cw / 2, y0 = 136;
     const rows = Math.max(2, Math.ceil(S.length / cols)), visRows = 3, srow = Math.floor(this.sel / cols);
     this.scroll = clamp(this.scroll || 0, Math.max(0, srow - visRows + 1), srow); const scroll = this.scroll;
@@ -323,12 +323,12 @@ class ProfileScene {
         ctx.save(); ctx.setLineDash([10, 8]); ctx.lineWidth = 4; ctx.strokeStyle = sel ? "#FFE9C8" : "rgba(255,233,200,0.45)"; ctx.beginPath(); ctx.arc(cx, cy + 4, 58, 0, 6.28); ctx.stroke(); ctx.restore();
         text(ctx, "+", cx, cy, { size: 70, weight: 900, font: FONT_T, color: sel ? "#FFE9C8" : "rgba(255,233,200,0.55)" });
         ctx.save(); rr(ctx, cx - 55, cy + 80, 110, 40, 10); ctx.fillStyle = sel ? BRAND.petroli : "#FFFDF6"; ctx.fill(); ctx.restore();
-        text(ctx, "Nou", cx, cy + 101, { size: 24, weight: 800, font: FONT_T, color: sel ? "#fff" : BRAND.tinta });
+        text(ctx, L_("Nou"), cx, cy + 101, { size: 24, weight: 800, font: FONT_T, color: sel ? "#fff" : BRAND.tinta });
       }
     });
     // barra inferior (sense instruccions escrites)
     ctx.save(); ctx.fillStyle = "rgba(32,62,66,0.92)"; ctx.fillRect(0, H - 76, W, 76);
-    drawButton(ctx, 40, H - 38, "Portada", { align: "left", fs: 22, h: 46, style: "ghost", click: this.mode === "pick" ? () => this.onKey("Escape") : null });
+    drawButton(ctx, 40, H - 38, L_("Portada"), { align: "left", fs: 22, h: 46, style: "ghost", click: this.mode === "pick" ? () => this.onKey("Escape") : null });
     drawLogo(ctx, W - 210, H - 38, 40, { variant: "dark" });
     ctx.restore();
     if (this.mode === "new") this.drawNew(ctx);
@@ -340,7 +340,7 @@ class ProfileScene {
     const pw = 980, ph = 640, px = W / 2 - pw / 2, py = 120;
     Mouse.add(0, 0, W, H, {}); // bloqueja els clics de sota
     drawPanel(ctx, px, py, pw, ph, { r: 36 });
-    text(ctx, "Nou jugador", W / 2, py + 60, { size: 46, weight: 900, font: FONT_T, color: BRAND.tinta });
+    text(ctx, L_("Nou jugador"), W / 2, py + 60, { size: 46, weight: 900, font: FONT_T, color: BRAND.tinta });
     const an = ANIMALS[n.animal];
     drawAvatar(ctx, px + 230, py + 300, 260, an.id, PLUSH[n.color], { tilt: Math.sin(t * 2) * 0.05 });
     text(ctx, an.name, px + 230, py + 470, { size: 30, weight: 800, font: FONT_T, color: BRAND.petroli });
@@ -351,12 +351,12 @@ class ProfileScene {
       text(ctx, sd < 0 ? "‹" : "›", ax, ay - 3, { size: 48, weight: 900, font: FONT_T, color: ov ? "#fff" : BRAND.tinta });
     }
     PLUSH.forEach((c, i) => { Mouse.add(px + 494 + (i % 4) * 56 - 26, py + 200 + Math.floor(i / 4) * 56 - 26, 52, 52, { click: () => { n.color = i; Sfx.play("tick"); } }); ctx.beginPath(); ctx.arc(px + 494 + (i % 4) * 56, py + 200 + Math.floor(i / 4) * 56, 22, 0, 6.28); ctx.fillStyle = c; ctx.fill(); if (i === n.color) { ctx.lineWidth = 5; ctx.strokeStyle = BRAND.tinta; ctx.stroke(); } });
-    text(ctx, "Nom", px + 470, py + 330, { size: 28, weight: 800, font: FONT_T, color: BRAND.tinta, align: "left" });
+    text(ctx, L_("Nom"), px + 470, py + 330, { size: 28, weight: 800, font: FONT_T, color: BRAND.tinta, align: "left" });
     rr(ctx, px + 470, py + 360, 440, 96, 18); ctx.fillStyle = BRAND.crema; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = BRAND.petroli; ctx.stroke();
     const nm = n.name || ""; text(ctx, nm, px + 494, py + 410, { size: 56, weight: 700, align: "left", color: BRAND.ink });
     const cw = measure(ctx, nm, 56); if (Math.sin(t * 6) > 0) { ctx.fillStyle = BRAND.petroli; ctx.fillRect(px + 498 + cw, py + 380, 4, 58); }
-    drawButton(ctx, px + 470, py + 530, "Fet", { align: "left", fs: 28, w: 200, style: "primary", click: () => this.onKey("Enter") });
-    if (Profiles.list.length) drawButton(ctx, px + 690, py + 530, "Enrere", { align: "left", fs: 28, w: 200, style: "light", click: () => this.onKey("Escape") });
+    drawButton(ctx, px + 470, py + 530, L_("Fet"), { align: "left", fs: 28, w: 200, style: "primary", click: () => this.onKey("Enter") });
+    if (Profiles.list.length) drawButton(ctx, px + 690, py + 530, L_("Enrere"), { align: "left", fs: 28, w: 200, style: "light", click: () => this.onKey("Escape") });
     ctx.restore();
   }
   onWheel(d) { if (this.mode === "pick" && !this.jump) this.onKey(d > 0 ? "ArrowDown" : "ArrowUp"); }
@@ -368,7 +368,7 @@ class ProfileScene {
       else if (k === "ArrowUp") n.color = (n.color + 7) % 8; else if (k === "ArrowDown") n.color = (n.color + 1) % 8;
       else if (k === "Backspace") n.name = n.name.slice(0, -1);
       else if (k === "Escape" && Profiles.list.length) this.mode = "pick";
-      else if (k === "Enter" && n.name.trim()) { const nm = n.name.trim(); const p = Profiles.add(nm.charAt(0).toLocaleUpperCase("ca") + nm.slice(1), n.animal, n.color); this.mode = "pick"; this.sel = Profiles.list.indexOf(p); Sfx.play("win"); this.jump = { p, t: 0 }; Voice.say("Hola, " + p.name + "!"); }
+      else if (k === "Enter" && n.name.trim()) { const nm = n.name.trim(); const p = Profiles.add(capFirst(nm), n.animal, n.color); this.mode = "pick"; this.sel = Profiles.list.indexOf(p); Sfx.play("win"); this.jump = { p, t: 0 }; Voice.say(L_("Hola, {nom}!", { nom: p.name })); }
       else if (k.length === 1 && n.name.length < 14 && /[\p{L} ·'-]/u.test(k)) { n.name += k; Sfx.play("key"); }
       return;
     }
@@ -377,7 +377,7 @@ class ProfileScene {
     else if (k === "ArrowRight") this.sel = (this.sel + 1) % S.length;
     else if (k === "ArrowUp") this.sel = Math.max(0, this.sel - cols);
     else if (k === "ArrowDown") this.sel = Math.min(S.length - 1, this.sel + cols);
-    else if (k === "Enter") { const p = S[this.sel]; if (p) { Sfx.play("boing"); this.jump = { p, t: 0 }; } else { this.mode = "new"; this.newP = { name: "", animal: randi(0, 7), color: randi(0, 7) }; Voice.say("Com et dius?"); } return; }
+    else if (k === "Enter") { const p = S[this.sel]; if (p) { Sfx.play("boing"); this.jump = { p, t: 0 }; } else { this.mode = "new"; this.newP = { name: "", animal: randi(0, 7), color: randi(0, 7) }; Voice.say(L_("Com et dius?")); } return; }
     else if (k === "Escape") { App.go(new TitleScene()); return; }
     else if (k.length === 1) { const i = S.findIndex((p, j) => p && p.name.toLocaleLowerCase("ca").startsWith(k)); if (i >= 0) this.sel = i; else return; }
     else return;
@@ -481,7 +481,7 @@ class IslandScene {
     if (tint) { ctx.fillStyle = tint[0] + tint[1] + ")"; ctx.fillRect(0, 0, W, H); }
     drawVignette(ctx, 0.3, "10,40,50");
     // nom del joc en passar-hi el ratolí
-    if (this.hoverVoy && !this.hoverId) { const [hx, hy] = this.worldToScreen(VOYAGE_POS[0], VOYAGE_POS[1] - 150); drawChip(ctx, hx, hy - 40, "El viatge a l'illa", { align: "center", fs: 24, h: 46, fill: "rgba(23,103,107,0.95)" }); }
+    if (this.hoverVoy && !this.hoverId) { const [hx, hy] = this.worldToScreen(VOYAGE_POS[0], VOYAGE_POS[1] - 150); drawChip(ctx, hx, hy - 40, L_("El viatge a l'illa"), { align: "center", fs: 24, h: 46, fill: "rgba(23,103,107,0.95)" }); }
     if (this.hoverId && !this.walk) { const g = Games.byId[this.hoverId], [hx, hy] = this.worldToScreen(PLACES[this.hoverId][0], PLACES[this.hoverId][1] - 66); drawChip(ctx, hx, hy - 58, g.name, { align: "center", fs: 24, h: 46, fill: "rgba(23,103,107,0.95)" }); }
     this.drawHUD(ctx);
     if (this.cardOpen && this.cardT > 0 && !this.walk) { if (this.cardVoy) this.drawVoyageCard(ctx); else this.drawCard(ctx); }
@@ -547,7 +547,7 @@ class IslandScene {
     text(ctx, g.name, cx + 30, cy + 334, { size: 38, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
     if (!open) {
       const need = 3 * (Games.sorted().map(q => q.id).filter(id => !START_OPEN.includes(id)).indexOf(this.at) + 1) - Profiles.totalStars(this.p);
-      text(ctx, `Tancat. Aconsegueix ${Math.max(1, need)} estrelles més per obrir-lo.`, cx + 30, cy + 400, { size: 22, weight: 700, color: "#4B6366", align: "left" });
+      text(ctx, L_("Tancat. Aconsegueix {n} estrelles més per obrir-lo.", { n: Math.max(1, need) }), cx + 30, cy + 400, { size: 22, weight: 700, color: "#4B6366", align: "left" });
       ctx.restore(); return;
     }
     const lvl = this.level();
@@ -560,11 +560,11 @@ class IslandScene {
       drawKeycap(ctx, lx, ly, 60, 60, String(i), { theme: on ? "petroli" : lh ? "menta" : "white", pressed: on, size: 32 });
       const s = per[i] || 0; for (let j = 0; j < 3; j++) drawStar(ctx, lx + 12 + j * 18, ly + 82, 8, j < s, { blur: 1 });
     }
-    text(ctx, "Nivell " + lvl + ": " + LEVEL_NAMES[lvl], cx + 30, cy + 474, { size: 18, weight: 800, font: FONT_T, color: BRAND.petroli, align: "left" });
+    text(ctx, L_("Nivell {n}: {nom}", { n: lvl, nom: LEVEL_NAMES[lvl] }), cx + 30, cy + 474, { size: 18, weight: 800, font: FONT_T, color: BRAND.petroli, align: "left" });
     // botó Jugar
     const bw = 260, bh = 70, bx = cx + cw / 2 - bw / 2, by = cy + ch - 40 - bh / 2, bov = k > 0.99 && Mouse.add(bx, by, bw, bh, { click: () => this.play() });
     rr(ctx, bx, by, bw, bh, bh / 2); ctx.fillStyle = bov ? BRAND.petroli : BRAND.menta; ctx.fill();
-    text(ctx, "Jugar", cx + cw / 2, cy + ch - 39, { size: 32, weight: 900, font: FONT_T, color: bov ? "#fff" : BRAND.tinta });
+    text(ctx, L_("Jugar"), cx + cw / 2, cy + ch - 39, { size: 32, weight: 900, font: FONT_T, color: bov ? "#fff" : BRAND.tinta });
     ctx.restore();
   }
   /* racó de l'aigua amb la barca del viatge de calibratge */
@@ -593,11 +593,11 @@ class IslandScene {
     ctx.save(); rr(ctx, cx + 20, cy + 20, cw - 40, 210, 20); ctx.clip(); const sp = this.voyThumb || (this.voyThumb = new VoyageScene(null)); sp.t = this.t; sp.prog = 0.55;
     ctx.translate(cx + 20, cy + 20); ctx.scale((cw - 40) / W, 210 / (H * 0.62)); ctx.translate(0, -H * 0.3); try { sp.drawThumb(ctx); } catch (e) { } ctx.restore();
     ctx.strokeStyle = BRAND.petroli; ctx.lineWidth = 3; rr(ctx, cx + 20, cy + 20, cw - 40, 210, 20); ctx.stroke();
-    text(ctx, "Calibratge", cx + 30, cy + 258, { size: 20, weight: 800, font: FONT_T, color: BRAND.petroli, align: "left" });
-    text(ctx, "El viatge a l'illa", cx + 30, cy + 296, { size: 38, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
+    text(ctx, L_("Calibratge"), cx + 30, cy + 258, { size: 20, weight: 800, font: FONT_T, color: BRAND.petroli, align: "left" });
+    text(ctx, L_("El viatge a l'illa"), cx + 30, cy + 296, { size: 38, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
     const c = this.p && this.p.calib;
-    wrapText(ctx, c ? `Darrer viatge: ${c.found} de ${c.n} lletres trobades. Tornar-lo a fer actualitza el nivell i el ritme dels jocs.` : "Troba les lletres al teclat mentre la barca navega cap a l'illa. Serveix per ajustar el nivell i el ritme dels jocs.", cx + 30, cy + 342, cw - 60, 29, { size: 22, weight: 700, color: "#3D5558" });
-    drawButton(ctx, cx + cw / 2, cy + ch - 56, "Fer el viatge", { fs: 30, w: 300, h: 70, style: "primary", click: k > 0.99 ? () => { Sfx.play("go"); App.go(new VoyageScene(this.p)); } : null });
+    wrapText(ctx, c ? L_("Darrer viatge: {a} de {b} lletres trobades. Tornar-lo a fer actualitza el nivell i el ritme dels jocs.", { a: c.found, b: c.n }) : L_("Troba les lletres al teclat mentre la barca navega cap a l'illa. Serveix per ajustar el nivell i el ritme dels jocs."), cx + 30, cy + 342, cw - 60, 29, { size: 22, weight: 700, color: "#3D5558" });
+    drawButton(ctx, cx + cw / 2, cy + ch - 56, L_("Fer el viatge"), { fs: 30, w: 300, h: 70, style: "primary", click: k > 0.99 ? () => { Sfx.play("go"); App.go(new VoyageScene(this.p)); } : null });
     ctx.restore();
   }
   closeBtn(ctx, bx, by, k) {
@@ -626,8 +626,8 @@ class IslandScene {
 function wrapText(ctx, s, x, y, maxW, lh, o = {}) {
   ctx.save(); ctx.font = `${o.weight || 700} ${o.size || 24}px ${o.font || FONT_L}`; ctx.fillStyle = o.color || BRAND.tinta; ctx.textAlign = o.align || "left"; ctx.textBaseline = "middle";
   const words = s.split(" "); let line = "", yy = y;
-  for (const w of words) { const test = line ? line + " " + w : w; if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, x, yy); line = w; yy += lh; } else line = test; }
-  if (line) ctx.fillText(line, x, yy); ctx.restore(); return yy;
+  for (const w of words) { const test = line ? line + " " + w : w; if (ctx.measureText(test).width > maxW && line) { if (!o.measure) ctx.fillText(line, x, yy); line = w; yy += lh; } else line = test; }
+  if (line && !o.measure) ctx.fillText(line, x, yy); ctx.restore(); return yy;
 }
 
 /* ---------- Museu ---------- */
@@ -639,7 +639,7 @@ class MuseumScene {
     ctx.fillStyle = ctx.createPattern(Tex.paper(512, 512, "#EFE6D2", { seed: 101 }), "repeat"); ctx.fillRect(0, 0, W, H);
     // parquet
     ctx.save(); ctx.fillStyle = ctx.createPattern(Tex.wood(512, 128, "#B68352", { seed: 103 }), "repeat"); ctx.fillRect(0, 760, W, 140); ctx.fillStyle = "rgba(0,0,0,0.2)"; ctx.fillRect(0, 760, W, 6); ctx.restore();
-    text(ctx, "El museu", W / 2, 70, { size: 54, weight: 900, font: FONT_T, color: BRAND.tinta });
+    text(ctx, L_("El museu"), W / 2, 70, { size: 54, weight: 900, font: FONT_T, color: BRAND.tinta });
     const G = Games.sorted(), cols = 9, cw = 162, chh = 210, x0 = W / 2 - cols * cw / 2, y0 = 130;
     G.forEach((g, i) => {
       const c = i % cols, r = Math.floor(i / cols), x = x0 + c * cw + 8, y = y0 + r * chh;
@@ -654,8 +654,8 @@ class MuseumScene {
     });
     const g = G[this.sel], n = (this.p && this.p.collect && this.p.collect[g.id]) || 0;
     ctx.save(); ctx.fillStyle = "rgba(32,62,66,0.92)"; ctx.fillRect(0, H - 76, W, 76);
-    text(ctx, `${g.name}: ${n ? n + " " + (n === 1 ? g.collect.one : g.collect.many) : "encara no n'hi ha cap"}`, 40, H - 38, { size: 26, weight: 800, font: FONT_T, color: "#fff", align: "left" });
-    drawButton(ctx, W - 40, H - 38, "Tornar a l'illa", { align: "right", fs: 22, h: 46, style: "ghost", click: this.big ? null : () => this.onKey("Escape") });
+    text(ctx, `${g.name}: ${n ? n + " " + (n === 1 ? g.collect.one : g.collect.many) : L_("encara no n'hi ha cap")}`, 40, H - 38, { size: 26, weight: 800, font: FONT_T, color: "#fff", align: "left" });
+    drawButton(ctx, W - 40, H - 38, L_("Tornar a l'illa"), { align: "right", fs: 22, h: 46, style: "ghost", click: this.big ? null : () => this.onKey("Escape") });
     ctx.restore();
     if (this.big) {
       Mouse.add(0, 0, W, H, { click: () => { this.big = false; } });
@@ -696,26 +696,26 @@ class CodeScene {
     drawPanel(ctx, W / 2 - 400, 170, 800, 480, { r: 30 });
     drawLogo(ctx, W / 2, 240, 56);
     const M = this.mode, maths = M === "forgot";
-    const title = M === "enter" ? "Accés docent" : maths ? "No recordo el codi" : this.first == null ? (this.o.change ? "Codi nou" : "Crea el codi docent") : "Repeteix el codi";
+    const title = M === "enter" ? L_("Accés docent") : maths ? L_("No recordo el codi") : this.first == null ? (this.o.change ? L_("Codi nou") : L_("Crea el codi docent")) : L_("Repeteix el codi");
     text(ctx, title, W / 2, 322, { size: 40, weight: 900, font: FONT_T, color: BRAND.tinta });
     if (maths) {
       text(ctx, `${this.a} × ${this.b} =`, W / 2 - 20, 410, { size: 52, weight: 900, font: FONT_T, color: BRAND.tinta, align: "right" });
       rr(ctx, W / 2, 372, 200, 76, 16); ctx.fillStyle = BRAND.crema; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = BRAND.petroli; ctx.stroke();
       text(ctx, this.code + (Math.floor(this.t * 2) % 2 ? "|" : " "), W / 2 + 20, 412, { size: 46, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
-      drawButton(ctx, W / 2, 500, "Comprova", { fs: 24, h: 52, w: 220, style: "primary", click: () => this.onKey("Enter") });
+      drawButton(ctx, W / 2, 500, L_("Comprova"), { fs: 24, h: 52, w: 220, style: "primary", click: () => this.onKey("Enter") });
     } else {
       for (let i = 0; i < 4; i++) { const x = W / 2 - 150 + i * 80 + (this.err ? Math.sin(this.t * 60) * 6 : 0); drawKeycap(ctx, x, 370, 64, 64, this.code[i] ? "•" : "", { theme: this.code[i] ? "petroli" : "white" }); }
     }
-    const sub = this.msg || (M === "enter" ? "Escriu el codi de 4 xifres" : maths ? "Resol la multiplicació per poder crear un codi nou" : this.first == null ? "Tria un codi de 4 xifres. El demanarà cada vegada." : "Escriu-lo una altra vegada per confirmar-lo");
+    const sub = this.msg || (M === "enter" ? L_("Escriu el codi de 4 xifres") : maths ? L_("Resol la multiplicació per poder crear un codi nou") : this.first == null ? L_("Tria un codi de 4 xifres. El demanarà cada vegada.") : L_("Escriu-lo una altra vegada per confirmar-lo"));
     text(ctx, sub, W / 2, maths ? 580 : 490, { size: 22, weight: 700, color: this.msg ? UI.coralDark : "#4B6366" });
-    if (M === "enter") drawButton(ctx, W / 2, 580, "No recordo el codi", { fs: 20, h: 44, style: "light", click: () => { this.mode = "forgot"; this.msg = ""; this.newSum(); Sfx.play("tick"); } });
+    if (M === "enter") drawButton(ctx, W / 2, 580, L_("No recordo el codi"), { fs: 20, h: 44, style: "light", click: () => { this.mode = "forgot"; this.msg = ""; this.newSum(); Sfx.play("tick"); } });
     // teclat numèric per al ratolí
     "1234567890".split("").forEach((d, i) => {
       const x = W / 2 - 5 * 66 + i * 66 + 3, y = 690, ov = Mouse.add(x, y, 60, 60, { click: () => this.onKey(d) });
       drawKeycap(ctx, x, y, 60, 60, d, { theme: ov ? "menta" : "white", size: 30 });
     });
     const ov = Mouse.add(W / 2 + 5 * 66 + 16, 690, 60, 60, { click: () => this.onKey("Backspace") }); drawKeycap(ctx, W / 2 + 5 * 66 + 16, 690, 60, 60, "⌫", { theme: ov ? "menta" : "white", size: 28 });
-    drawButton(ctx, W - 40, 50, maths || (this.o.change) ? "Tornar" : "Sortir", { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
+    drawButton(ctx, W - 40, 50, maths || (this.o.change) ? L_("Tornar") : L_("Sortir"), { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
   }
   fail(msg) { this.err = 0.5; this.code = ""; this.msg = msg || ""; Sfx.play("miss"); }
   done() { App.go(this.o.after ? this.o.after() : new TeacherScene(this.back)); }
@@ -729,7 +729,7 @@ class CodeScene {
       if (/^[0-9]$/.test(k) && this.code.length < 4) { this.code += k; Sfx.play("key"); this.msg = ""; }
       if (k === "Enter" && this.code) {
         if (Number(this.code) === this.a * this.b) { Sfx.play("ding"); this.mode = "set"; this.first = null; this.code = ""; this.msg = ""; }
-        else { this.newSum(); this.fail("No és correcte. Prova amb aquesta altra."); }
+        else { this.newSum(); this.fail(L_("No és correcte. Prova amb aquesta altra.")); }
       }
       return;
     }
@@ -737,12 +737,12 @@ class CodeScene {
     this.code += k; this.msg = ""; Sfx.play("key");
     if (this.code.length < 4) return;
     if (this.mode === "enter") {
-      if (bsnHash(this.code) === Settings.codeH) this.done(); else this.fail("No és correcte");
+      if (bsnHash(this.code) === Settings.codeH) this.done(); else this.fail(L_("No és correcte"));
       return;
     }
     // mode "set": dues vegades el mateix codi
     if (this.first == null) { this.first = this.code; this.code = ""; return; }
-    if (this.code !== this.first) { this.first = null; this.fail("No coincideixen. Torna a triar el codi."); return; }
+    if (this.code !== this.first) { this.first = null; this.fail(L_("No coincideixen. Torna a triar el codi.")); return; }
     Settings.codeH = bsnHash(this.code); delete Settings.code; saveSettings(); Sfx.play("ding"); this.done();
   }
 }
@@ -751,15 +751,15 @@ class TeacherScene {
   update(dt) { this.t += dt; }
   items() {
     if (this.tab === 0) return [
-      ["Lletres en majúscula", () => Settings.upper, () => Settings.upper = !Settings.upper],
-      ["Veu", () => Settings.voice, () => Settings.voice = !Settings.voice],
-      ["Música", () => Settings.music, () => { Settings.music = !Settings.music; }],
-      ["Efectes de so", () => Settings.sfx, () => Settings.sfx = !Settings.sfx],
-      ["Ajudes al teclat en pantalla", () => Settings.hints, () => Settings.hints = !Settings.hints],
-  ["Ajuda i pausa en errors", () => Settings.errorSupport, () => Settings.errorSupport = !Settings.errorSupport],
-      ["Moviment reduït", () => Settings.reduceMotion, () => Settings.reduceMotion = !Settings.reduceMotion],
-      ["Tots els jocs oberts", () => Settings.allOpen !== false, () => Settings.allOpen = Settings.allOpen === false],
-      ["Lletres del viatge de calibratge", () => Settings.calibN || 20, () => { }],
+      [L_("Lletres en majúscula"), () => Settings.upper, () => Settings.upper = !Settings.upper],
+      [L_("Veu"), () => Settings.voice, () => Settings.voice = !Settings.voice],
+      [L_("Música"), () => Settings.music, () => { Settings.music = !Settings.music; }],
+      [L_("Efectes de so"), () => Settings.sfx, () => Settings.sfx = !Settings.sfx],
+      [L_("Ajudes al teclat en pantalla"), () => Settings.hints, () => Settings.hints = !Settings.hints],
+  [L_("Ajuda i pausa en errors"), () => Settings.errorSupport, () => Settings.errorSupport = !Settings.errorSupport],
+      [L_("Moviment reduït"), () => Settings.reduceMotion, () => Settings.reduceMotion = !Settings.reduceMotion],
+      [L_("Tots els jocs oberts"), () => Settings.allOpen !== false, () => Settings.allOpen = Settings.allOpen === false],
+      [L_("Lletres del viatge de calibratge"), () => Settings.calibN || 20, () => { }],
     ];
     return Profiles.list.map(p => [p.name, null, null, p]);
   }
@@ -767,9 +767,9 @@ class TeacherScene {
     ctx.fillStyle = "#F4F8F6"; ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, 100); ctx.fillStyle = "#DDE7E4"; ctx.fillRect(0, 100, W, 2);
     drawLogo(ctx, 190, 50, 46);
-    text(ctx, "Alumnes i resultats", 460, 51, { size: 32, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
-    drawButton(ctx, W - 40, 51, "Sortir", { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
-    drawButton(ctx, W - 160, 51, "Canviar el codi", { align: "right", fs: 22, h: 46, click: () => { const back = this.back; App.go(new CodeScene(back, { change: true, after: () => new TeacherScene(back) })); } });
+    text(ctx, L_("Alumnes i resultats"), 460, 51, { size: 32, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
+    drawButton(ctx, W - 40, 51, L_("Sortir"), { align: "right", fs: 22, h: 46, click: () => this.onKey("Escape") });
+    drawButton(ctx, W - 160, 51, L_("Canviar el codi"), { align: "right", fs: 22, h: 46, click: () => { const back = this.back; App.go(new CodeScene(back, { change: true, after: () => new TeacherScene(back) })); } });
     const it = this.items();
     if (this.tab === 0) {
       it.forEach(([l, get], i) => {
@@ -785,7 +785,7 @@ class TeacherScene {
         } else { rr(ctx, 790, y + 14, 66, 34, 17); ctx.fillStyle = on ? BRAND.petroli : "#C4D2CF"; ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(on ? 839 : 807, y + 31, 13, 0, 6.28); ctx.fill(); }
       });
     } else {
-      if (!it.length) { text(ctx, "Encara no hi ha cap alumne.", W / 2, 300, { size: 30, weight: 700, color: "#4B6366" }); return; }
+      if (!it.length) { text(ctx, L_("Encara no hi ha cap alumne."), W / 2, 300, { size: 30, weight: 700, color: "#4B6366" }); return; }
       this.sel = clamp(this.sel, 0, it.length - 1);
       it.forEach(([l, , , p], i) => {
         const y = 140 + i * 56; if (y > H - 120) return;
@@ -807,11 +807,11 @@ class TeacherScene {
       });
       // confusions més freqüents
       const conf = Object.entries(p.conf || {}).sort((a, b) => b[1] - a[1]).slice(0, 8);
-      text(ctx, "Confusions més freqüents (demanada → premuda):", 500, 572, { size: 18, weight: 800, font: FONT_T, color: BRAND.petroli, align: "left" });
-      text(ctx, conf.length ? conf.map(([k, n]) => `${k} (${n})`).join("   ") : "cap", 500, 600, { size: 20, weight: 700, color: BRAND.tinta, align: "left" });
+      text(ctx, L_("Confusions més freqüents (demanada → premuda):"), 500, 572, { size: 18, weight: 800, font: FONT_T, color: BRAND.petroli, align: "left" });
+      text(ctx, conf.length ? conf.map(([k, n]) => `${k} (${n})`).join("   ") : L_("cap"), 500, 600, { size: 20, weight: 700, color: BRAND.tinta, align: "left" });
       this.drawTune(ctx, p);
       // esborrar amb confirmació (ratolí o Supr dues vegades)
-      const dl = this.confirmDel === p ? "Segur? Torna a clicar per esborrar " + p.name : "Esborrar " + p.name;
+      const dl = this.confirmDel === p ? L_("Segur? Torna a clicar per esborrar {nom}", { nom: p.name }) : L_("Esborrar {nom}", { nom: p.name });
       drawButton(ctx, 1510, 175, dl, { align: "right", fs: 20, h: 44, style: this.confirmDel === p ? "primary" : "light", click: () => this.onKey("Delete") });
     }
   }
@@ -819,12 +819,12 @@ class TeacherScene {
   drawTune(ctx, p) {
     ctx.fillStyle = "#DDE7E4"; ctx.fillRect(500, 626, 1000, 2);
     const c = p.calib;
-    text(ctx, "Viatge de calibratge", 500, 656, { size: 20, weight: 900, font: FONT_T, color: BRAND.petroli, align: "left" });
-    let info = "Encara no l'ha fet.";
+    text(ctx, L_("Viatge de calibratge"), 500, 656, { size: 20, weight: 900, font: FONT_T, color: BRAND.petroli, align: "left" });
+    let info = L_("Encara no l'ha fet.");
     if (c) { const d = new Date(c.date), slow = c.items.filter(i => !i.timeout).sort((a, b) => b.rt - a.rt).slice(0, 4).map(i => i.l).join(", "), miss = c.items.filter(i => i.timeout).map(i => i.l).join(", ");
-      info = `${d.toLocaleDateString("ca")}: ${c.found}/${c.n} trobades, ${c.first} a la primera, temps mitjà ${String(c.med).replace(".", ",")} s.` + (slow ? ` Més lentes: ${slow}.` : "") + (miss ? ` No trobades: ${miss}.` : ""); }
+      info = L_("{data}: {a}/{b} trobades, {c} a la primera, temps mitjà {t} s.", { data: d.toLocaleDateString(LOCALE), a: c.found, b: c.n, c: c.first, t: c.med.toLocaleString(LOCALE) }) + (slow ? " " + L_("Més lentes: {l}.", { l: slow }) : "") + (miss ? " " + L_("No trobades: {l}.", { l: miss }) : ""); }
     wrapText(ctx, info, 760, 656, 740, 24, { size: 17, weight: 700, color: BRAND.tinta });
-    if (p.redoCalib) text(ctx, "El repetirà en la propera entrada.", 500, 690, { size: 16, weight: 700, color: UI.coralDark, align: "left" });
+    if (p.redoCalib) text(ctx, L_("El repetirà en la propera entrada."), 500, 690, { size: 16, weight: 700, color: UI.coralDark, align: "left" });
     const tu = tuneOf(p), set = (k, v) => { p.tune = Object.assign({}, tuneOf(p), { [k]: v }); Profiles.save(); Sfx.play("tick"); };
     const step = (x, label, val, dec, inc) => {
       text(ctx, label, x, 736, { size: 18, weight: 800, font: FONT_T, color: "#4B6366", align: "left" });
@@ -832,10 +832,10 @@ class TeacherScene {
       text(ctx, val, x + 96, 775, { size: 24, weight: 900, font: FONT_T, color: BRAND.tinta });
       drawButton(ctx, x + 146, 774, "+", { align: "left", fs: 24, w: 46, h: 44, click: inc });
     };
-    step(500, "Nivell inicial", String(tu.level), () => set("level", Math.max(1, tu.level - 1)), () => set("level", Math.min(6, tu.level + 1)));
-    step(730, "Ritme dels jocs", Math.round(tu.speed * 100) + "%", () => set("speed", Math.max(0.6, Math.round((tu.speed - 0.05) * 100) / 100)), () => set("speed", Math.min(1.5, Math.round((tu.speed + 0.05) * 100) / 100)));
-    step(960, "Ajuda després de", tu.hint + " s", () => set("hint", Math.max(2, tu.hint - 1)), () => set("hint", Math.min(15, tu.hint + 1)));
-    drawButton(ctx, 1500, 774, p.redoCalib ? "Viatge pendent" : "Repetir el viatge", { align: "right", fs: 20, h: 44, style: p.redoCalib ? "light" : "primary", click: () => { p.redoCalib = !p.redoCalib; Profiles.save(); Sfx.play("tick"); } });
+    step(500, L_("Nivell inicial"), String(tu.level), () => set("level", Math.max(1, tu.level - 1)), () => set("level", Math.min(6, tu.level + 1)));
+    step(730, L_("Ritme dels jocs"), Math.round(tu.speed * 100) + "%", () => set("speed", Math.max(0.6, Math.round((tu.speed - 0.05) * 100) / 100)), () => set("speed", Math.min(1.5, Math.round((tu.speed + 0.05) * 100) / 100)));
+    step(960, L_("Ajuda després de"), tu.hint + L_(" s"), () => set("hint", Math.max(2, tu.hint - 1)), () => set("hint", Math.min(15, tu.hint + 1)));
+    drawButton(ctx, 1500, 774, p.redoCalib ? L_("Viatge pendent") : L_("Repetir el viatge"), { align: "right", fs: 20, h: 44, style: p.redoCalib ? "light" : "primary", click: () => { p.redoCalib = !p.redoCalib; Profiles.save(); Sfx.play("tick"); } });
   }
   onKey(k) {
     const it = this.items();
@@ -851,44 +851,105 @@ class TeacherScene {
 /* finestra d'opcions de l'illa (rodeta): opcions del joc i els botons Crèdits, Museu i Canviar de jugador */
 const ISLAND_OPTS = [
   // columna esquerra
-  ["Lletres en majúscula", () => Settings.upper, () => Settings.upper = !Settings.upper],
-  ["Veu", () => Settings.voice, () => Settings.voice = !Settings.voice, null, null, null, () => VoicePanel.open()],
-  ["Música", () => Settings.music, () => { Settings.music = !Settings.music; Music.refresh && Music.refresh(); }],
-  ["Efectes de so", () => Settings.sfx, () => Settings.sfx = !Settings.sfx],
-  ["Pantalla completa", () => !!document.fullscreenElement, () => {
+  [L_("Idioma"), () => LANG, null, null, null, null, null, "lang"],
+  [L_("Lletres en majúscula"), () => Settings.upper, () => Settings.upper = !Settings.upper],
+  [L_("Veu"), () => Settings.voice, () => Settings.voice = !Settings.voice, null, null, null, () => VoicePanel.open()],
+  [L_("Música"), () => Settings.music, () => { Settings.music = !Settings.music; Music.refresh && Music.refresh(); }],
+  [L_("Efectes de so"), () => Settings.sfx, () => Settings.sfx = !Settings.sfx],
+  [L_("Pantalla completa"), () => !!document.fullscreenElement, () => {
     Settings.fullscreen = !document.fullscreenElement;
     try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { }
   }],
   // columna dreta
-  ["Explicació del joc", () => Settings.intro || "sempre", null, [["sempre", "Sempre"], ["primer", "El primer cop"], ["mai", "Mai"]], v => Settings.intro = v],
-  ["Ajudes al teclat en pantalla", () => Settings.hints, () => Settings.hints = !Settings.hints],
-  ["Ajuda i pausa en errors", () => Settings.errorSupport, () => Settings.errorSupport = !Settings.errorSupport],
-  ["Moviment reduït", () => Settings.reduceMotion, () => Settings.reduceMotion = !Settings.reduceMotion],
-  ["Tots els jocs oberts", () => Settings.allOpen !== false, scene => { Settings.allOpen = Settings.allOpen === false; if (scene instanceof IslandScene) scene.open = unlockedSet(scene.p); }],
-  ["Lletres del viatge inicial", () => Settings.calibN || 20, null, null, null, [5, 27, v => Settings.calibN = v]],
+  [L_("Teclat"), () => KB_LAYOUT, null, Object.keys(KB_LAYOUTS).map(k => [k, KB_LAYOUTS[k].label]), v => { if (v === KB_LAYOUT) return; Settings.layout = v; Settings.layoutFixed = v !== LANG_INFO.layout; saveSettings(); location.reload(); }],
+  [L_("Explicació del joc"), () => Settings.intro || "sempre", null, [["sempre", L_("Sempre")], ["primer", L_("El primer cop")], ["mai", L_("Mai")]], v => Settings.intro = v],
+  [L_("Ajudes al teclat en pantalla"), () => Settings.hints, () => Settings.hints = !Settings.hints],
+  [L_("Ajuda i pausa en errors"), () => Settings.errorSupport, () => Settings.errorSupport = !Settings.errorSupport],
+  [L_("Moviment reduït"), () => Settings.reduceMotion, () => Settings.reduceMotion = !Settings.reduceMotion],
+  [L_("Tots els jocs oberts"), () => Settings.allOpen !== false, scene => { Settings.allOpen = Settings.allOpen === false; if (scene instanceof IslandScene) scene.open = unlockedSet(scene.p); }],
+  [L_("Lletres del viatge inicial"), () => Settings.calibN || 20, null, null, null, [5, 27, v => Settings.calibN = v]],
 ];
 function drawGearButton(ctx, gx, gy, scene, sc) {
   const R = 42 * sc, ov = !scene.opts && Mouse.add(gx - R, gy - R, 2 * R, 2 * R, { click: () => { scene.opts = true; scene.optsT = 0; Sfx.play("whoosh"); } });
   ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.22)"; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4; ctx.beginPath(); ctx.arc(gx, gy, R, 0, 6.28); ctx.fillStyle = ov ? BRAND.menta : "#fff"; ctx.fill(); ctx.restore();
   ctx.save(); ctx.translate(gx, gy); ctx.scale(1.35 * sc, 1.35 * sc); if (ov && !Settings.reduceMotion) ctx.rotate(scene.t * 1.5); bsnGear(ctx, 0, 0, BRAND.petroli); ctx.restore();
 }
+/* ---------- menú d'idioma (com el de LECAA Docs): globus, codi de l'idioma i fletxa;
+   en obrir-lo, cada idioma escrit en la seva llengua. Només amb el ratolí. ---------- */
+function drawGlobe(ctx, x, y, r, col) {
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = Math.max(1.6, r * 0.17); ctx.lineCap = "round";
+  ctx.beginPath(); ctx.arc(x, y, r, 0, 6.28); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(x, y, r * 0.42, r, 0, 0, 6.28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x - r, y); ctx.lineTo(x + r, y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x - r * 0.86, y - r * 0.5); ctx.lineTo(x + r * 0.86, y - r * 0.5); ctx.moveTo(x - r * 0.86, y + r * 0.5); ctx.lineTo(x + r * 0.86, y + r * 0.5); ctx.stroke();
+  ctx.restore();
+}
+function drawChevron(ctx, x, y, s, col, up) {
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = s * 0.28; ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.beginPath(); const d = up ? -1 : 1; ctx.moveTo(x - s * 0.5, y - d * s * 0.22); ctx.lineTo(x, y + d * s * 0.28); ctx.lineTo(x + s * 0.5, y - d * s * 0.22); ctx.stroke(); ctx.restore();
+}
+// botó tancat; x és la vora dreta. Desa on és perquè drawLangList hi pugui obrir la llista a sota.
+function drawLangButton(ctx, x, y, scene, o = {}) {
+  const h = o.h || 50, fs = o.fs || 22, open = !!scene.langOpen;
+  ctx.save(); ctx.font = `900 ${fs}px ${FONT_T}`;
+  const code = LANG.toUpperCase(), w = Math.round(h * 0.95 + ctx.measureText(code).width + h * 0.85), x0 = x - w, y0 = y - h / 2;
+  const ov = Mouse.add(x0, y0, w, h, { click: () => { scene.langOpen = !open; Sfx.play("tick"); } });
+  if (!o.flat) { ctx.shadowColor = "rgba(0,0,0,0.22)"; ctx.shadowBlur = 14; ctx.shadowOffsetY = 4; }
+  rr(ctx, x0, y0, w, h, h / 2); ctx.fillStyle = ov || open ? BRAND.menta : "#fff"; ctx.fill(); ctx.shadowColor = "transparent";
+  ctx.lineWidth = 2; ctx.strokeStyle = ov || open ? BRAND.petroli : "rgba(23,103,107,0.35)"; ctx.stroke();
+  drawGlobe(ctx, x0 + h * 0.5, y, h * 0.22, BRAND.petroli);
+  text(ctx, code, x0 + h * 0.86, y + 1, { size: fs, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
+  drawChevron(ctx, x0 + w - h * 0.42, y + 1, h * 0.26, BRAND.petroli, open);
+  ctx.restore();
+  scene.langAt = { x, y: y0 + h + 8, w: Math.max(w, 270) };
+  return w;
+}
+// llista desplegada: es dibuixa al final perquè quedi per sobre de tot; un clic a fora la tanca
+function drawLangList(ctx, scene) {
+  if (!scene.langOpen || !scene.langAt) return;
+  const { x, y, w } = scene.langAt, ih = 54, pad = 8, hh = LANGS.length * ih + pad * 2, x0 = x - w;
+  Mouse.add(0, 0, W, H, { click: () => { scene.langOpen = false; } });
+  Mouse.add(x0, y, w, hh, {});
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8;
+  rr(ctx, x0, y, w, hh, 18); ctx.fillStyle = "#fff"; ctx.fill(); ctx.shadowColor = "transparent";
+  ctx.lineWidth = 2; ctx.strokeStyle = "rgba(23,103,107,0.35)"; ctx.stroke();
+  LANGS.forEach((l, i) => {
+    const iy = y + pad + i * ih, cur = l.id === LANG;
+    const ov = Mouse.add(x0 + 6, iy, w - 12, ih, { click: () => { scene.langOpen = false; Sfx.play("tick"); setLang(l.id); } });
+    if (ov) { rr(ctx, x0 + 6, iy + 2, w - 12, ih - 4, 12); ctx.fillStyle = BRAND.menta; ctx.fill(); }
+    rr(ctx, x0 + 18, iy + 13, 46, 28, 8); ctx.fillStyle = cur ? BRAND.petroli : "#EAF2EF"; ctx.fill();
+    text(ctx, l.id.toUpperCase(), x0 + 41, iy + 28, { size: 16, weight: 900, font: FONT_T, color: cur ? "#fff" : BRAND.tinta });
+    text(ctx, l.label, x0 + 78, iy + 28, { size: 22, weight: 800, font: FONT_T, color: cur ? BRAND.petroli : BRAND.tinta, align: "left" });
+    if (cur) { ctx.save(); ctx.strokeStyle = BRAND.petroli; ctx.lineWidth = 3.5; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.beginPath(); ctx.moveTo(x0 + w - 44, iy + 28); ctx.lineTo(x0 + w - 37, iy + 35); ctx.lineTo(x0 + w - 24, iy + 20); ctx.stroke(); ctx.restore(); }
+  });
+  ctx.restore();
+}
 function drawIslandOptions(ctx, scene) {
   const k = Ease.outBack(clamp(scene.optsT / 0.4, 0, 1));
   ctx.save(); ctx.fillStyle = `rgba(20,38,42,${0.55 * clamp(scene.optsT * 4, 0, 1)})`; ctx.fillRect(0, 0, W, H);
   Mouse.add(0, 0, W, H, { click: () => { scene.opts = false; } });
   ctx.translate(W / 2, H / 2); ctx.scale(k, k); ctx.translate(-W / 2, -H / 2);
-  const pw = 1280, ph = 656, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
+  const pw = 1280, ph = 720, px = W / 2 - pw / 2, py = H / 2 - ph / 2;
   Mouse.add(px, py, pw, ph, {});
   drawPanel(ctx, px, py, pw, ph, { r: 32 });
   ctx.save(); ctx.translate(px + 62, py + 58); bsnGear(ctx, 0, 0, BRAND.petroli); ctx.restore();
-  text(ctx, "Opcions", px + 96, py + 58, { size: 36, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
+  text(ctx, L_("Opcions"), px + 96, py + 58, { size: 36, weight: 900, font: FONT_T, color: BRAND.tinta, align: "left" });
   ctx.fillStyle = "#DDE7E4"; ctx.fillRect(px + 40, py + 102, pw - 80, 2);
   const colW = (pw - 100) / 2;
-  ISLAND_OPTS.forEach(([l, get, set, choices, pick, step, cfg], i) => {
+  ISLAND_OPTS.forEach(([l, get, set, choices, pick, step, cfg, kind], i) => {
     const x0 = px + 40 + (i < Math.ceil(ISLAND_OPTS.length / 2) ? 0 : colW + 20), y = py + 124 + (i % Math.ceil(ISLAND_OPTS.length / 2)) * 66, on = get();
+    if (kind === "lang") { // menú d'idioma
+      rr(ctx, x0, y, colW, 56, 14); ctx.fillStyle = "#F4F8F6"; ctx.fill();
+      drawGlobe(ctx, x0 + 36, y + 28, 11, BRAND.petroli);
+      text(ctx, l, x0 + 60, y + 29, { size: 24, weight: 700, color: BRAND.tinta, align: "left" });
+      const lab = LANG_INFO.label;
+      drawLangButton(ctx, x0 + colW - 14, y + 28, scene, { h: 40, fs: 19, flat: true });
+      text(ctx, lab, x0 + colW - 14 - (scene.langAt.w > 0 ? 0 : 0) - 112, y + 29, { size: 21, weight: 800, font: FONT_T, color: BRAND.petroli, align: "right" });
+      return;
+    }
     if (step) { // nombre amb − i +
       rr(ctx, x0, y, colW, 56, 14); ctx.fillStyle = "#F4F8F6"; ctx.fill();
-      text(ctx, l, x0 + 26, y + 29, { size: 24, weight: 700, color: BRAND.tinta, align: "left" });
+      text(ctx, l, x0 + 26, y + 29, { size: 24, weight: 700, color: BRAND.tinta, align: "left", maxW: colW - 200 });
       const [mn, mx, put] = step, ch = d => () => { put(clamp(on + d, mn, mx)); saveSettings(); Sfx.play("tick"); }, rx = x0 + colW - 14;
       drawButton(ctx, rx - 150, y + 28, "−", { align: "left", fs: 22, w: 42, h: 40, click: ch(-1) });
       text(ctx, String(on), rx - 79, y + 29, { size: 24, weight: 900, font: FONT_T, color: BRAND.tinta });
@@ -910,30 +971,31 @@ function drawIslandOptions(ctx, scene) {
     }
     const ov = Mouse.add(x0, y, colW, 56, { click: () => { set(scene); saveSettings(); Sfx.play("tick"); } });
     rr(ctx, x0, y, colW, 56, 14); ctx.fillStyle = ov ? BRAND.menta : "#F4F8F6"; ctx.fill();
-    text(ctx, l, x0 + 26, y + 29, { size: 24, weight: 700, color: BRAND.tinta, align: "left" });
+    text(ctx, l, x0 + 26, y + 29, { size: 24, weight: 700, color: BRAND.tinta, align: "left", maxW: colW - (cfg ? 260 : 120) });
     const sx = x0 + colW - 90; rr(ctx, sx, y + 11, 66, 34, 17); ctx.fillStyle = on ? BRAND.petroli : "#C4D2CF"; ctx.fill();
     ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(on ? sx + 49 : sx + 17, y + 28, 13, 0, 6.28); ctx.fill();
     if (cfg) { // botó d'ajustos al costat de l'interruptor (per exemple, els motors de veu)
       const bw = 124, bx0 = sx - bw - 18, bov = Mouse.add(bx0, y + 9, bw, 38, { click: () => { Sfx.play("tick"); cfg(); } });
       rr(ctx, bx0, y + 9, bw, 38, 19); ctx.fillStyle = bov ? BRAND.petroli : "#fff"; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = bov ? BRAND.petroli : "#C4D2CF"; ctx.stroke();
       ctx.save(); ctx.translate(bx0 + 22, y + 28); ctx.scale(0.62, 0.62); bsnGear(ctx, 0, 0, bov ? "#fff" : BRAND.petroli); ctx.restore();
-      text(ctx, "Ajustos", bx0 + 74, y + 29, { size: 19, weight: 800, font: FONT_T, color: bov ? "#fff" : BRAND.tinta });
+      text(ctx, L_("Ajustos"), bx0 + 74, y + 29, { size: 19, weight: 800, font: FONT_T, color: bov ? "#fff" : BRAND.tinta });
     }
   });
-  const by = py + ph - 64, close = () => { scene.opts = false; };
+  const by = py + ph - 64, close = () => { scene.opts = false; scene.langOpen = false; };
   ctx.fillStyle = "#DDE7E4"; ctx.fillRect(px + 40, by - 50, pw - 80, 2);
-  drawButton(ctx, px + 40, by, "Crèdits", { align: "left", fs: 22, h: 50, click: () => { close(); scene.credits = true; Sfx.play("whoosh"); } });
+  drawButton(ctx, px + 40, by, L_("Crèdits"), { align: "left", fs: 22, h: 50, click: () => { close(); scene.credits = true; Sfx.play("whoosh"); } });
   if (scene instanceof IslandScene) {
-    drawButton(ctx, px + 195, by, "Museu", { align: "left", fs: 22, h: 50, click: () => { close(); App.go(new MuseumScene(scene.p)); } });
-    const cw = drawButton(ctx, px + pw - 40, by, "Canviar de jugador", { align: "right", fs: 22, h: 50, style: "primary", click: () => { close(); App.go(new ProfileScene()); } });
+    drawButton(ctx, px + 195, by, L_("Museu"), { align: "left", fs: 22, h: 50, click: () => { close(); App.go(new MuseumScene(scene.p)); } });
+    const cw = drawButton(ctx, px + pw - 40, by, L_("Canviar de jugador"), { align: "right", fs: 22, h: 50, style: "primary", click: () => { close(); App.go(new ProfileScene()); } });
     // accés docent (alumnes i resultats); en sortir es torna a l'illa
-    drawButton(ctx, px + pw - 40 - cw - 16, by, "Accés docent", { align: "right", fs: 22, h: 50, click: () => { close(); const p = scene.p; App.go(new CodeScene(() => p && Profiles.list.includes(p) ? new IslandScene(p) : new ProfileScene())); } });
-  } else drawButton(ctx, px + pw - 40, by, "Accés docent", { align: "right", fs: 22, h: 50, click: () => { close(); App.go(new CodeScene()); } });
+    drawButton(ctx, px + pw - 40 - cw - 16, by, L_("Accés docent"), { align: "right", fs: 22, h: 50, click: () => { close(); const p = scene.p; App.go(new CodeScene(() => p && Profiles.list.includes(p) ? new IslandScene(p) : new ProfileScene())); } });
+  } else drawButton(ctx, px + pw - 40, by, L_("Accés docent"), { align: "right", fs: 22, h: 50, click: () => { close(); App.go(new CodeScene()); } });
   // creu per tancar
   const bx = px + pw - 6, cy = py + 6, ov = Mouse.add(bx - 30, cy - 30, 60, 60, { click: () => { close(); Sfx.play("whoosh"); } });
   ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 8; ctx.beginPath(); ctx.arc(bx, cy, 26, 0, 6.28); ctx.fillStyle = ov ? BRAND.petroli : "#fff"; ctx.fill(); ctx.shadowColor = "transparent";
   ctx.lineWidth = 3; ctx.strokeStyle = BRAND.petroli; ctx.stroke();
   ctx.strokeStyle = ov ? "#fff" : BRAND.tinta; ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(bx - 9, cy - 9); ctx.lineTo(bx + 9, cy + 9); ctx.moveTo(bx + 9, cy - 9); ctx.lineTo(bx - 9, cy + 9); ctx.stroke();
+  drawLangList(ctx, scene);
   ctx.restore();
 }
 
