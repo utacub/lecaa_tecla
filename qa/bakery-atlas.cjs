@@ -1,0 +1,20 @@
+const fs=require('fs'),vm=require('vm'),{createCanvas,loadImage,GlobalFonts}=require('@napi-rs/canvas');
+for(const [f,n] of [['Andika-400.woff2','Andika'],['Andika-700.woff2','Andika'],['Nunito-900.woff2','Nunito']])GlobalFonts.registerFromPath('assets/'+f,n);
+const nop=()=>{},stub=new Proxy({}, {get:()=>nop});
+const sandbox={console,Math,setTimeout:nop,clearTimeout:nop,performance:{now:()=>0},document:{createElement:()=>createCanvas(1,1)},window:{},navigator:{},localStorage:{getItem:()=>null,setItem:nop},addEventListener:nop,requestAnimationFrame:nop,Image:require('@napi-rs/canvas').Image,Audio2:{ctx:null,now:()=>0},noise:nop,tone:nop,Sfx:stub,Music:stub,Voice:{say:nop,init:nop,stop:nop},PHON_ANNA:{},LOGO_UTAC:'',CREDIT_LOGOS:[]};
+const cx=vm.createContext(sandbox);
+for(const f of ['core','textures','critters','art','art-tanda3','art-fruit','art-tanda4','content','ui','play','avatars','scenes','voyage'])vm.runInContext(fs.readFileSync('src/'+f+'.js','utf8'),cx,{filename:f+'.js'});
+for(const id of [13,14,15,16,17])vm.runInContext(fs.readFileSync('src/games/g'+String(id).padStart(2,'0')+'.js','utf8'),cx);
+(async()=>{
+ sandbox.ims={"bakery-ingredients":await loadImage('assets/art/bakery-ingredients.webp')};
+ sandbox.canvas=createCanvas(1200,960);
+ vm.runInContext(`Object.assign(Art.images,ims);
+ const labels=["farina","ous","sucre","llet","nata","mel","maduixa","xocolata","mantega","llimona","coco","nous","canyella","vainilla","ametlles","avellanes","merenga","crema","fruita","sal"];
+ const cx=canvas.getContext('2d');cx.fillStyle='#e8e4de';cx.fillRect(0,0,1200,960);
+ for(let i=0;i<20;i++){const px=(i%5)*240,py=Math.floor(i/5)*240;
+ cx.fillStyle='white';cx.fillRect(px+10,py+10,220,220);
+ const im=Art.cell('bakery-ingredients',i,5,4,170,170);cx.drawImage(im,px+35,py+20);
+ cx.fillStyle='#203e42';cx.font='22px Andika';cx.textAlign='center';cx.fillText(labels[i],px+120,py+216);
+ }`,cx);
+ fs.writeFileSync('qa/bakery-all-ingredients.png',sandbox.canvas.toBuffer('image/png'));
+})();

@@ -41,7 +41,7 @@
   };
   const STARS_N = { 1: [5, 6], 2: [6, 7], 3: [7, 8], 4: [6, 7] };
   const PER_ROUND = 3;
-  const AREA = [250, 232, 1100, 520];
+  const AREA = [390, 250, 820, 430];
 
   /* ---------- geometria: Catmull-Rom suau i mostreig per longitud ---------- */
   function smooth(pts, closed, n = 8) {
@@ -91,6 +91,7 @@
   function chart() {
     return Tex.get("g15chart", () => {
       const c = makeCanvas(W, H), x = c.getContext("2d"), R = mulberry32(15);
+      if(Art.get("stars-bg")){x.drawImage(Art.get("stars-bg"),0,0,W,H);return c;}
       const g = x.createRadialGradient(W * 0.45, H * 0.4, 100, W / 2, H / 2, 1000); g.addColorStop(0, "#1C4C8C"); g.addColorStop(0.6, "#133A72"); g.addColorStop(1, "#0B2552"); x.fillStyle = g; x.fillRect(0, 0, W, H);
       // pigment desigual de la cianotípia
       const n = makeNoise(21), blot = Tex.pixels(400, 225, (i, j) => { const v = 128 + (n.fbm(i / 40, j / 40, 4) - 0.5) * 120; return [v, v, v, 255]; });

@@ -3,8 +3,8 @@
 (() => {
   const ORDERS = 6;
   const CITIES = ["Vic", "Olot", "Reus", "Girona", "Lleida", "Tarragona"];
-  const BOWL = [800, 660], CUST = [250, 492], OVEN = [800, 392];
-  const SLOTS = [[1082, 300], [1284, 300], [1486, 300], [1082, 522], [1284, 522], [1486, 522]];
+  const BOWL = [750, 660], CUST = [250, 492], OVEN = [900, 442];
+  const SLOTS = [[990, 313], [1210, 313], [1430, 313], [990, 541], [1210, 541], [1430, 541]];
   const DECO_X = [560, 800, 1040], DECO_Y = 800;
   const q12 = t => Math.floor(t * 12) / 12;
 
@@ -58,7 +58,15 @@
   const ING_KEYS = Object.keys(ING);
   const W5 = ["farina", "ous", "sucre", "llet", "nata", "mel", "fruita", "sal", "coco", "nous"];
   const W6 = ["maduixa", "xocolata", "mantega", "canyella", "vainilla", "llimona", "ametlles", "avellanes", "merenga", "crema"];
-  const ingSprite = k => Sprites.get("g17i_" + k, 130, 130, (x, w, h) => { x.translate(w / 2, h / 2 - 6); ING[k](x); });
+  const ingSprite = k => Sprites.get("g17i_" + k, 130, 130, (x, w, h) => {
+    // Una targeta opaca separa cada ingredient del decorat, també quan es mou.
+    x.fillStyle = "#FFFFFF"; x.strokeStyle = "#D8D0C5"; x.lineWidth = 2;
+    rr(x, 1, 1, w - 2, h - 2, 18); x.fill(); x.stroke();
+    const keys = ["farina","ous","sucre","llet","nata","mel","maduixa","xocolata","mantega","llimona","coco","nous","canyella","vainilla","ametlles","avellanes","merenga","crema","fruita","sal"];
+    const im = Art.cell("bakery-ingredients", keys.indexOf(k), 5, 4, w - 20, h - 20);
+    if (im) { x.drawImage(im, 10, 10, w - 20, h - 20); return; }
+    x.translate(w / 2, h / 2 - 6); x.scale(0.84, 0.84); ING[k](x);
+  });
 
   /* ---------- decoracions ---------- */
   const DECO = {
@@ -97,6 +105,7 @@
 
   /* ---------- fons: pastisseria de plastilina ---------- */
   const bgSprite = () => Sprites.get("g17bg", W, H, (x) => {
+    if(Art.get("bakery-bg")){x.drawImage(Art.get("bakery-bg"),0,0,W,H);return;}
     x.fillStyle = "#FBE1D6"; x.fillRect(0, 0, W, H);
     // rajoles
     const R = mulberry32(5);
@@ -118,6 +127,7 @@
     // paret: rètol de la ciutat i cordill de fotos es dibuixen a part
   });
   const counterSprite = () => Sprites.get("g17counter", W, 330, (x) => {
+    const im=Art.get("bakery-bg");if(im){x.drawImage(im,0,im.height*570/H,im.width,im.height*330/H,0,0,W,330);return;}
     // taulell: sobre crema i frontal rosa amb plafons
     clay(x, box(-20, 56, W + 40, 290, 0), "#F5A9BE", { r: 900, cx: 800, cy: 120, shadow: 12 });
     for (let i = 0; i < 6; i++) {
@@ -165,6 +175,7 @@
     else { x.beginPath(); x.arc(cx, 152, 12, 0.4, 2.7); x.stroke(); }
   });
   function drawCustomer(ctx, c, x, y, pose, t) {
+    if(Art.get("bakery-chef")){const bob=Settings.reduceMotion?0:Math.sin(t*2.4)*3;Art.fit(ctx,"bakery-chef",x-210,y-310+bob,420,630);return;}
     if (typeof Critters !== "undefined" && c.cid) { Critters.draw(ctx, c.cid, x, y, 300, { t, pose: pose === "sad" ? "sad" : pose === "happy" ? "happy" : "idle", flip: false }); return; }
     const S = custSprite(c.i, pose), bob = Math.sin(q12(t) * 2.4) * 3;
     ctx.drawImage(S.c, x - 130, y - 150 + bob, 260, 300);
@@ -289,12 +300,6 @@
         draw(ctx) {
           const t = api.t, tq = q12(t);
           ctx.drawImage(bgSprite().c, 0, 0, W, H);
-          // rètol de la pastisseria (ciutat del nivell)
-          ctx.save(); ctx.translate(800, 128);
-          ctx.shadowColor = "rgba(90,40,40,0.3)"; ctx.shadowBlur = 12; ctx.shadowOffsetY = 6; rr(ctx, -230, -36, 460, 72, 36); ctx.fillStyle = "#FFF6E8"; ctx.fill(); ctx.shadowColor = "transparent";
-          ctx.lineWidth = 5; ctx.strokeStyle = "#F28DB2"; rr(ctx, -222, -28, 444, 56, 28); ctx.stroke();
-          text(ctx, "Pastisseria de " + city, 0, 2, { size: 34, weight: 900, font: FONT_T, color: "#B0405E" });
-          ctx.restore();
           // cordill de fotos
           ctx.strokeStyle = "rgba(120,70,60,0.6)"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(560, 196); ctx.quadraticCurveTo(800, 230, 1040, 196); ctx.stroke();
           photos.forEach((p, i) => {
@@ -307,6 +312,12 @@
           });
           // forn: finestra amb llum, porta
           const ox = OVEN[0], oy = OVEN[1];
+          if(Art.get("bakery-bg")) {
+            ctx.save();ctx.globalCompositeOperation="screen";
+            const og=ctx.createRadialGradient(900,442,8,900,442,90);
+            og.addColorStop(0,rgba("#FFB347",ovenGlow*0.8));og.addColorStop(1,rgba("#FFB347",0));
+            ctx.fillStyle=og;ctx.fillRect(810,352,180,180);ctx.restore();
+          } else {
           ctx.save(); rr(ctx, ox - 130, oy - 58, 260, 160, 20); ctx.fillStyle = "#3A3240"; ctx.fill(); ctx.clip();
           const gl = ctx.createRadialGradient(ox, oy + 30, 10, ox, oy + 30, 170); gl.addColorStop(0, rgba("#FFB347", 0.25 + ovenGlow * 0.7)); gl.addColorStop(1, rgba("#E0553A", 0.1 + ovenGlow * 0.35)); ctx.fillStyle = gl; ctx.fillRect(ox - 130, oy - 58, 260, 160);
           if (phase === "bake" && pt > 0.6 && pt < 2.1) { ctx.globalAlpha = 0.8; const B = bowlBack(), F = bowlFront(); const wob = Math.sin(tq * 9) * 3; ctx.drawImage(B.c, ox - 60 + wob, oy + 6, 120, 78); ctx.drawImage(F.c, ox - 60 + wob, oy + 6, 120, 78); ctx.globalAlpha = 1; }
@@ -319,11 +330,6 @@
             ctx.fillStyle = "#F2F0E8"; rr(ctx, ox - 70, oy + 104 - dh + 4, 140, 12, 6); ctx.fill();
             ctx.restore();
           }
-          // prestatges amb ingredients
-          for (const s of shelf) {
-            if (s.used || phase === "decor" || phase === "serve" || phase === "leave") continue;
-            const a = Ease.outBack(clamp(s.appear / 0.4, 0, 1)), [sx, sy] = s.slot;
-            Sprites.draw(ctx, ingSprite(s.kind), sx, sy - 58 - s.pop * 8, { sx: a, sy: a * (1 + Math.sin(tq * 3 + sx) * 0.015), ay: 0.5 });
           }
           // client i bombolla de pensament
           drawCustomer(ctx, order.cust, custX, CUST[1], custPose, t);
@@ -354,34 +360,49 @@
             const k = Ease.inOutQuad(clamp(f.t, 0, 1)), x = lerp(f.from[0], f.to[0], k), y = lerp(f.from[1], f.to[1], k) - Math.sin(k * Math.PI) * 180;
             Sprites.draw(ctx, ingSprite(f.s.kind), x, y, { s: 0.95 - k * 0.35, rot: q12(f.t) * 3 });
           }
-          // bombolla de pensament amb el pastís i la recepta
+          // Globus de comanda: superfície contínua, marge interior i cua cap a l'ovella.
           if (phase !== "leave" && phase !== "done") {
             const ba = clamp((phase === "enter" ? pt - 0.35 : 1) / 0.3, 0, 1);
             if (ba > 0) {
-              const bx = custX + 66, by = 236, k = Ease.outBack(ba);
-              ctx.save(); ctx.translate(bx, by); ctx.scale(k, k);
-              ctx.save(); ctx.shadowColor = "rgba(90,40,40,0.22)"; ctx.shadowBlur = 16; ctx.shadowOffsetY = 6; ctx.fillStyle = "#FFFFFF";
-              ctx.beginPath(); for (const [cx, cy, r] of [[-150, -14, 70], [-70, -66, 76], [40, -74, 78], [140, -40, 74], [176, 30, 60], [100, 82, 66], [-10, 92, 70], [-120, 66, 64], [-180, 26, 50]]) { ctx.moveTo(cx + r, cy); ctx.arc(cx, cy, r, 0, 6.28); } ctx.fill();
-              ctx.beginPath(); ctx.arc(0, 4, 140, 0, 6.28); ctx.fill();
-              ctx.beginPath(); ctx.arc(-50, 168, 17, 0, 6.28); ctx.fill(); ctx.beginPath(); ctx.arc(-70, 198, 10, 0, 6.28); ctx.fill();
-              ctx.restore();
-              drawCake(ctx, -96, 58, 0.72, order.cake, [], t);
-              const n = order.recipe.length;
+              ctx.save(); ctx.globalAlpha = ba;
+              ctx.translate(custX - CUST[0], 0);
+              ctx.shadowColor = "rgba(60,35,25,0.18)"; ctx.shadowBlur = 14; ctx.shadowOffsetY = 5;
+              ctx.fillStyle = "#FFFFFF"; ctx.strokeStyle = "#E6ABB9"; ctx.lineWidth = 3;
+              rr(ctx, 440, 190, 430, 292, 28); ctx.fill(); ctx.stroke();
+              ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+              ctx.beginPath(); ctx.moveTo(442, 370); ctx.lineTo(407, 411); ctx.lineTo(442, 399); ctx.closePath(); ctx.fill();
+              ctx.beginPath(); ctx.moveTo(442, 370); ctx.lineTo(407, 411); ctx.lineTo(442, 399); ctx.stroke();
+              text(ctx, "La comanda", 655, 222, { size: 26, weight: 900, font: FONT_T, color: "#98435E" });
+              drawCake(ctx, 535, 370, 0.62, order.cake, [], t);
               order.recipe.forEach((s, i) => {
-                const col = i % 2, row = Math.floor(i / 2), ix = 64 + col * 96 + (n === 3 && i === 2 ? 48 : 0), iy = -40 + row * 100;
-                const S = ingSprite(s.kind); ctx.globalAlpha = s.used ? 0.4 : 1; ctx.drawImage(S.c, ix - 46, iy - 50, 92, 92); ctx.globalAlpha = 1;
-                if (s.used) { ctx.strokeStyle = UI.ok; ctx.lineWidth = 9; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.beginPath(); ctx.moveTo(ix - 18, iy + 2); ctx.lineTo(ix - 4, iy + 18); ctx.lineTo(ix + 22, iy - 16); ctx.stroke(); }
+                const ix = 690 + (i % 2) * 104, iy = 294 + Math.floor(i / 2) * 108;
+                const S = ingSprite(s.kind);
+                ctx.drawImage(S.c, ix - 44, iy - 44, 88, 88);
+                if (s.used) {
+                  ctx.fillStyle = UI.ok; ctx.beginPath(); ctx.arc(ix + 33, iy + 32, 15, 0, Math.PI * 2); ctx.fill();
+                  ctx.strokeStyle = "#FFFFFF"; ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
+                  ctx.beginPath(); ctx.moveTo(ix + 25, iy + 32); ctx.lineTo(ix + 31, iy + 38); ctx.lineTo(ix + 42, iy + 26); ctx.stroke();
+                }
               });
               ctx.restore();
             }
           }
-          // plaques dels ingredients (sempre rectes, per sobre)
+          // Una única targeta associa cada imatge amb la seva lletra o paraula.
+          // Es dibuixa damunt del taulell per evitar que aquest tapi les etiquetes.
           for (const s of shelf) {
-            if (s.used || phase === "decor" || phase === "serve") continue;
-            const a = clamp(s.appear / 0.3, 0, 1), [sx, sy] = s.slot, ph = plateSize(ctx, s.text, size).h;
-            // etiqueta penjada del prestatge
-            ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = "rgba(120,70,50,0.6)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(sx - 20, sy + 12); ctx.lineTo(sx - 20, sy + 26); ctx.moveTo(sx + 20, sy + 12); ctx.lineTo(sx + 20, sy + 26); ctx.stroke(); ctx.restore();
-            drawPlate(ctx, s.text, sx, sy + 22 + ph / 2 - s.pop * 6, { size, alpha: a, progress: s.typed || 0, state: s.locked ? "active" : null, shadowBlur: 6 });
+            if (s.used || phase === "decor" || phase === "serve" || phase === "leave" || phase === "done") continue;
+            const [sx, sy] = s.slot, top = sy - 123;
+            const a = clamp(s.appear / 0.3, 0, 1);
+            ctx.save(); ctx.globalAlpha = a;
+            ctx.shadowColor = "rgba(45,30,20,0.2)"; ctx.shadowBlur = 10; ctx.shadowOffsetY = 4;
+            ctx.fillStyle = "#FFFFFF"; ctx.strokeStyle = s.locked ? BRAND.petroli : "#D8D0C5"; ctx.lineWidth = s.locked ? 4 : 2;
+            rr(ctx, sx - 100, top, 200, 208, 20); ctx.fill(); ctx.stroke();
+            ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+            ctx.drawImage(ingSprite(s.kind).c, sx - 52, top + 13, 104, 104);
+            ctx.strokeStyle = "#EEE8DF"; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(sx - 78, top + 125); ctx.lineTo(sx + 78, top + 125); ctx.stroke();
+            drawPlate(ctx, s.text, sx, top + 165, { size: L >= 5 ? 30 : Math.min(size, 52), progress: s.typed || 0, state: s.locked ? "active" : null, shadowBlur: 0 });
+            ctx.restore();
           }
           // decoracions disponibles (fase de decoració)
           if (phase === "decor" || (phase === "serve" && pt < 0.3)) {

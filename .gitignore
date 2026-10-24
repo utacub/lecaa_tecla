@@ -8,3 +8,8 @@ release-qa/
 
 dist/pwa/index.html
 dist/pwa/sw.js
+
+# Captures regenerables de les proves Canvas
+qa/game-*-l*.png
+qa/tower-finale-l*.png
+qa/bakery-all-ingredients.png

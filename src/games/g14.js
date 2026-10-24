@@ -74,6 +74,7 @@
   /* ---------- art: escenari, focus, públic de feltre ---------- */
   function stageBg() {
     return Sprites.get("concertStage", W, H, (x) => {
+      if(Art.get("concert-bg")){x.drawImage(Art.get("concert-bg"),0,0,W,H);return;}
       const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#0B0820"); g.addColorStop(0.55, "#1B1240"); g.addColorStop(1, "#090616"); x.fillStyle = g; x.fillRect(0, 0, W, H);
       // pantalla LED del fons amb punts
       x.save(); rr(x, 300, 96, 1000, 420, 24); x.clip();
@@ -295,7 +296,7 @@
           // focus que escombren l'escenari
           ctx.save(); ctx.globalCompositeOperation = "lighter";
           [["#FF3BD4", 330, 0.42], ["#19E6FF", 620, 0.12], ["#FFE23B", 980, -0.12], ["#B98BFF", 1270, -0.42]].forEach(([c, x, a], i) => {
-            coneDraw(ctx, c, x, 96, a + Math.sin(st.bt * Math.PI / 4 + i * 1.7) * 0.28, 0.55 + 0.25 * st.energy);
+            coneDraw(ctx, c, x, 96, a + (Settings.reduceMotion ? 0 : Math.sin(st.bt * Math.PI / 4 + i * 1.7) * 0.12), 0.15 + 0.12 * st.energy);
           });
           ctx.restore();
           [330, 620, 980, 1270].forEach((x, i) => { ctx.fillStyle = "#2A2F3D"; rr(ctx, x - 22, 84, 44, 30, 8); ctx.fill(); ctx.fillStyle = LANE_COL[[0, 1, 2, 4][i]]; ctx.beginPath(); ctx.ellipse(x, 114, 16, 6, 0, 0, 6.28); ctx.fill(); });
@@ -310,7 +311,7 @@
           notesFx.forEach(n => { const a = clamp(1.4 - n.t, 0, 1); ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = n.col; ctx.translate(n.x + Math.sin(n.t * 5) * 10, n.y); ctx.beginPath(); ctx.ellipse(0, 0, 11, 8, -0.4, 0, 6.28); ctx.fill(); ctx.fillRect(8, -34, 4, 34); if (n.k) ctx.fillRect(8, -34, 18, 6); ctx.restore(); });
           // públic de feltre en silueta
           const e = st.energy, sit = clamp((0.32 - e) / 0.32, 0, 1);
-          fans.forEach((f, i) => {
+          (Art.get("concert-bg") ? [] : fans).forEach((f, i) => {
             const dance = e > 0.35 ? Math.abs(Math.sin(st.bt * Math.PI + f.ph)) * 16 * e : 0, y = H + 34 + sit * 46 - dance + f.s * 6;
             Sprites.draw(ctx, fanSprite(f.kind, f.col), f.x, y, { s: f.s, ay: 1 });
             if (f.stick && e > 0.6) { const a = Math.sin(st.bt * Math.PI / 2 + f.ph) * 0.35 + 0.2, bx = f.x + 62 * f.s, by = y - 70 * f.s; ctx.save(); ctx.lineCap = "round"; ctx.strokeStyle = "#2C1F4A"; ctx.lineWidth = 14 * f.s; ctx.beginPath(); ctx.moveTo(bx - 6, by + 30); ctx.lineTo(bx, by); ctx.stroke(); ctx.globalCompositeOperation = "lighter"; ctx.strokeStyle = rgba(f.stick, 0.35); ctx.lineWidth = 16; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + Math.sin(a) * 70, by - Math.cos(a) * 70); ctx.stroke(); ctx.strokeStyle = mix(f.stick, "#FFFFFF", 0.5); ctx.lineWidth = 6; ctx.stroke(); ctx.restore(); }

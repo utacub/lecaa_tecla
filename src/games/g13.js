@@ -11,6 +11,8 @@
 
   /* ---------- bloc de fusta pintada (prerenderitzat) ---------- */
   const blockSpr = (col, w) => Sprites.get(`g13b${col}${w}`, w + 8, BH + 24, (c) => {
+    const art=Art.cell("tower-blocks",Math.max(0,COLS.indexOf(col)),4,2,w+8,BH+24);
+    if(art){c.drawImage(art,0,0,w+8,BH+24);return;}
     const x0 = 4, y0 = 18, d = 14;
     // cara de dalt en perspectiva
     c.beginPath(); c.moveTo(x0, y0); c.lineTo(x0 + d, y0 - d); c.lineTo(x0 + w - d, y0 - d); c.lineTo(x0 + w, y0); c.closePath(); c.fillStyle = shade(col, 0.3); c.fill();
@@ -74,22 +76,22 @@
     c.save(); c.translate(1420, 120); c.fillStyle = "#3B8FE0"; c.beginPath(); c.moveTo(-70, -40); c.lineTo(60, -40); c.lineTo(40, 0); c.lineTo(-50, 0); c.closePath(); c.fill(); c.fillStyle = "#2B2B2B"; c.beginPath(); c.arc(-10, 10, 18, 0, 6.28); c.fill(); c.fillStyle = "#999"; c.beginPath(); c.arc(-10, 10, 7, 0, 6.28); c.fill(); c.strokeStyle = "#7A5230"; c.lineWidth = 7; c.beginPath(); c.moveTo(50, -30); c.lineTo(110, -10); c.stroke(); c.restore();
   });
   const mastSpr = () => Sprites.get("g13mast", 60, 60, (c) => {
-    c.strokeStyle = "#E0A21E"; c.lineWidth = 6; c.lineCap = "round"; c.beginPath(); c.moveTo(8, 0); c.lineTo(8, 60); c.moveTo(52, 0); c.lineTo(52, 60); c.stroke();
-    c.lineWidth = 4; c.strokeStyle = "#F5B82E"; c.beginPath(); c.moveTo(8, 0); c.lineTo(52, 30); c.lineTo(8, 60); c.moveTo(8, 30); c.lineTo(52, 30); c.stroke();
+    c.strokeStyle = "#95602E"; c.lineWidth = 10; c.lineCap = "round"; c.beginPath(); c.moveTo(8, 0); c.lineTo(8, 60); c.moveTo(52, 0); c.lineTo(52, 60); c.stroke();
+    c.lineWidth = 4; c.strokeStyle = "#C89551"; c.beginPath(); c.moveTo(8, 0); c.lineTo(52, 30); c.lineTo(8, 60); c.moveTo(8, 30); c.lineTo(52, 30); c.stroke();
     c.strokeStyle = "rgba(255,255,255,0.45)"; c.lineWidth = 2; c.beginPath(); c.moveTo(6, 0); c.lineTo(6, 60); c.stroke();
   });
   const jibSpr = () => Sprites.get("g13jib", W, 200, (c) => {
     const y = 96, x0 = 360, x1 = 1520, mx = 1330;
     // cabina
     c.save(); c.shadowColor = "rgba(0,0,0,0.25)"; c.shadowBlur = 10; c.shadowOffsetY = 5;
-    rr(c, mx - 50, y + 26, 100, 74, 10); c.fillStyle = "#F5B82E"; c.fill(); c.restore();
+    rr(c, mx - 50, y + 26, 100, 74, 10); c.fillStyle = "#C89551"; c.fill(); c.restore();
     rr(c, mx - 38, y + 36, 54, 40, 6); c.fillStyle = "#BFE3F5"; c.fill(); c.fillStyle = "rgba(255,255,255,0.6)"; c.fillRect(mx - 34, y + 40, 12, 32);
     // braç (gelosia)
-    c.strokeStyle = "#E0A21E"; c.lineWidth = 7; c.lineCap = "round"; c.beginPath(); c.moveTo(x0, y); c.lineTo(x1, y); c.moveTo(x0 + 20, y + 30); c.lineTo(x1 - 10, y + 30); c.stroke();
-    c.lineWidth = 4; c.strokeStyle = "#F5B82E"; c.beginPath(); for (let x = x0 + 20; x < x1 - 30; x += 40) { c.moveTo(x, y + 30); c.lineTo(x + 20, y); c.lineTo(x + 40, y + 30); } c.stroke();
+    c.strokeStyle = "#95602E"; c.lineWidth = 12; c.lineCap = "round"; c.beginPath(); c.moveTo(x0, y); c.lineTo(x1, y); c.moveTo(x0 + 20, y + 30); c.lineTo(x1 - 10, y + 30); c.stroke();
+    c.lineWidth = 4; c.strokeStyle = "#C89551"; c.beginPath(); for (let x = x0 + 20; x < x1 - 30; x += 40) { c.moveTo(x, y + 30); c.lineTo(x + 20, y); c.lineTo(x + 40, y + 30); } c.stroke();
     c.strokeStyle = "rgba(255,255,255,0.5)"; c.lineWidth = 2; c.beginPath(); c.moveTo(x0, y - 2); c.lineTo(x1, y - 2); c.stroke();
     // pal de dalt i tirants
-    c.strokeStyle = "#E0A21E"; c.lineWidth = 6; c.beginPath(); c.moveTo(mx, y); c.lineTo(mx, y - 70); c.stroke();
+    c.strokeStyle = "#95602E"; c.lineWidth = 10; c.beginPath(); c.moveTo(mx, y); c.lineTo(mx, y - 70); c.stroke();
     c.strokeStyle = "#8A6A40"; c.lineWidth = 2; c.beginPath(); c.moveTo(mx, y - 70); c.lineTo(x0 + 60, y); c.moveTo(mx, y - 70); c.lineTo(x1 - 20, y); c.stroke();
     // contrapès
     rr(c, x1 - 110, y + 32, 90, 56, 6); c.fillStyle = "#8C9399"; c.fill(); c.fillStyle = "rgba(255,255,255,0.3)"; c.fillRect(x1 - 104, y + 36, 78, 6); c.fillStyle = "#6D747A"; c.fillRect(x1 - 110, y + 60, 90, 3);
@@ -113,6 +115,7 @@
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.translate(x, y);
       const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#7EC3EE"); g.addColorStop(1, "#D8F0FA"); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      if(Art.get("tower-bg"))ctx.drawImage(Art.get("tower-bg"),0,0,w,h);
       const s = Math.min(w / 320, h / 230); ctx.translate(w / 2, h / 2); ctx.scale(s, s);
       Sprites.draw(ctx, cloudSpr(3), -150, -90, { s: 0.5 }); Sprites.draw(ctx, cloudSpr(5), 160, -70, { s: 0.45 });
       ctx.fillStyle = "#E9C98E"; ctx.fillRect(-400, 100, 800, 200);
@@ -219,7 +222,7 @@
             st.endT += dt;
             if (st.roof) { st.roof.t += dt; if (st.roof.t > 0.6 && !st.roof.landed) { st.roof.landed = true; Sfx.play("wood"); Sfx.play("win"); } }
             if (!st.fail && st.endT > 0.9 && Math.floor(st.endT * 2.5) !== st.fwN && st.endT < 3.2) { st.fwN = Math.floor(st.endT * 2.5); fireworksBurst(); }
-            if (st.endT > (st.fail ? 1.6 : 3.6) && !st.fin) {
+            if (st.endT > (st.fail ? 1.6 : 5.0) && !st.fin) {
               st.fin = true; if (!api.demo && tower.length > record) Store.set(recKey, tower.length);
               const ok = !st.fail || tower.length >= Math.ceil(GOAL / 2);
               api.finish(ok, { collectName: st.fail ? `una torre de ${tower.length} blocs` : "bloc nou: " + pick(SHAPES) });
@@ -227,17 +230,24 @@
           }
         },
         draw(ctx) {
+          // La teulada aterra abans del pla general; mantenim el resultat visible abans de puntuar.
+          const reveal = st.done && !st.fail ? (Settings.reduceMotion ? (st.endT >= 0.8 ? 1 : 0) : Ease.inOutQuad(clamp((st.endT - 0.8) / 2.2, 0, 1))) : 0;
+          const zoom = lerp(1, Math.min(1, (G0 - 140) / (st.H + 180)), reveal);
           const t = api.t, cam = st.cam, gy = groundY(), skyK = clamp(cam / (GOAL * BH), 0, 1);
           // cel que s'aprofundeix a mesura que pugem
           const sg = ctx.createLinearGradient(0, 0, 0, H); sg.addColorStop(0, mix("#86C8F0", "#4E8FD8", skyK)); sg.addColorStop(1, mix("#E4F5FB", "#A9D6F5", skyK)); ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H);
           // núvols llunyans (parallax)
           for (const [x, y, sd, s] of [[180, 220, 3, 0.6], [1350, 330, 5, 0.5], [620, 120, 7, 0.45], [1050, -280, 9, 0.6], [260, -620, 11, 0.55], [1250, -1000, 3, 0.6]]) Sprites.draw(ctx, cloudSpr(sd), x + Math.sin(t * 0.05 + sd) * 30, y + cam * 0.35, { s, alpha: 0.85 });
           // ciutat pastel amb parallax
-          const cy = G0 - 400 + cam * 0.45; if (cy < H) ctx.drawImage(citySpr().c, 0, cy, W, 420);
+          const cy = G0 - 400 + cam * 0.45; if(Art.get("tower-bg")){ctx.drawImage(Art.get("tower-bg"),0,cam*0.45*(1-reveal),W,H);}else if (cy < H) ctx.drawImage(citySpr().c, 0, cy, W, 420);
+          // Càmera del món: el pla final inclou la base, tots els blocs i la teulada.
+          ctx.save();
+          ctx.translate(BASEX, lerp(gy, G0, reveal));
+          ctx.scale(zoom, zoom); ctx.translate(-BASEX, -gy);
           // terra del solar
-          if (gy < H + 20) ctx.drawImage(groundSpr().c, 0, gy - 6, W, 260);
+          if (gy < H + 20 && !Art.get("tower-bg")) ctx.drawImage(groundSpr().c, 0, gy - 6, W, 260);
           // pal de la grua (s'allarga cap avall)
-          const ms = mastSpr(), mtop = 186, mbot = Math.min(H, gy);
+          const ms = mastSpr(), mtop = 186, mbot = reveal > 0 ? gy : Math.min(H, gy);
           for (let y = mtop; y < mbot; y += 60) ctx.drawImage(ms.c, 1300, y, 60, Math.min(60, mbot - y));
           // núvols de cotó a l'altura dels núvols (darrere)
           const goalY = gy - GOAL * BH;
@@ -268,17 +278,18 @@
             Sprites.draw(ctx, blockSpr(cur.col, cur.w), hx, hy - 7, { rot: hr });
           }
           // braç i carro (davant)
-          ctx.drawImage(jibSpr().c, 0, 0, W, 200);
+          const jib=Art.cell("tower-jib",0,1,1,1180,300);if(jib)ctx.drawImage(jib,350,65,1180,300);else ctx.drawImage(jibSpr().c, 0, 0, W, 200);
           ctx.fillStyle = "#3A3A40"; rr(ctx, PIV[0] - 26, 120, 52, 20, 5); ctx.fill(); ctx.fillStyle = "#6A6A72"; ctx.beginPath(); ctx.arc(PIV[0] - 14, 120, 6, 0, 6.28); ctx.arc(PIV[0] + 14, 120, 6, 0, 6.28); ctx.fill();
           // guia: línia discontínua del centre de la torre
           if (cur && st.phase === "swing") { const top = topLocal(), [tx, ty] = toScreen(top ? top.x : BASEX, gy - st.H); ctx.save(); ctx.setLineDash([10, 12]); ctx.strokeStyle = "rgba(255,255,255,0.55)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(tx, ty - 6); ctx.lineTo(tx, ty - 70); ctx.stroke(); ctx.restore(); ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.beginPath(); ctx.moveTo(tx - 9, ty - 78); ctx.lineTo(tx + 9, ty - 78); ctx.lineTo(tx, ty - 66); ctx.closePath(); ctx.fill(); }
           // núvols de cotó davant de tot quan hi arribem
           for (const [x, dy, sd, s] of [[120, 70, 19, 1.0], [1480, 60, 21, 1.1]]) Sprites.draw(ctx, cloudSpr(sd), x, goalY + dy, { s, alpha: 0.95 });
           // plaques (sempre dretes)
-          for (const b of tower) { const [px, py] = toScreen(b.x, gy - b.hb - BH / 2); if (py > -60 && py < H + 60) drawPlate(ctx, b.text, px, py + 2, { size, shadowBlur: 4, shadowY: 2 }); }
+          for (const b of tower) { const [px, py] = toScreen(b.x, gy - b.hb - BH / 2); if (reveal > 0 || (py > -60 && py < H + 60)) drawPlate(ctx, b.text, px, py + 2, { size, shadowBlur: 4, shadowY: 2 }); }
           for (const f of fallers) drawPlate(ctx, f.text, f.x, f.y, { size, alpha: 0.9 });
           if (cur) drawPlate(ctx, cur.text, hx, hy + 2, { size, progress: cur.typed, state: st.phase === "swing" ? "active" : null, shadowBlur: 6 });
           for (const p of pops) { const k = p.t / 1.2; ctx.save(); ctx.globalAlpha = 1 - Ease.inCubic(k); text(ctx, p.txt, p.x, p.y - k * 40, { size: 36, weight: 900, font: FONT_T, color: p.bad ? "#FFE3DC" : "#FFFFFF", stroke: p.bad ? UI.coralDark : BRAND.petroli, lw: 8 }); ctx.restore(); }
+          ctx.restore();
           drawVignette(ctx, 0.18, "30,60,90");
         },
       };

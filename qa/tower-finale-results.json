@@ -1,0 +1,74 @@
+[
+  {
+    "id": 13,
+    "level": 1,
+    "finished": true,
+    "finaleSeconds": 5,
+    "keys": 20,
+    "hits": 20,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 2,
+    "finished": true,
+    "finaleSeconds": 5,
+    "keys": 20,
+    "hits": 20,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 3,
+    "finished": true,
+    "finaleSeconds": 5,
+    "keys": 20,
+    "hits": 20,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 4,
+    "finished": true,
+    "finaleSeconds": 5,
+    "keys": 40,
+    "hits": 40,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 5,
+    "finished": true,
+    "finaleSeconds": 5,
+    "keys": 51,
+    "hits": 51,
+    "progress": [
+      14,
+      14
+    ]
+  },
+  {
+    "id": 13,
+    "level": 6,
+    "finished": true,
+    "finaleSeconds": 5,
+    "keys": 121,
+    "hits": 121,
+    "progress": [
+      14,
+      14
+    ]
+  }
+]

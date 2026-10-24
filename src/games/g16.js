@@ -2,7 +2,7 @@
 /* 16. El laberint del tresor — mapa de pirates en paper kraft, tinta i ceres; l'explorador porta una torxa */
 (() => {
   const INK = "#3A2614", RED = "#C2302A";
-  const COLS = 6, ROWS = 4, X0 = 235, DX = 226, Y0 = 222, DY = 178;
+  const COLS = 6, ROWS = 4, X0 = 330, DX = 186, Y0 = 250, DY = 150;
   /* llocs del mapa: paraula (nivell 5) i pistes (nivell 6, dues formes amb inicial diferent) */
   const MARKS = {
     cova: { w: "cova", p: ["entra a la cova", "per la cova"] },
@@ -21,6 +21,7 @@
 
   /* ---------- dibuixos de tinta ---------- */
   function inkPalm(x, px, py, s) {
+    if(Art.tanda4Sprite(x,0,px,py,90*s,90*s))return;
     x.save(); x.translate(px, py); x.scale(s, s); x.lineCap = "round"; x.lineJoin = "round";
     x.strokeStyle = INK; x.lineWidth = 2.2; x.fillStyle = "rgba(120,90,50,0.5)";
     x.beginPath(); x.moveTo(-4, 0); x.quadraticCurveTo(2, -20, 6, -42); x.lineTo(10, -42); x.quadraticCurveTo(7, -20, 4, 0); x.closePath(); x.fill(); x.stroke();
@@ -29,18 +30,23 @@
     x.restore();
   }
   function inkMountain(x, px, py, s) {
+    if(Art.tanda4Sprite(x,1,px,py,90*s,90*s))return;
     x.save(); x.translate(px, py); x.scale(s, s); x.strokeStyle = INK; x.lineWidth = 2.2; x.lineJoin = "round";
     x.fillStyle = "rgba(140,110,70,0.45)"; x.beginPath(); x.moveTo(-34, 0); x.lineTo(-6, -46); x.lineTo(4, -34); x.lineTo(12, -40); x.lineTo(36, 0); x.closePath(); x.fill(); x.stroke();
     x.lineWidth = 1.2; for (let i = 0; i < 6; i++) { x.beginPath(); x.moveTo(-2 + i * 5, -36 + i * 6); x.lineTo(4 + i * 5, -30 + i * 6 + 8); x.stroke(); }
     x.restore();
   }
   function inkTree(x, px, py, s) {
+    if(Art.tanda4Sprite(x,2,px,py,90*s,90*s))return;
     x.save(); x.translate(px, py); x.scale(s, s); x.strokeStyle = INK; x.lineWidth = 2;
     x.beginPath(); x.moveTo(0, 0); x.lineTo(0, -14); x.stroke();
     x.fillStyle = "rgba(80,120,60,0.6)"; x.beginPath(); x.arc(0, -24, 13, 0, 6.28); x.fill(); x.stroke();
     x.restore();
   }
   function drawMark(x, id, px, py) {
+    const idx = ["cova","pont","far","bosc","llac","torre","palmera","volcà","mina","roca"].indexOf(id);
+    const im = idx >= 0 && Art.cell("maze-marks",idx,5,2,90,90);
+    if(im){x.drawImage(im,px-45,py-65,90,90);return;}
     x.save(); x.translate(px, py); x.strokeStyle = INK; x.lineWidth = 2.4; x.lineCap = x.lineJoin = "round";
     const fillS = (c) => { x.fillStyle = c; x.fill(); x.stroke(); };
     if (id === "cova") { x.beginPath(); x.moveTo(-40, 14); x.quadraticCurveTo(-34, -30, 0, -34); x.quadraticCurveTo(34, -30, 40, 14); x.closePath(); fillS("rgba(130,105,70,0.6)"); x.beginPath(); x.moveTo(-16, 14); x.quadraticCurveTo(-14, -12, 0, -14); x.quadraticCurveTo(14, -12, 16, 14); x.closePath(); fillS("rgba(30,20,10,0.85)"); }
@@ -56,6 +62,7 @@
     x.restore();
   }
   function drawKey(ctx, x, y, s, t) {
+    if(Art.tanda4Sprite(ctx,5,x,y+26*s,58*s,68*s))return;
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.rotate(-0.5 + Math.sin(t * 2) * 0.1);
     ctx.lineWidth = 2.5; ctx.strokeStyle = "#7A5208";
     const g = ctx.createLinearGradient(-20, -10, 20, 10); g.addColorStop(0, "#FFE48A"); g.addColorStop(0.5, "#E8B030"); g.addColorStop(1, "#B47A10"); ctx.fillStyle = g;
@@ -68,6 +75,7 @@
     return Sprites.get("g16glow" + col, 200, 200, (x, w, h) => { const g = x.createRadialGradient(100, 100, 0, 100, 100, 100); g.addColorStop(0, rgba(col, 0.75)); g.addColorStop(0.35, rgba(col, 0.28)); g.addColorStop(1, rgba(col, 0)); x.fillStyle = g; x.fillRect(0, 0, w, h); });
   }
   function drawChest(ctx, x, y, open, t) {
+    if(Art.tanda4Sprite(ctx,open>0.5?7:6,x,y+28,115,100))return;
     ctx.save(); ctx.translate(x, y);
     ctx.fillStyle = "rgba(30,15,5,0.3)"; ctx.beginPath(); ctx.ellipse(0, 26, 46, 10, 0, 0, 6.28); ctx.fill();
     const wood = "#8A5428";
@@ -97,6 +105,8 @@
   }
   /* explorador 2.5D amb torxa */
   function drawExplorer(ctx, x, y, t, o = {}) {
+    const ss=o.s||1.25,bb=Settings.reduceMotion?0:(o.walk?Math.abs(Math.sin(t*11))*3:Math.sin(t*2));
+    if(Art.tanda4Sprite(ctx,4,x,y-bb,75*ss,95*ss,(o.face||1)<0))return;
     const walk = o.walk ? t * 11 : 0, bob = o.walk ? Math.abs(Math.sin(walk)) * 4 : Math.sin(t * 2) * 1.2;
     ctx.save(); ctx.translate(x, y); ctx.scale(o.s || 1.25, o.s || 1.25);
     ctx.fillStyle = "rgba(30,15,5,0.35)"; ctx.beginPath(); ctx.ellipse(0, 4, 26, 8, 0, 0, 6.28); ctx.fill();
@@ -186,18 +196,8 @@
   function mapLayer(M) {
     const c = Tex.get("g16mapCanvas", () => makeCanvas(W, H)), x = c.getContext("2d");
     x.clearRect(0, 0, W, H);
-    x.drawImage(Tex.kraft(800, 450, { seed: 23 }), 0, 0, W, H);
-    // mar a les vores (ceres blaves) i costa de l'illa
     const R = mulberry32(7);
-    const isl = []; for (let i = 0; i < 64; i++) { const a = i / 64 * 6.283, w = 1 + Math.sin(a * 3 + 1) * 0.025 + Math.sin(a * 7 + 2) * 0.018 + (R() - 0.5) * 0.012; isl.push([800 + Math.cos(a) * 770 * w * (1 + 0.06 * Math.cos(a * 2)), 488 + Math.sin(a) * 372 * w]); }
-    const island = (cx, nb) => { if (!nb) cx.beginPath(); const pts = isl; pts.forEach((p, i) => i ? cx.lineTo(p[0], p[1]) : cx.moveTo(p[0], p[1])); cx.closePath(); };
-    x.save(); x.beginPath(); x.rect(0, 0, W, H); island(x, true); x.clip("evenodd");
-    x.fillStyle = "rgba(60,120,170,0.38)"; x.fillRect(0, 0, W, H);
-    x.strokeStyle = "rgba(40,90,140,0.45)"; x.lineWidth = 2; x.lineCap = "round";
-    for (let k = 0; k < 90; k++) { const px = R() * W, py = R() * H; x.beginPath(); x.moveTo(px, py); x.quadraticCurveTo(px + 8, py - 6, px + 16, py); x.quadraticCurveTo(px + 24, py + 6, px + 32, py); x.stroke(); }
-    x.restore();
-    x.save(); island(x); x.fillStyle = "rgba(235,205,140,0.25)"; x.fill(); x.strokeStyle = INK; x.lineWidth = 3; x.stroke(); x.restore();
-    x.save(); x.strokeStyle = "rgba(40,90,140,0.5)"; x.lineWidth = 2; x.setLineDash([6, 8]); x.translate(800, 485); x.scale(1.03, 1.05); x.translate(-800, -485); island(x); x.stroke(); x.restore();
+    if(Art.get("maze-bg"))x.drawImage(Art.get("maze-bg"),0,0,W,H);else x.drawImage(Tex.kraft(800,450,{seed:23}),0,0,W,H);
     // decoració entre camins (lluny de camins i cruïlles)
     const segs = []; M.edges.forEach(e => { for (let k = 0; k <= 10; k++) segs.push(curvePoint(M.nodes, e, e.a, k / 10)); });
     const free = (px, py, r) => segs.every(([sx, sy]) => Math.hypot(sx - px, sy - py) > r) && M.nodes.every(n => Math.hypot(n.mx - px, n.my - py) > 60);
@@ -208,10 +208,10 @@
     // camins: banda de sorra amb vora de tinta
     x.lineCap = x.lineJoin = "round";
     const pathE = (e) => { const A = M.nodes[e.a], B = M.nodes[e.b]; x.beginPath(); x.moveTo(A.x, A.y); x.quadraticCurveTo(e.cx, e.cy, B.x, B.y); };
-    M.edges.forEach(e => { pathE(e); x.strokeStyle = "rgba(58,38,20,0.85)"; x.lineWidth = 26; x.stroke(); });
-    M.edges.forEach(e => { pathE(e); x.strokeStyle = "#E2C590"; x.lineWidth = 20; x.stroke(); });
+    M.edges.forEach(e => { pathE(e); x.strokeStyle = "rgba(58,38,20,0.85)"; x.lineWidth = 46; x.stroke(); });
+    M.edges.forEach(e => { pathE(e); x.strokeStyle = "#E2C590"; x.lineWidth = 40; x.stroke(); });
     M.edges.forEach(e => { pathE(e); x.strokeStyle = "rgba(160,120,70,0.35)"; x.lineWidth = 2; x.setLineDash([3, 9]); x.stroke(); x.setLineDash([]); });
-    M.nodes.forEach(n => { x.fillStyle = "#E2C590"; x.beginPath(); x.arc(n.x, n.y, 15, 0, 6.28); x.fill(); });
+    M.nodes.forEach(n => { x.fillStyle = "#E2C590"; x.beginPath(); x.arc(n.x, n.y, 21, 0, 6.28); x.fill(); });
     // llocs
     M.nodes.forEach(n => { if (n.i !== M.start) drawMark(x, n.mark, n.mx, n.my); });
     // rosa dels vents al mar i cartutx
@@ -235,7 +235,7 @@
     goal: l => l <= 3 ? "A cada cruïlla, escriu la lletra del cartell del camí que vols. Recull 3 claus i obre el cofre." : l === 4 ? "A cada cruïlla, escriu la síl·laba del cartell del camí. Recull 3 claus i obre el cofre." : l === 5 ? "A cada cruïlla, escriu la paraula del cartell del camí. Recull 3 claus i obre el cofre." : "Els cartells són pistes. Escriu la pista del camí que vols. Recull 3 claus i obre el cofre.",
     thumb(ctx, x, y, w, h, t) {
       ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.translate(x, y);
-      ctx.drawImage(Tex.kraft(800, 450, { seed: 23 }), 0, 0, w, h);
+      ctx.drawImage(Art.get("maze-bg")||Tex.kraft(800, 450, { seed: 23 }), 0, 0, w, h);
       const s = Math.max(w / 320, h / 220); ctx.translate(w / 2, h / 2); ctx.scale(s, s);
       inkPalm(ctx, -120, -30, 0.8); inkMountain(ctx, 150, -40, 0.7); inkTree(ctx, -150, 100, 0.8); inkPalm(ctx, 150, 110, 0.7);
       ctx.lineCap = ctx.lineJoin = "round";

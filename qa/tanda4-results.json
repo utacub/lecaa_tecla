@@ -1,0 +1,332 @@
+[
+  {
+    "id": 13,
+    "level": 1,
+    "finished": true,
+    "keys": 20,
+    "hits": 20,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 2,
+    "finished": true,
+    "keys": 20,
+    "hits": 20,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 3,
+    "finished": true,
+    "keys": 20,
+    "hits": 20,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 4,
+    "finished": true,
+    "keys": 40,
+    "hits": 40,
+    "progress": [
+      20,
+      20
+    ]
+  },
+  {
+    "id": 13,
+    "level": 5,
+    "finished": true,
+    "keys": 54,
+    "hits": 54,
+    "progress": [
+      14,
+      14
+    ]
+  },
+  {
+    "id": 13,
+    "level": 6,
+    "finished": true,
+    "keys": 114,
+    "hits": 114,
+    "progress": [
+      14,
+      14
+    ]
+  },
+  {
+    "id": 14,
+    "level": 1,
+    "finished": true,
+    "keys": 218,
+    "hits": 34,
+    "progress": [
+      35,
+      35
+    ]
+  },
+  {
+    "id": 14,
+    "level": 2,
+    "finished": true,
+    "keys": 233,
+    "hits": 39,
+    "progress": [
+      40,
+      40
+    ]
+  },
+  {
+    "id": 14,
+    "level": 3,
+    "finished": true,
+    "keys": 215,
+    "hits": 42,
+    "progress": [
+      44,
+      44
+    ]
+  },
+  {
+    "id": 14,
+    "level": 4,
+    "finished": true,
+    "keys": 248,
+    "hits": 83,
+    "progress": [
+      35,
+      35
+    ]
+  },
+  {
+    "id": 14,
+    "level": 5,
+    "finished": true,
+    "keys": 176,
+    "hits": 74,
+    "progress": [
+      23,
+      23
+    ]
+  },
+  {
+    "id": 14,
+    "level": 6,
+    "finished": true,
+    "keys": 158,
+    "hits": 111,
+    "progress": [
+      12,
+      12
+    ]
+  },
+  {
+    "id": 15,
+    "level": 1,
+    "finished": true,
+    "keys": 16,
+    "hits": 16,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 15,
+    "level": 2,
+    "finished": true,
+    "keys": 18,
+    "hits": 18,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 15,
+    "level": 3,
+    "finished": true,
+    "keys": 21,
+    "hits": 21,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 15,
+    "level": 4,
+    "finished": true,
+    "keys": 36,
+    "hits": 36,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 15,
+    "level": 5,
+    "finished": true,
+    "keys": 19,
+    "hits": 19,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 15,
+    "level": 6,
+    "finished": true,
+    "keys": 22,
+    "hits": 22,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 16,
+    "level": 1,
+    "finished": true,
+    "keys": 15,
+    "hits": 15,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 16,
+    "level": 2,
+    "finished": true,
+    "keys": 21,
+    "hits": 21,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 16,
+    "level": 3,
+    "finished": true,
+    "keys": 18,
+    "hits": 18,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 16,
+    "level": 4,
+    "finished": true,
+    "keys": 32,
+    "hits": 32,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 16,
+    "level": 5,
+    "finished": true,
+    "keys": 60,
+    "hits": 60,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 16,
+    "level": 6,
+    "finished": true,
+    "keys": 297,
+    "hits": 297,
+    "progress": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": 17,
+    "level": 1,
+    "finished": true,
+    "keys": 36,
+    "hits": 36,
+    "progress": [
+      6,
+      6
+    ]
+  },
+  {
+    "id": 17,
+    "level": 2,
+    "finished": true,
+    "keys": 36,
+    "hits": 36,
+    "progress": [
+      6,
+      6
+    ]
+  },
+  {
+    "id": 17,
+    "level": 3,
+    "finished": true,
+    "keys": 42,
+    "hits": 42,
+    "progress": [
+      6,
+      6
+    ]
+  },
+  {
+    "id": 17,
+    "level": 4,
+    "finished": true,
+    "keys": 72,
+    "hits": 72,
+    "progress": [
+      6,
+      6
+    ]
+  },
+  {
+    "id": 17,
+    "level": 5,
+    "finished": true,
+    "keys": 144,
+    "hits": 144,
+    "progress": [
+      6,
+      6
+    ]
+  },
+  {
+    "id": 17,
+    "level": 6,
+    "finished": true,
+    "keys": 276,
+    "hits": 276,
+    "progress": [
+      6,
+      6
+    ]
+  }
+]
