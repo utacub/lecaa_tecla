@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revisió dels sons de les lletres</title>
+<style>
+  :root { --petroli: #17676B; --tinta: #203E42; --menta: #E3EFEB; --avis: #B4531A; --fons: #F6F8F7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--tinta); background: var(--fons); }
+  header { background: var(--petroli); color: #fff; padding: 18px 24px; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  header p { margin: 0; opacity: .9; font-size: 14px; max-width: 900px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 16px; }
+  .tabs { display: flex; gap: 8px; margin: 8px 0 16px; flex-wrap: wrap; }
+  .tabs button { border: 2px solid var(--petroli); background: #fff; color: var(--petroli); border-radius: 999px; padding: 8px 18px; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .tabs button.on { background: var(--petroli); color: #fff; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  th, td { padding: 8px 10px; border-bottom: 1px solid #E5ECEA; text-align: left; vertical-align: middle; font-size: 14px; }
+  th { background: var(--menta); font-size: 13px; }
+  td.lt { font-size: 30px; font-weight: 800; width: 60px; text-align: center; }
+  tr.changed { background: #FFF6E5; }
+  tr.flag td.note { color: var(--avis); font-weight: 600; }
+  .play { border: 0; background: var(--petroli); color: #fff; border-radius: 8px; padding: 6px 10px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .play.alt { background: #fff; color: var(--petroli); border: 2px solid var(--petroli); }
+  select { font-size: 14px; padding: 5px; border-radius: 6px; border: 1px solid #A9BDB9; max-width: 260px; }
+  .slots { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .cur { font-family: ui-monospace, monospace; font-size: 13px; color: #4B6366; }
+  .note { font-size: 13px; color: #4B6366; }
+  section { margin-top: 28px; }
+  h2 { font-size: 18px; margin: 0 0 10px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+  .grid button { border: 1px solid #A9BDB9; background: #fff; border-radius: 10px; padding: 10px 6px; cursor: pointer; font-size: 18px; font-weight: 700; color: var(--tinta); }
+  .grid button small { display: block; font-size: 11px; font-weight: 500; color: #4B6366; margin-top: 3px; }
+  .grid button.used { border-color: var(--petroli); box-shadow: inset 0 0 0 1px var(--petroli); }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+  textarea { width: 100%; min-height: 140px; font-family: ui-monospace, monospace; font-size: 12px; border-radius: 8px; border: 1px solid #A9BDB9; padding: 8px; }
+  .legend { font-size: 13px; color: #4B6366; margin: 6px 0 0; }
+  @media (max-width: 700px) { td.note, th.note { display: none; } select { max-width: 150px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Revisió dels sons de les lletres</h1>
+  <p>Escolta quin enregistrament de l'Anna sona amb cada lletra quan el joc la presenta. Si no és el correcte, tria'n un altre (o dos seguits, com la x = /ks/). Els canvis queden marcats en taronja; al final copia el resultat i envia'l.</p>
+</header>
+<main>
+  <div class="tabs" id="tabs"></div>
+  <table>
+    <thead><tr><th>Lletra</th><th>Escoltar</th><th>So assignat</th><th class="note">Observació</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <p class="legend">Fila taronja: canviada respecte de la versió actual. Text taronja a «Observació»: lletra que convé revisar.</p>
+
+  <section>
+    <h2>Tots els enregistraments recuperats</h2>
+    <div id="banks"></div>
+  </section>
+
+  <section>
+    <h2>Resultat</h2>
+    <div class="bar">
+      <button class="play" id="copy">Copia els canvis</button>
+      <button class="play alt" id="reset">Torna a l'assignació actual</button>
+      <span id="msg" class="note"></span>
+    </div>
+    <p class="legend">Només s'inclouen les lletres que has canviat. Enganxa aquest text al fil del projecte.</p>
+    <textarea id="out" readonly></textarea>
+  </section>
+</main>
+<script>
+const DATA = /*DATA*/null;
+const LANGS = { es: "Castellà", ca: "Català" };
+const VOICE = { anna: "Anna", jordi: "Jordi", female: "Anna" };
+// paraules d'exemple per a cada so
+const EX = {
+  es: { a: "casa", e: "mesa", i: "piso", o: "oso", u: "luna", s: "sol", l: "luz", m: "mano", r: "perro", "ɾ": "pera", p: "pan", t: "taza", n: "nube", k: "casa, queso", g: "gato", d: "dedo", f: "foca", b: "boca, vaca", "θ": "cena, zapato", x: "jamón, gente", "ʝ": "llave, yo", "tʃ": "chocolate", "ɲ": "niño" },
+  ca: { a: "casa", e: "cec", "ɛ": "cel", i: "pi", o: "molt", "ɔ": "roba", u: "lluna", "ə": "casa (2a a)", s: "sol", z: "zero", l: "lluna (l)", m: "mà", r: "rosa", "ɾ": "pera", p: "pa", t: "taula", n: "nas", k: "casa", "ɡ": "gat", d: "dit", f: "foc", b: "bou", "ʒ": "joc", "ʎ": "lluna", "ɲ": "nyam", "ʃ": "xai", "t͡ʃ": "cotxe", "d͡ʒ": "metge", j: "iogurt", w: "pauma", "lː": "il·lusió", v: "(v labiodental)" },
+};
+// lletres que val la pena revisar, amb el motiu
+const NOTE = {
+  es: {
+    c: "Sola, la c sol dir-se /k/ (casa). Ara sona /θ/ (cena), que només correspon a ce, ci.",
+    g: "Sola, la g sol dir-se /g/ (gato). Ara sona /x/ (gente), que només correspon a ge, gi.",
+    r: "Ara sona /ɾ/ (pera). A principi de paraula és /r/ (ratón).",
+    y: "Sona /ʝ/ (yo). Com a vocal (rey, y) seria /i/.",
+    x: "Dues locucions seguides: /k/ + /s/.",
+    w: "Fa servir la /w/ del banc català (Anna): el castellà no en té.",
+    h: "Muda: no sona.",
+    k: "Fa servir /k/.", q: "Fa servir /k/.",
+  },
+  ca: {
+    c: "Sona /k/ (casa).", g: "Sona /ɡ/ (gat).", x: "Sona /ʃ/ (xai).", r: "Sona /r/ (rosa).",
+    v: "Sona /b/ (pronúncia central). Hi ha també la /v/ labiodental.", h: "Muda: no sona.", e: "Sona /e/ tancada.", o: "Sona /o/ tancada.",
+    y: "Sona /j/ (iogurt).", w: "Sona /w/.", "ñ": "Sona /ɲ/ (com ny).",
+  },
+};
+const KEY = "lecaa-tecla.revisio-fonemes";
+let lang = "es", state = { ca: {}, es: {} };
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.ca && s.es) state = s; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+// llista de tots els enregistraments: id = lang/voice/ph
+const ALL = [];
+for (const [lg, b] of Object.entries(DATA.bank)) for (const [v, phs] of Object.entries(b.voices)) for (const ph of Object.keys(phs)) ALL.push({ lang: lg, voice: v, ph });
+const idOf = c => c.lang + "/" + c.voice + "/" + c.ph;
+const clipOf = c => DATA.bank[c.lang] && DATA.bank[c.lang].voices[c.voice] && DATA.bank[c.lang].voices[c.voice][c.ph];
+const label = c => "/" + c.ph + "/ · " + LANGS[c.lang] + " " + VOICE[c.voice] + (EX[c.lang][c.ph] ? " · " + EX[c.lang][c.ph] : "");
+
+let audio = null, timer = null;
+function stop() { clearInterval(timer); if (audio) { audio.pause(); audio = null; } }
+function playClip(c) {
+  return new Promise(res => {
+    stop(); const k = clipOf(c); if (!k) return res();
+    const a = new Audio(DATA.audio[k.file]); audio = a;
+    a.onloadedmetadata = () => { a.currentTime = k.start; a.play().catch(res); timer = setInterval(() => { if (a.currentTime >= k.end) { stop(); res(); } }, 15); };
+    a.onended = () => { stop(); res(); }; a.onerror = () => res();
+  });
+}
+async function playList(list) { for (const c of list) { await playClip(c); await new Promise(r => setTimeout(r, 60)); } }
+
+const assigned = (lg, l) => state[lg][l] !== undefined ? state[lg][l] : DATA.current[lg][l];
+const same = (a, b) => JSON.stringify(a.map(idOf)) === JSON.stringify(b.map(idOf));
+
+function select(lg, l, i) {
+  const s = document.createElement("select"), list = assigned(lg, l), cur = list[i];
+  s.add(new Option(i === 0 ? "(cap so)" : "(sense segon so)", ""));
+  const groups = {};
+  for (const c of ALL) {
+    const g = LANGS[c.lang] + " · " + VOICE[c.voice];
+    if (!groups[g]) { groups[g] = document.createElement("optgroup"); groups[g].label = g; }
+    const o = new Option(label(c), idOf(c)); if (cur && idOf(cur) === idOf(c)) o.selected = true; groups[g].appendChild(o);
+  }
+  // primer el banc de l'idioma que es revisa
+  Object.keys(groups).sort((a, b) => (b.startsWith(LANGS[lg]) - a.startsWith(LANGS[lg]))).forEach(g => s.appendChild(groups[g]));
+  s.onchange = () => {
+    const next = assigned(lg, l).slice(); const c = ALL.find(x => idOf(x) === s.value);
+    if (c) next[i] = c; else next.splice(i);
+    const clean = next.filter(Boolean);
+    if (same(clean, DATA.current[lg][l])) delete state[lg][l]; else state[lg][l] = clean;
+    save(); render(); if (clean.length) playList(clean);
+  };
+  return s;
+}
+
+function render() {
+  const tb = document.getElementById("rows"); tb.innerHTML = "";
+  for (const l of Object.keys(DATA.current[lang])) {
+    const list = assigned(lang, l), tr = document.createElement("tr");
+    if (state[lang][l] !== undefined) tr.className = "changed";
+    const note = (NOTE[lang] || {})[l]; if (note && /Ara sona|Sola/.test(note)) tr.classList.add("flag");
+    const td1 = document.createElement("td"); td1.className = "lt"; td1.textContent = l;
+    const td2 = document.createElement("td"); const b = document.createElement("button"); b.className = "play"; b.textContent = "▶ Escolta"; b.disabled = !list.length; b.onclick = () => playList(list); td2.appendChild(b);
+    const td3 = document.createElement("td"); const sl = document.createElement("div"); sl.className = "slots";
+    sl.appendChild(select(lang, l, 0)); if (list.length) { sl.appendChild(document.createTextNode("+")); sl.appendChild(select(lang, l, 1)); }
+    const curTxt = document.createElement("div"); curTxt.className = "cur";
+    curTxt.textContent = "Versió actual: " + (DATA.current[lang][l].length ? DATA.current[lang][l].map(c => "/" + c.ph + "/" + (c.lang !== lang ? " (" + LANGS[c.lang].toLowerCase() + ")" : "")).join(" + ") : "cap so");
+    td3.appendChild(sl); td3.appendChild(curTxt);
+    const td4 = document.createElement("td"); td4.className = "note"; td4.textContent = note || "";
+    tr.append(td1, td2, td3, td4); tb.appendChild(tr);
+  }
+  renderBanks(); renderOut();
+}
+
+function renderBanks() {
+  const box = document.getElementById("banks"); box.innerHTML = "";
+  const used = new Set(Object.keys(DATA.current[lang]).flatMap(l => assigned(lang, l).map(idOf)));
+  for (const [lg, b] of Object.entries(DATA.bank)) for (const [v, phs] of Object.entries(b.voices)) {
+    const h = document.createElement("h2"); h.style.fontSize = "15px"; h.style.marginTop = "14px";
+    h.textContent = LANGS[lg] + " · veu " + VOICE[v] + " (" + Object.keys(phs).length + " sons)"; box.appendChild(h);
+    const g = document.createElement("div"); g.className = "grid";
+    for (const ph of Object.keys(phs)) {
+      const c = { lang: lg, voice: v, ph }, bt = document.createElement("button");
+      if (used.has(idOf(c))) bt.className = "used";
+      bt.innerHTML = "/" + ph + "/<small>" + (EX[lg][ph] || "") + "</small>"; bt.onclick = () => playClip(c); g.appendChild(bt);
+    }
+    box.appendChild(g);
+  }
+}
+
+function renderOut() {
+  const res = {};
+  for (const lg of Object.keys(state)) for (const [l, list] of Object.entries(state[lg])) {
+    (res[lg] = res[lg] || {})[l] = list.length ? list.map(c => "/" + c.ph + "/ " + LANGS[c.lang].toLowerCase() + " " + VOICE[c.voice]).join(" + ") : "cap so";
+  }
+  const n = Object.values(res).reduce((s, o) => s + Object.keys(o).length, 0);
+  document.getElementById("out").value = n ? "Canvis als sons de les lletres de LECAA Tecla:\n" + Object.entries(res).map(([lg, o]) => LANGS[lg] + ":\n" + Object.entries(o).map(([l, t]) => "  " + l + " → " + t).join("\n")).join("\n") : "";
+  document.getElementById("msg").textContent = n ? n + (n === 1 ? " lletra canviada" : " lletres canviades") : "Cap canvi encara";
+}
+
+const tabs = document.getElementById("tabs");
+for (const [lg, name] of Object.entries(LANGS)) {
+  const b = document.createElement("button"); b.textContent = name; b.onclick = () => { lang = lg; [...tabs.children].forEach(x => x.classList.toggle("on", x === b)); render(); };
+  if (lg === lang) b.className = "on"; tabs.appendChild(b);
+}
+document.getElementById("copy").onclick = async () => {
+  const t = document.getElementById("out"); t.select();
+  try { await navigator.clipboard.writeText(t.value); document.getElementById("msg").textContent = "Copiat!"; } catch (e) { document.execCommand("copy"); }
+};
+document.getElementById("reset").onclick = () => { if (confirm("Vols desfer tots els canvis?")) { state = { ca: {}, es: {} }; save(); render(); } };
+render();
+</script>
+</body>
+</html>
