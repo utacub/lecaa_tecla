@@ -61,19 +61,22 @@ TitleScene.prototype.draw=function(ctx){
   text(ctx,L_('Juga i descobreix on viu cada lletra'),800,317,{size:27,weight:800,color:BRAND.petroli,maxW:700});
   drawButton(ctx,585,636,L_('Blanc sobre negre'),{fs:30,w:380,h:88,style:'dark',click:()=>this.start('bsn')});
   drawButton(ctx,1000,636,L_("Anar a l'illa"),{fs:32,w:380,h:88,style:'primary',click:()=>this.start('illa')});
-  const on=!!Settings.fullscreen,inst=Install.can(),iw=inst?Math.min(300,measure(ctx,'Instal·lar',23,800)+84):0,fx=inst?800-(330+20+iw)/2:635;
-  drawPanel(ctx,fx,711,330,55,{r:27,border:false,fill:'#FFFDF6',blur:15});
-  Mouse.add(fx,711,330,55,{click:()=>{Settings.fullscreen=!on;saveSettings();Sfx.play('tick');}});
-  rr(ctx,fx+20,726,25,25,6);ctx.fillStyle=on?BRAND.petroli:'#fff';ctx.fill();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=3;ctx.stroke();
-  if(on)text(ctx,'✓',fx+33,738,{size:23,color:'#fff'});
-  text(ctx,L_('Pantalla completa'),fx+65,739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:245});
+  const on=!!Settings.fullscreen,inst=Install.can(),fsT=L_('Pantalla completa'),fsW=measure(ctx,fsT,23,800);
+  // amb Instal·lar: dues pastilles d'igual amplada, amb l'espai entre elles alineat amb el dels dos botons grans (x=792,5)
+  let fx=635,fw=330,cx=fx+20;
+  if(inst){fw=Math.round(Math.min(330,Math.max(fsW+80,measure(ctx,'Instal·lar',23,800)+78)));fx=792.5-10-fw;cx=fx+(fw-(40+fsW))/2;}
+  drawPanel(ctx,fx,711,fw,55,{r:27,border:false,fill:'#FFFDF6',blur:15});
+  Mouse.add(fx,711,fw,55,{click:()=>{Settings.fullscreen=!on;saveSettings();Sfx.play('tick');}});
+  rr(ctx,cx,726,25,25,6);ctx.fillStyle=on?BRAND.petroli:'#fff';ctx.fill();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=3;ctx.stroke();
+  if(on)text(ctx,'✓',cx+13,738,{size:23,color:'#fff'});
+  text(ctx,fsT,cx+(inst?40:45),739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:inst?fw-60:245});
   // botó Instal·lar al costat (fletxa de baixada sobre safata, en petroli)
-  if(inst){const ix=fx+350,hov=Mouse.add(ix,711,iw,55,{click:()=>{Sfx.play('tick');Install.prompt();}});
-    drawPanel(ctx,ix,711,iw,55,{r:27,border:false,fill:hov?'#FFFFFF':'#FFFDF6',blur:hov?20:15});
+  if(inst){const ix=792.5+10,iT=L_('Instal·lar'),iW=Math.min(measure(ctx,iT,23,800),fw-78),ic=ix+(fw-(38+iW))/2,hov=Mouse.add(ix,711,fw,55,{click:()=>{Sfx.play('tick');Install.prompt();}});
+    drawPanel(ctx,ix,711,fw,55,{r:27,border:false,fill:hov?'#FFFFFF':'#FFFDF6',blur:hov?20:15});
     ctx.save();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=4;ctx.lineCap='round';ctx.lineJoin='round';
-    ctx.beginPath();ctx.moveTo(ix+33,723);ctx.lineTo(ix+33,743);ctx.moveTo(ix+25,736);ctx.lineTo(ix+33,744);ctx.lineTo(ix+41,736);
-    ctx.moveTo(ix+22,748);ctx.lineTo(ix+22,753);ctx.lineTo(ix+44,753);ctx.lineTo(ix+44,748);ctx.stroke();ctx.restore();
-    text(ctx,L_('Instal·lar'),ix+60,739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:iw-76});}
+    ctx.beginPath();ctx.moveTo(ic+11,723);ctx.lineTo(ic+11,743);ctx.moveTo(ic+3,736);ctx.lineTo(ic+11,744);ctx.lineTo(ic+19,736);
+    ctx.moveTo(ic,748);ctx.lineTo(ic,753);ctx.lineTo(ic+22,753);ctx.lineTo(ic+22,748);ctx.stroke();ctx.restore();
+    text(ctx,iT,ic+38,739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:fw-78});}
   drawButton(ctx,30,48,L_('Crèdits'),{fs:22,h:48,align:'left',click:()=>{this.credits=true;Sfx.play('whoosh');}});
   drawGearButton(ctx,W-60,50,this,.88);
   // menú d'idioma a dalt a la dreta, com a Mira i Juga i LECAA Docs
