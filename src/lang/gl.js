@@ -286,7 +286,7 @@ I18N.gl = {
   "Perfecte: 3 estrelles amb més d'un 95%.": "Perfecto: 3 estrelas con máis dun 95%.", "Amb un 95% d'encerts tindràs 3 estrelles.": "Cun 95% de acertos terás 3 estrelas.", "Amb un 80% d'encerts tindràs 2 estrelles.": "Cun 80% de acertos terás 2 estrelas.",
   "Aquesta vegada no has arribat a l'objectiu.": "Esta vez non chegaches ao obxectivo.", "Nou per al museu: {x}": "Novo para o museo: {x}", "premi": "premio", "premis": "premios",
   "El Poble": "A Vila", "El Camp": "O Campo", "La Costa": "A Costa", "La Muntanya": "A Montaña", "L'Espai": "O Espazo",
-  "Juga i descobreix on viu cada lletra": "Xoga e descobre onde vive cada letra", "Blanc sobre negre": "Branco sobre negro", "Anar a l'illa": "Ir á illa", "Pantalla completa": "Pantalla completa", "Accés docent…": "Acceso docente…",
+  "Juga i descobreix on viu cada lletra": "Xoga e descobre onde vive cada letra", "Blanc sobre negre": "Branco sobre negro", "Anar a l'illa": "Ir á illa", "Pantalla completa": "Pantalla completa", "Instal·lar": "Instalar", "Accés docent…": "Acceso docente…",
   "Qui juga?": "Quen xoga?", "Nou": "Novo", "Portada": "Portada", "Nou jugador": "Novo xogador", "Nom": "Nome", "Fet": "Feito", "Enrere": "Atrás", "Hola, {nom}!": "Ola, {nom}!", "Com et dius?": "Como te chamas?",
   "Tancat. Aconsegueix {n} estrelles més per obrir-lo.": "Pechado. Consegue {n} estrelas máis para abrilo.", "Nivell {n}: {nom}": "Nivel {n}: {nom}", "Calibratge": "Calibración",
   "Darrer viatge: {a} de {b} lletres trobades. Tornar-lo a fer actualitza el nivell i el ritme dels jocs.": "Última viaxe: {a} de {b} letras atopadas. Repetila actualiza o nivel e o ritmo dos xogos.",

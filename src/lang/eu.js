@@ -285,7 +285,7 @@ I18N.eu = {
   "Perfecte: 3 estrelles amb més d'un 95%.": "Ezin hobeto: 3 izar % 95etik gora.", "Amb un 95% d'encerts tindràs 3 estrelles.": "% 95 asmatuta 3 izar izango dituzu.", "Amb un 80% d'encerts tindràs 2 estrelles.": "% 80 asmatuta 2 izar izango dituzu.",
   "Aquesta vegada no has arribat a l'objectiu.": "Oraingoan ez zara helburura iritsi.", "Nou per al museu: {x}": "Museorako berria: {x}", "premi": "saria", "premis": "sariak",
   "El Poble": "Herria", "El Camp": "Landa", "La Costa": "Kostaldea", "La Muntanya": "Mendia", "L'Espai": "Espazioa",
-  "Juga i descobreix on viu cada lletra": "Jolastu eta aurkitu letra bakoitza non bizi den", "Blanc sobre negre": "Zuria beltzaren gainean", "Anar a l'illa": "Joan uhartera", "Pantalla completa": "Pantaila osoa", "Accés docent…": "Irakasleen sarbidea…",
+  "Juga i descobreix on viu cada lletra": "Jolastu eta aurkitu letra bakoitza non bizi den", "Blanc sobre negre": "Zuria beltzaren gainean", "Anar a l'illa": "Joan uhartera", "Pantalla completa": "Pantaila osoa", "Instal·lar": "Instalatu", "Accés docent…": "Irakasleen sarbidea…",
   "Qui juga?": "Nor ari da jolasten?", "Nou": "Berria", "Portada": "Azala", "Nou jugador": "Jokalari berria", "Nom": "Izena", "Fet": "Eginda", "Enrere": "Atzera", "Hola, {nom}!": "Kaixo, {nom}!", "Com et dius?": "Nola duzu izena?",
   "Tancat. Aconsegueix {n} estrelles més per obrir-lo.": "Itxita. Lortu beste {n} izar irekitzeko.", "Nivell {n}: {nom}": "{n}. maila: {nom}", "Calibratge": "Kalibrazioa",
   "Darrer viatge: {a} de {b} lletres trobades. Tornar-lo a fer actualitza el nivell i el ritme dels jocs.": "Azken bidaia: {b} letratik {a} aurkituta. Berriz egiteak jokoen maila eta erritmoa eguneratzen ditu.",
