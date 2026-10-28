@@ -285,7 +285,7 @@ I18N.en = {
   "Perfecte: 3 estrelles amb més d'un 95%.": "Perfect: 3 stars with over 95%.", "Amb un 95% d'encerts tindràs 3 estrelles.": "Get 95% right for 3 stars.", "Amb un 80% d'encerts tindràs 2 estrelles.": "Get 80% right for 2 stars.",
   "Aquesta vegada no has arribat a l'objectiu.": "You didn't reach the goal this time.", "Nou per al museu: {x}": "New for the museum: {x}", "premi": "prize", "premis": "prizes",
   "El Poble": "The Village", "El Camp": "The Countryside", "La Costa": "The Coast", "La Muntanya": "The Mountains", "L'Espai": "Space",
-  "Juga i descobreix on viu cada lletra": "Play and discover where each letter lives", "Blanc sobre negre": "White on Black", "Anar a l'illa": "Go to the island", "Pantalla completa": "Full screen", "Accés docent…": "Teacher access…",
+  "Juga i descobreix on viu cada lletra": "Play and discover where each letter lives", "Blanc sobre negre": "White on Black", "Anar a l'illa": "Go to the island", "Pantalla completa": "Full screen", "Instal·lar": "Install", "Accés docent…": "Teacher access…",
   "Qui juga?": "Who's playing?", "Nou": "New", "Portada": "Home", "Nou jugador": "New player", "Nom": "Name", "Fet": "Done", "Enrere": "Back", "Hola, {nom}!": "Hello, {nom}!", "Com et dius?": "What's your name?",
   "Tancat. Aconsegueix {n} estrelles més per obrir-lo.": "Locked. Get {n} more stars to open it.", "Nivell {n}: {nom}": "Level {n}: {nom}", "Calibratge": "Calibration",
   "Darrer viatge: {a} de {b} lletres trobades. Tornar-lo a fer actualitza el nivell i el ritme dels jocs.": "Last voyage: {a} of {b} letters found. Doing it again updates the level and pace of the games.",

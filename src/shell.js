@@ -41,6 +41,19 @@ drawAvatar=function(ctx,x,y,size,animal,color,o={}) {
   ctx.restore();
 };
 
+/* Instal·lació PWA: el navegador ofereix beforeinstallprompt només a la versió publicada (manifest + service worker)
+   i mentre l'app no estigui instal·lada; el botó de la portada només es mostra si hi ha aquesta oferta. */
+const Install={
+  ev:null,
+  // dins l'app instal·lada (finestra pròpia) mai no es mostra, encara que arribés l'oferta
+  installed(){try{return navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;}catch(e){return false;}},
+  can(){return !!this.ev&&!this.installed();},
+  // l'oferta només es pot fer servir un cop; si es rebutja, el navegador en pot enviar una altra més endavant
+  prompt(){const e=this.ev;this.ev=null;if(e)try{const r=e.prompt();if(r&&r.catch)r.catch(()=>{});}catch(err){}}
+};
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();Install.ev=e;});
+addEventListener('appinstalled',()=>{Install.ev=null;});
+
 TitleScene.prototype.draw=function(ctx){
   const im=ShellArt.get('title');if(im)ctx.drawImage(im,0,0,W,H);
   // Both logos are the exact original functions/assets, never image-generated.
@@ -48,12 +61,19 @@ TitleScene.prototype.draw=function(ctx){
   text(ctx,L_('Juga i descobreix on viu cada lletra'),800,317,{size:27,weight:800,color:BRAND.petroli,maxW:700});
   drawButton(ctx,585,636,L_('Blanc sobre negre'),{fs:30,w:380,h:88,style:'dark',click:()=>this.start('bsn')});
   drawButton(ctx,1000,636,L_("Anar a l'illa"),{fs:32,w:380,h:88,style:'primary',click:()=>this.start('illa')});
-  const on=!!Settings.fullscreen;
-  drawPanel(ctx,635,711,330,55,{r:27,border:false,fill:'#FFFDF6',blur:15});
-  Mouse.add(635,711,330,55,{click:()=>{Settings.fullscreen=!on;saveSettings();Sfx.play('tick');}});
-  rr(ctx,655,726,25,25,6);ctx.fillStyle=on?BRAND.petroli:'#fff';ctx.fill();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=3;ctx.stroke();
-  if(on)text(ctx,'✓',668,738,{size:23,color:'#fff'});
-  text(ctx,L_('Pantalla completa'),700,739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:245});
+  const on=!!Settings.fullscreen,inst=Install.can(),iw=inst?Math.min(300,measure(ctx,'Instal·lar',23,800)+84):0,fx=inst?800-(330+20+iw)/2:635;
+  drawPanel(ctx,fx,711,330,55,{r:27,border:false,fill:'#FFFDF6',blur:15});
+  Mouse.add(fx,711,330,55,{click:()=>{Settings.fullscreen=!on;saveSettings();Sfx.play('tick');}});
+  rr(ctx,fx+20,726,25,25,6);ctx.fillStyle=on?BRAND.petroli:'#fff';ctx.fill();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=3;ctx.stroke();
+  if(on)text(ctx,'✓',fx+33,738,{size:23,color:'#fff'});
+  text(ctx,L_('Pantalla completa'),fx+65,739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:245});
+  // botó Instal·lar al costat (fletxa de baixada sobre safata, en petroli)
+  if(inst){const ix=fx+350,hov=Mouse.add(ix,711,iw,55,{click:()=>{Sfx.play('tick');Install.prompt();}});
+    drawPanel(ctx,ix,711,iw,55,{r:27,border:false,fill:hov?'#FFFFFF':'#FFFDF6',blur:hov?20:15});
+    ctx.save();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=4;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();ctx.moveTo(ix+33,723);ctx.lineTo(ix+33,743);ctx.moveTo(ix+25,736);ctx.lineTo(ix+33,744);ctx.lineTo(ix+41,736);
+    ctx.moveTo(ix+22,748);ctx.lineTo(ix+22,753);ctx.lineTo(ix+44,753);ctx.lineTo(ix+44,748);ctx.stroke();ctx.restore();
+    text(ctx,L_('Instal·lar'),ix+60,739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:iw-76});}
   drawButton(ctx,30,48,L_('Crèdits'),{fs:22,h:48,align:'left',click:()=>{this.credits=true;Sfx.play('whoosh');}});
   drawGearButton(ctx,W-60,50,this,.88);
   // menú d'idioma a dalt a la dreta, com a Mira i Juga i LECAA Docs
