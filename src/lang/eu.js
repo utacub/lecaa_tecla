@@ -317,3 +317,22 @@ I18N.eu = {
   "En aquest idioma la veu diu el nom de cada lletra.": "Hizkuntza honetan ahotsak letra bakoitzaren izena esaten du.", "So de la {x}": "{x} letra",
   "Troba cada lletra al teclat.": "Aurkitu letra bakoitza teklatuan.", "Ometre el viatge": "Bidaia saltatu", "Hem arribat a l'illa!": "Uhartera iritsi gara!", "Ara ja pots explorar l'illa i triar un joc.": "Orain uhartea arakatu eta joko bat aukera dezakezu.",
 };
+/* Instal·lació i ús sense connexió (avís de mida i barra de progrés) */
+Object.assign(I18N.eu, {
+ "Instal·lar LECAA Tecla": "Instalatu LECAA Tecla",
+ "Ocupa uns {mb} MB": "{mb} MB inguru hartzen ditu",
+ "Es desa en aquest dispositiu tot el que cal per jugar sense connexió: els 25 jocs, les il·lustracions, els sons de les lletres en tots els idiomes i les tipografies.": "Konexiorik gabe jolasteko behar den guztia gailu honetan gordetzen da: 25 jokoak, irudiak, hizkuntza guztietako letren soinuak eta letra-tipoak.",
+ "Les veus opcionals que es baixen des dels ajustos de la veu no hi són incloses.": "Ahotsaren ezarpenetatik deskargatzen diren aukerako ahotsak ez daude barne.",
+ "La descàrrega ja és completa en aquest navegador: instal·lar no torna a baixar res.": "Deskarga osatuta dago nabigatzaile honetan: instalatzeak ez du ezer berriro deskargatuko.",
+ "Si fas servir dades mòbils, millor connecta't a una xarxa wifi abans de continuar.": "Datu mugikorrak erabiltzen badituzu, hobe duzu wifi sare batera konektatzea jarraitu aurretik.",
+ "Atenció: aquest navegador només pot desar uns {n} més. Allibera espai abans d'instal·lar o el joc no funcionarà sense connexió.": "Kontuz: nabigatzaile honek {n} inguru baino ez ditu gorde ahal. Askatu lekua instalatu aurretik, bestela jokoak ez du konexiorik gabe funtzionatuko.",
+ "Espai disponible per a aquest navegador: uns {n}. N'hi ha prou.": "Nabigatzaile honentzat dagoen lekua: {n} inguru. Nahikoa da.",
+ "No s'ha pogut desar per jugar sense connexió.": "Ezin izan da gorde konexiorik gabe jolasteko.",
+ "A punt per jugar sense connexió": "Prest konexiorik gabe jolasteko",
+ "Desant per jugar sense connexió: {done} de {mb} MB ({pct} %). No tanquis aquesta finestra fins que acabi.": "Konexiorik gabe jolasteko gordetzen: {done} / {mb} MB (% {pct}). Ez itxi leiho hau amaitu arte.",
+ "Preparant la descàrrega per jugar sense connexió…": "Konexiorik gabe jolasteko deskarga prestatzen…",
+ "Instal·lar ({mb} MB)": "Instalatu ({mb} MB)",
+ "Cancel·lar": "Utzi",
+ "Torna-ho a provar": "Saiatu berriro",
+ "Desant per jugar sense connexió": "Konexiorik gabe jolasteko gordetzen"
+});

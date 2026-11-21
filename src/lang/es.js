@@ -321,3 +321,22 @@ I18N.es = {
   "En aquest idioma la veu diu el nom de cada lletra.": "En este idioma la voz dice el nombre de cada letra.", "So de la {x}": "Sonido de la {x}",
   "Troba cada lletra al teclat.": "Encuentra cada letra en el teclado.", "Ometre el viatge": "Saltar el viaje", "Hem arribat a l'illa!": "¡Hemos llegado a la isla!", "Ara ja pots explorar l'illa i triar un joc.": "Ahora ya puedes explorar la isla y elegir un juego.",
 };
+/* Instal·lació i ús sense connexió (avís de mida i barra de progrés) */
+Object.assign(I18N.es, {
+ "Instal·lar LECAA Tecla": "Instalar LECAA Tecla",
+ "Ocupa uns {mb} MB": "Ocupa unos {mb} MB",
+ "Es desa en aquest dispositiu tot el que cal per jugar sense connexió: els 25 jocs, les il·lustracions, els sons de les lletres en tots els idiomes i les tipografies.": "Se guarda en este dispositivo todo lo necesario para jugar sin conexión: los 25 juegos, las ilustraciones, los sonidos de las letras en todos los idiomas y los tipos de letra.",
+ "Les veus opcionals que es baixen des dels ajustos de la veu no hi són incloses.": "Las voces opcionales que se descargan desde los ajustes de la voz no están incluidas.",
+ "La descàrrega ja és completa en aquest navegador: instal·lar no torna a baixar res.": "La descarga ya está completa en este navegador: instalar no vuelve a descargar nada.",
+ "Si fas servir dades mòbils, millor connecta't a una xarxa wifi abans de continuar.": "Si usas datos móviles, mejor conéctate a una red wifi antes de continuar.",
+ "Atenció: aquest navegador només pot desar uns {n} més. Allibera espai abans d'instal·lar o el joc no funcionarà sense connexió.": "Atención: este navegador solo puede guardar unos {n} más. Libera espacio antes de instalar o el juego no funcionará sin conexión.",
+ "Espai disponible per a aquest navegador: uns {n}. N'hi ha prou.": "Espacio disponible para este navegador: unos {n}. Es suficiente.",
+ "No s'ha pogut desar per jugar sense connexió.": "No se ha podido guardar para jugar sin conexión.",
+ "A punt per jugar sense connexió": "Listo para jugar sin conexión",
+ "Desant per jugar sense connexió: {done} de {mb} MB ({pct} %). No tanquis aquesta finestra fins que acabi.": "Guardando para jugar sin conexión: {done} de {mb} MB ({pct} %). No cierres esta ventana hasta que termine.",
+ "Preparant la descàrrega per jugar sense connexió…": "Preparando la descarga para jugar sin conexión…",
+ "Instal·lar ({mb} MB)": "Instalar ({mb} MB)",
+ "Cancel·lar": "Cancelar",
+ "Torna-ho a provar": "Volver a intentarlo",
+ "Desant per jugar sense connexió": "Guardando para jugar sin conexión"
+});

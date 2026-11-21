@@ -52,7 +52,147 @@ const Install={
   prompt(){const e=this.ev;this.ev=null;if(e)try{const r=e.prompt();if(r&&r.catch)r.catch(()=>{});}catch(err){}}
 };
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();Install.ev=e;});
-addEventListener('appinstalled',()=>{Install.ev=null;});
+addEventListener('appinstalled',()=>{Install.ev=null;Offline.persist();});
+
+/* Ús sense connexió (només a la versió publicada, on build.py defineix PWA_BYTES i hi ha sw.js).
+   El service worker desa index.html (el programa sencer, amb tots els jocs, il·lustracions, sons i tipografies),
+   el manifest i les icones, i envia el progrés de la descàrrega; aquí es mostra a la portada i a l'avís d'instal·lació. */
+const Offline={
+  on:false,phase:'idle',done:0,total:0,failed:false,wasReady:false,seenDownload:false,readyAt:0,free:null,quota:null,
+  bytes(){return typeof PWA_BYTES!=='undefined'?PWA_BYTES:0;},
+  mb(b,dec){return (b/1e6).toLocaleString(LOCALE,{maximumFractionDigits:dec?1:0});},
+  size(){return Math.round(this.bytes()/1e6);},
+  pct(){return this.phase==='ready'?100:Math.min(99,Math.floor(this.done*100/(this.total||this.bytes()||1)));},
+  init(){
+    if(!this.bytes()||!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return;
+    this.on=true;this.total=this.bytes();
+    navigator.serviceWorker.addEventListener('message',e=>{
+      const d=e.data||{};
+      if(d.type==='LECAA_TECLA_PROGRESS'){
+        // un cop a punt, una versió nova es baixa en silenci: la que ja hi ha continua funcionant sense connexió
+        if(this.phase==='ready')return;
+        this.phase='downloading';this.seenDownload=true;this.failed=false;this.done=d.done;this.total=d.total||this.bytes();
+      }else if(d.type==='LECAA_TECLA_FAILED'&&!this.wasReady){this.failed=true;this.phase='idle';}
+    });
+    navigator.serviceWorker.addEventListener('controllerchange',()=>this.ask());
+    if(document.readyState==='complete')this.register();else addEventListener('load',()=>this.register());
+  },
+  async register(){
+    this.failed=false;if(this.phase!=='ready'){this.phase='starting';this.done=0;}
+    try{
+      const reg=await navigator.serviceWorker.register('sw.js',{scope:'./',updateViaCache:'none'});
+      const watch=()=>{const w=reg.installing;if(!w)return;w.addEventListener('statechange',()=>{
+        if(w.state==='redundant'&&!this.wasReady&&this.phase!=='ready'){this.failed=true;this.phase='idle';}
+        if(w.state==='activated')this.ask();
+      });};
+      watch();reg.addEventListener('updatefound',watch);
+      if(reg.active)this.ask();
+    }catch(e){this.failed=true;this.phase='idle';}
+  },
+  // pregunta al service worker actiu si la còpia d'aquesta versió és completa
+  async ask(){
+    try{
+      const reg=await navigator.serviceWorker.ready,ch=new MessageChannel();
+      ch.port1.onmessage=e=>{if(e.data&&e.data.type==='LECAA_TECLA_READY'){
+        if(this.phase!=='ready'&&this.seenDownload)this.readyAt=performance.now();
+        this.phase='ready';this.wasReady=true;this.failed=false;this.done=this.total;
+        if(Install.installed())this.persist();
+      }};
+      if(reg.active)reg.active.postMessage({type:'LECAA_TECLA_STATUS'},[ch.port2]);
+    }catch(e){}
+  },
+  // demana al navegador que no esborri el joc desat quan li falti espai (cada navegador decideix)
+  persist(){try{const r=navigator.storage&&navigator.storage.persist&&navigator.storage.persist();if(r&&r.catch)r.catch(()=>{});}catch(e){}},
+  async space(){
+    try{const {quota,usage}=await navigator.storage.estimate();if(quota){this.quota=quota;this.free=quota-(usage||0);}}catch(e){}
+  },
+  // text i barra: a la portada només mentre es baixa, una estona després d'acabar o si ha fallat
+  showOnTitle(){return this.on&&(this.phase==='downloading'||this.failed||(this.phase==='ready'&&this.readyAt&&performance.now()-this.readyAt<8000));}
+};
+Offline.init();
+
+function drawOfflineBar(ctx,x,y,w,h){
+  rr(ctx,x,y,w,h,h/2);ctx.fillStyle='#DDE7E4';ctx.fill();
+  const f=Offline.phase==='ready'?1:Offline.phase==='downloading'?Offline.pct()/100:0;
+  if(Offline.phase==='starting'){ // encara sense dades: franja que llisca (indeterminat)
+    const t=performance.now()/1000,bw=w*.25,bx=x+((t*.45)%1)*(w+bw)-bw;
+    ctx.save();rr(ctx,x,y,w,h,h/2);ctx.clip();rr(ctx,bx,y,bw,h,h/2);ctx.fillStyle=BRAND.petroli;ctx.fill();ctx.restore();
+  }else if(f>0){rr(ctx,x,y,Math.max(h,w*f),h,h/2);ctx.fillStyle=BRAND.petroli;ctx.fill();}
+}
+// pastilla de la portada, sota els botons
+function drawOfflineTitle(ctx){
+  if(!Offline.showOnTitle())return;
+  const failed=Offline.failed,w=failed?760:600,x=800-w/2,y=792,ready=Offline.phase==='ready';
+  drawPanel(ctx,x,y,w,failed?62:58,{r:failed?31:29,border:false,fill:'#FFFDF6',blur:12});
+  if(failed){
+    const bw=drawButton(ctx,x+w-10,y+31,L_('Torna-ho a provar'),{fs:19,h:44,align:'right',style:'primary',click:()=>{Sfx.play('tick');Offline.register();}});
+    text(ctx,L_("No s'ha pogut desar per jugar sense connexió."),x+26,y+31,{size:20,weight:800,color:'#9B1C1C',align:'left',maxW:w-bw-56});
+  }else if(ready){
+    text(ctx,'✓  '+L_('A punt per jugar sense connexió'),800,y+30,{size:22,weight:800,color:BRAND.petroli,maxW:w-50});
+  }else{
+    text(ctx,L_('Desant per jugar sense connexió'),x+28,y+19,{size:19,weight:800,color:BRAND.tinta,align:'left',maxW:w-140});
+    text(ctx,Offline.pct()+' %',x+w-28,y+19,{size:19,weight:900,color:BRAND.petroli,align:'right'});
+    drawOfflineBar(ctx,x+28,y+35,w-56,12);
+  }
+}
+// Avís de mida abans d'instal·lar: què es desa, quant ocupa, l'espai lliure i com va la descàrrega.
+function openInstallDialog(scene){scene.inst=true;scene.instT=0;Offline.space();Sfx.play('whoosh');}
+function drawInstallDialog(ctx,scene){
+  const k=Ease.outBack(clamp(scene.instT/.35,0,1)),close=()=>{scene.inst=false;Sfx.play('whoosh');};
+  ctx.save();ctx.fillStyle=`rgba(20,38,42,${.6*clamp(scene.instT*4,0,1)})`;ctx.fillRect(0,0,W,H);
+  Mouse.add(0,0,W,H,{click:close});
+  ctx.translate(W/2,H/2);ctx.scale(k,k);ctx.translate(-W/2,-H/2);
+  const O=Offline,mb=O.size(),ready=O.phase==='ready';
+  const pw=960,px=W/2-pw/2,bx=px+50,bw=pw-100;
+  const paras=[L_("Es desa en aquest dispositiu tot el que cal per jugar sense connexió: els 25 jocs, les il·lustracions, els sons de les lletres en tots els idiomes i les tipografies."),
+    L_("Les veus opcionals que es baixen des dels ajustos de la veu no hi són incloses."),
+    ready?L_("La descàrrega ja és completa en aquest navegador: instal·lar no torna a baixar res."):L_("Si fas servir dades mòbils, millor connecta't a una xarxa wifi abans de continuar.")];
+  let space='',low=false;
+  if(O.free!=null){
+    const need=ready?0:Math.max(0,O.bytes()-O.done),gb=O.free>=1e9,n=gb?(O.free/1e9).toLocaleString(LOCALE,{maximumFractionDigits:1})+' GB':O.mb(O.free)+' MB';
+    low=O.free<need*1.1;
+    space=low?L_("Atenció: aquest navegador només pot desar uns {n} més. Allibera espai abans d'instal·lar o el joc no funcionarà sense connexió.",{n}):L_("Espai disponible per a aquest navegador: uns {n}. N'hi ha prou.",{n});
+  }
+  // alçada segons el text (els idiomes traduïts poden ocupar més línies)
+  const fs=21,lh=29,lines=t=>t?Math.round((wrapText(ctx,t,0,0,bw-50,lh,{size:fs,weight:700,measure:true}))/lh)+1:0;
+  const boxH=78+paras.reduce((a,t)=>a+lines(t)*lh+10,0)+(space?lines(space)*lh+10:0)+8;
+  const statusH=O.on&&!ready?86:O.on?48:0,ph=124+boxH+20+statusH+104,py=Math.max(20,H/2-ph/2);
+  Mouse.add(px,py,pw,ph,{});
+  drawPanel(ctx,px,py,pw,ph,{r:32});
+  text(ctx,L_('Instal·lar LECAA Tecla'),bx,py+58,{size:36,weight:900,font:FONT_T,color:BRAND.tinta,align:'left',maxW:pw-180});
+  ctx.fillStyle='#DDE7E4';ctx.fillRect(px+40,py+102,pw-80,2);
+  // requadre de l'avís, amb la vora esquerra en petroli
+  let y=py+124;
+  ctx.save();rr(ctx,bx,y,bw,boxH,18);ctx.fillStyle='#F1F7F5';ctx.fill();ctx.clip();ctx.fillStyle=BRAND.petroli;ctx.fillRect(bx,y,8,boxH);ctx.restore();
+  text(ctx,L_('Ocupa uns {mb} MB',{mb}),bx+30,y+40,{size:32,weight:900,font:FONT_T,color:BRAND.petroli,align:'left',maxW:bw-60});
+  let ty=y+86;
+  for(const t of paras){ty=wrapText(ctx,t,bx+30,ty,bw-50,lh,{size:fs,weight:700,color:BRAND.tinta})+lh+10;}
+  if(space)wrapText(ctx,space,bx+30,ty,bw-50,lh,{size:fs,weight:800,color:low?'#9B1C1C':BRAND.petroli});
+  y+=boxH+20;
+  // estat de la descàrrega
+  if(O.on){
+    let st;
+    if(O.failed)st=L_("No s'ha pogut desar per jugar sense connexió.");
+    else if(ready)st='✓  '+L_('A punt per jugar sense connexió');
+    else if(O.phase==='downloading')st=L_('Desant per jugar sense connexió: {done} de {mb} MB ({pct} %). No tanquis aquesta finestra fins que acabi.',{done:O.mb(O.done),mb:O.mb(O.total),pct:O.pct()});
+    else st=L_('Preparant la descàrrega per jugar sense connexió…');
+    text(ctx,st,bx,y+16,{size:20,weight:800,color:O.failed?'#9B1C1C':ready?BRAND.petroli:BRAND.tinta,align:'left',maxW:bw});
+    if(!ready&&!O.failed)drawOfflineBar(ctx,bx,y+44,bw,16);
+    if(O.failed)drawButton(ctx,bx+bw,y+56,L_('Torna-ho a provar'),{fs:19,h:44,align:'right',click:()=>{Sfx.play('tick');O.register();}});
+  }
+  // botons
+  const by=py+ph-56,can=Install.can();
+  if(can)drawButton(ctx,px+pw/2-14,by,L_('Instal·lar ({mb} MB)',{mb}),{fs:27,h:66,align:'right',style:'primary',click:()=>{scene.inst=false;Sfx.play('tick');O.persist();Install.prompt();}});
+  drawButton(ctx,can?px+pw/2+14:px+pw/2,by,L_('Cancel·lar'),{fs:27,h:66,w:230,align:can?'left':'center',click:close});
+  // creu per tancar
+  const cx=px+pw-50,cy=py+52,ov=Mouse.add(cx-28,cy-28,56,56,{click:close});
+  ctx.strokeStyle=ov?BRAND.petroli:'#7A8C8E';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-13,cy-13);ctx.lineTo(cx+13,cy+13);ctx.moveTo(cx+13,cy-13);ctx.lineTo(cx-13,cy+13);ctx.stroke();
+  ctx.restore();
+}
+const baseTitleUpdate=TitleScene.prototype.update;
+TitleScene.prototype.update=function(dt){baseTitleUpdate.call(this,dt);if(this.inst)this.instT=(this.instT||0)+dt;};
+const baseTitleKey=TitleScene.prototype.onKey;
+TitleScene.prototype.onKey=function(k){if(this.inst){if(k==='Escape')this.inst=false;return;}return baseTitleKey.call(this,k);};
 
 TitleScene.prototype.draw=function(ctx){
   const im=ShellArt.get('title');if(im)ctx.drawImage(im,0,0,W,H);
@@ -71,7 +211,7 @@ TitleScene.prototype.draw=function(ctx){
   if(on)text(ctx,'✓',cx+13,738,{size:23,color:'#fff'});
   text(ctx,fsT,cx+(inst?40:45),739,{size:23,weight:800,color:BRAND.tinta,align:'left',maxW:inst?fw-60:245});
   // botó Instal·lar al costat (fletxa de baixada sobre safata, en petroli)
-  if(inst){const ix=792.5+10,iT=L_('Instal·lar'),iW=Math.min(measure(ctx,iT,23,800),fw-78),ic=ix+(fw-(38+iW))/2,hov=Mouse.add(ix,711,fw,55,{click:()=>{Sfx.play('tick');Install.prompt();}});
+  if(inst){const ix=792.5+10,iT=L_('Instal·lar'),iW=Math.min(measure(ctx,iT,23,800),fw-78),ic=ix+(fw-(38+iW))/2,hov=Mouse.add(ix,711,fw,55,{click:()=>openInstallDialog(this)});
     drawPanel(ctx,ix,711,fw,55,{r:27,border:false,fill:hov?'#FFFFFF':'#FFFDF6',blur:hov?20:15});
     ctx.save();ctx.strokeStyle=BRAND.petroli;ctx.lineWidth=4;ctx.lineCap='round';ctx.lineJoin='round';
     ctx.beginPath();ctx.moveTo(ic+11,723);ctx.lineTo(ic+11,743);ctx.moveTo(ic+3,736);ctx.lineTo(ic+11,744);ctx.lineTo(ic+19,736);
@@ -83,7 +223,9 @@ TitleScene.prototype.draw=function(ctx){
   if(!this.opts&&!this.credits){drawLangButton(ctx,W-116,50,this,{h:54,fs:23});}
   const lh=54,uw=drawUTACMeasure(lh);drawPanel(ctx,W-uw-70,H-108,uw+48,78,{r:34,border:false,blur:12});drawUTAC(ctx,W-uw-46,H-68,lh);
   if(!this.opts&&!this.credits)drawLangList(ctx,this);
+  if(!this.opts&&!this.credits&&!this.inst)drawOfflineTitle(ctx);
   if(this.opts)drawIslandOptions(ctx,this);if(this.credits)drawCredits(ctx,this);
+  if(this.inst){if(Install.can()||Offline.on)drawInstallDialog(ctx,this);else this.inst=false;}
 };
 
 ProfileScene.prototype.draw=function(ctx){

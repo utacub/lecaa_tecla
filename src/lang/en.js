@@ -317,3 +317,22 @@ I18N.en = {
   "En aquest idioma la veu diu el nom de cada lletra.": "In this language the voice says the name of each letter.", "So de la {x}": "Letter {x}",
   "Troba cada lletra al teclat.": "Find each letter on the keyboard.", "Ometre el viatge": "Skip the voyage", "Hem arribat a l'illa!": "We've reached the island!", "Ara ja pots explorar l'illa i triar un joc.": "Now you can explore the island and choose a game.",
 };
+/* Instal·lació i ús sense connexió (avís de mida i barra de progrés) */
+Object.assign(I18N.en, {
+ "Instal·lar LECAA Tecla": "Install LECAA Tecla",
+ "Ocupa uns {mb} MB": "Takes about {mb} MB",
+ "Es desa en aquest dispositiu tot el que cal per jugar sense connexió: els 25 jocs, les il·lustracions, els sons de les lletres en tots els idiomes i les tipografies.": "Everything needed to play offline is stored on this device: the 25 games, the illustrations, the letter sounds in every language and the fonts.",
+ "Les veus opcionals que es baixen des dels ajustos de la veu no hi són incloses.": "Optional voices downloaded from the voice settings are not included.",
+ "La descàrrega ja és completa en aquest navegador: instal·lar no torna a baixar res.": "The download is already complete in this browser: installing will not download anything again.",
+ "Si fas servir dades mòbils, millor connecta't a una xarxa wifi abans de continuar.": "If you are on mobile data, it is better to connect to a wifi network before continuing.",
+ "Atenció: aquest navegador només pot desar uns {n} més. Allibera espai abans d'instal·lar o el joc no funcionarà sense connexió.": "Warning: this browser can only store about {n} more. Free up space before installing or the game will not work offline.",
+ "Espai disponible per a aquest navegador: uns {n}. N'hi ha prou.": "Space available to this browser: about {n}. That is enough.",
+ "No s'ha pogut desar per jugar sense connexió.": "Could not save the game for offline play.",
+ "A punt per jugar sense connexió": "Ready to play offline",
+ "Desant per jugar sense connexió: {done} de {mb} MB ({pct} %). No tanquis aquesta finestra fins que acabi.": "Saving for offline play: {done} of {mb} MB ({pct} %). Do not close this window until it finishes.",
+ "Preparant la descàrrega per jugar sense connexió…": "Preparing the download for offline play…",
+ "Instal·lar ({mb} MB)": "Install ({mb} MB)",
+ "Cancel·lar": "Cancel",
+ "Torna-ho a provar": "Try again",
+ "Desant per jugar sense connexió": "Saving for offline play"
+});

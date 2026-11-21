@@ -22,3 +22,13 @@ no s'ha de publicar cap PWA a l'arrel.
 
 Referències: W3C Web Application Manifest (membres `id`, `start_url`, `scope`) i MDN
 (*Web app manifest: id*, *CacheStorage*, *ServiceWorkerContainer.register()*).
+
+## Instal·lació completa sense connexió (2026-11-21)
+
+Igual que LECAA CAST 0.6.13:
+
+- `index.html` conté tot el programa (25 jocs, il·lustracions, sons de les lletres de tots els idiomes, tipografies i logos). El service worker (`tools/pwa.py`) el desa juntament amb el manifest i les icones. Només queden fora les veus neuronals opcionals (Piper), que es baixen des dels ajustos de la veu i es desen a IndexedDB (`lecaa-tecla-veus`).
+- La precàrrega és atòmica: si la connexió es talla, s'esborra la memòria d'aquella versió i la portada ofereix «Torna-ho a provar».
+- Les peticions es fan amb `cache: "no-cache"`: no es desa mai una còpia antiga de la memòria HTTP (GitHub Pages en guarda 10 minuts), però si la còpia és vigent no es torna a baixar.
+- `index.html` es baixa en flux i es compten els bytes: la portada i l'avís d'instal·lació mostren una barra de progrés. La mida exacta (`PWA_BYTES`, sense comprimir) l'escriu `tools/pwa.py` en un marcador d'amplada fixa que deixa `build.py`.
+- El botó «Instal·lar» obre primer un avís de mida (què es desa, quant ocupa, wifi, espai lliure segons el navegador) i després el diàleg del navegador. En instal·lar es demana emmagatzematge persistent (`navigator.storage.persist()`).
