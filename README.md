@@ -40,7 +40,9 @@ python3 tools/pwa.py                           # versió PWA a dist/pwa/
 
 LECAA Tecla és programari lliure: es distribueix amb la llicència **GNU General Public License 3.0 o posterior** (GPL-3.0-or-later), que és al fitxer `LICENSE`. Es pot fer servir, estudiar, modificar i redistribuir; les versions modificades que es distribueixin s'han de publicar amb la mateixa llicència i amb el codi font.
 
-La llicència cobreix el codi. **No** cobreix els logotips de la UTAC, de LECAA ni de les institucions (Universitat de Barcelona, Fundació Bosch i Gimpera i Generalitat de Catalunya), que són marques dels seus titulars i no es poden fer servir sense el seu permís, ni les locucions i les tipografies, que conserven les condicions indicades a continuació.
+La llicència cobreix el codi. **No** cobreix els logotips de la UTAC, de LECAA ni de les institucions (Universitat de Barcelona, Fundació Bosch i Gimpera i Generalitat de Catalunya), que són marques dels seus titulars i no es poden fer servir sense el seu permís, ni les tipografies, que conserven les condicions indicades a continuació.
+
+Les il·lustracions, les locucions creades per a LECAA i els altres continguts propis tenen la llicència **Creative Commons Reconeixement-NoComercial-CompartirIgual 4.0** (CC BY-NC-SA 4.0), que és al fitxer [`LICENSE-CONTINGUTS.md`](LICENSE-CONTINGUTS.md): cal citar «LECAA Tecla, UTAC (Unitat de Tècniques Augmentatives de Comunicació)», no se'n permet l'ús comercial i les adaptacions s'han de compartir amb la mateixa llicència. Copyright © UTAC (Unitat de Tècniques Augmentatives de Comunicació).
 
 ## Llicències de tercers
 
